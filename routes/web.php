@@ -12,18 +12,18 @@
 */
 
 include_once('install_r.php');
-Route::get('/up', function() {
+Route::get('/up', function () {
     \Artisan::call('up');
 
     return "up";
 });
 
-Route::get('/down', function() {
+Route::get('/down', function () {
     \Artisan::call('down');
 
     return "down";
 });
- 
+
 Route::middleware(['IsInstalled'])->group(function () {
     Route::get('/', function () {
         // return view('welcome');
@@ -52,7 +52,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/home/sales-payment-dues', 'HomeController@getSalesPaymentDues');
 
     Route::get('/load-more-notifications', 'HomeController@loadMoreNotifications');
-    
+
     Route::get('/business/settings', 'BusinessController@getBusinessSettings')->name('business.getBusinessSettings');
     Route::post('/business/update', 'BusinessController@postBusinessSettings')->name('business.postBusinessSettings');
     Route::get('/user/profile', 'UserController@getProfile')->name('user.getProfile');
@@ -62,12 +62,13 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('brands', 'BrandController');
 
     // Route::resource('akuntansi', 'AkuntanController');
-    
+
     Route::resource('payment-account', 'PaymentAccountController');
 
     Route::resource('tax-rates', 'TaxRateController');
 
     Route::resource('units', 'UnitController');
+    Route::resource('satuan_bahan', 'SatuanBahanController');
 
     Route::get('/contacts/import', 'ContactController@getImportContacts')->name('contacts.import');
     Route::post('/contacts/import', 'ContactController@postImportContacts');
@@ -89,7 +90,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/products/view/{id}', 'ProductController@view');
     Route::get('/products/list', 'ProductController@getProducts');
     Route::get('/products/list-no-variation', 'ProductController@getProductsWithoutVariations');
-    
+
     Route::post('/products/get_sub_categories', 'ProductController@getSubCategories');
     Route::post('/products/product_form_part', 'ProductController@getProductVariationFormPart');
     Route::post('/products/get_product_variation_row', 'ProductController@getProductVariationRow');
@@ -98,7 +99,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::post('/products/check_product_sku', 'ProductController@checkProductSku');
     Route::get('/products/quick_add', 'ProductController@quickAdd');
     Route::post('/products/save_quick_product', 'ProductController@saveQuickProduct');
-    
+
     Route::resource('products', 'ProductController');
 
     Route::get('/purchases/get_products', 'PurchaseController@getProducts');
@@ -210,7 +211,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/reports/trending-products2', 'ReportController@getTrendingProducts2');
     Route::get('/reports/count_trx', 'ReportController@getCountTrxEmployee');
     Route::get('/reports/product-sell-avg-report', 'ReportController@getproductSellAvgReport');
-    
+
     //Business Location Settings...
     Route::prefix('business-location/{location_id}')->name('location.')->group(function () {
         Route::get('settings', 'LocationSettingsController@index')->name('settings');
@@ -261,7 +262,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     //Stock Transfer
     Route::get('stock-transfers/print/{id}', 'StockTransferController@printInvoice');
     Route::resource('stock-transfers', 'StockTransferController');
-    
+
     Route::get('/opening-stock/add/{product_id}', 'OpeningStockController@add');
     Route::post('/opening-stock/save', 'OpeningStockController@save');
 
@@ -277,7 +278,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('sell-return/get-product-row', 'SellReturnController@getProductRow');
     Route::get('/sell-return/print/{id}', 'SellReturnController@printInvoice');
     Route::get('/sell-return/add/{id}', 'SellReturnController@add');
-    
+
     //Backup
     Route::get('backup/download/{file_name}', 'BackUpController@download');
     Route::get('backup/delete/{file_name}', 'BackUpController@delete');
@@ -320,7 +321,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
         Route::post('/link-account', 'AccountReportsController@postLinkAccount');
         Route::get('/cash-flow', 'AccountController@cashFlow');
     });
-    
+
 
     //Restaurant module
     Route::group(['prefix' => 'modules'], function () {
@@ -344,7 +345,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
         Route::get('/data/get-pos-details', 'Restaurant\DataController@getPosDetails');
         Route::get('/orders/mark-line-order-as-served/{id}', 'Restaurant\OrderController@markLineOrderAsServed');
     });
-    
+
     Route::group(['prefix' => 'akuntansi'], function () {
         Route::get('/', 'AkuntanController@index')->name('akuntansi.index');
         Route::get('/createakun', 'AkuntanController@createAkun');
