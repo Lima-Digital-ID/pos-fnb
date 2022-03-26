@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Ingredient;
 use App\SatuanBahan;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
@@ -9,12 +10,8 @@ use Exception;
 use Illuminate\Database\QueryException;
 use App\Utils\Util;
 
-class SatuanBahanController extends Controller
+class IngredientController extends Controller
 {
-    /**
-     * All Utils instance.
-     *
-     */
     protected $commonUtil;
 
     /**
@@ -34,27 +31,33 @@ class SatuanBahanController extends Controller
      */
     public function index()
     {
-        if (!auth()->user()->can('satuan_bahan.view') && !auth()->user()->can('satuan_bahan.create')) {
+        if (!auth()->user()->can('bahan.view') && !auth()->user()->can('bahan.create')) {
             abort(403, 'Unauthorized action.');
         }
 
         if (request()->ajax()) {
+            $business_id = request()->session()->get('user.business_id');
 
-            $satuanBahan = SatuanBahan::select([
-                'id_satuan',
-                'satuan',
-            ]);
-            // dd($satuanBahan);
+            $ingredient = Ingredient::select([
+                'id_bahan',
+                'nama_bahan',
+                'tb_satuan_bahan.satuan',
+                'stok',
+                'limit_stok',
+                'limit_pemakaian'
+            ])
+                ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan');
+            // dd($ingredient);
 
-            return Datatables::of($satuanBahan)
+            return Datatables::of($ingredient)
                 ->addColumn(
                     'action',
-                    '@can("satuan_bahan.update")
-                    <a href="{{action(\'SatuanBahanController@edit\', [$id_satuan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
+                    '@can("bahan.update")
+                    <a href="{{action(\'IngredientController@edit\', [$id_bahan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
                         &nbsp;
                     @endcan
-                    @can("satuan_bahan.delete")
-                    <form action="{{ action(\'SatuanBahanController@destroy\', [$id_satuan]) }}" method="POST">
+                    @can("bahan.delete")
+                    <form action="{{ action(\'IngredientController@destroy\', [$id_bahan]) }}" method="POST">
                     ' . csrf_field() . '
                     ' . method_field("DELETE") . '
                     <button type="submit" class="btn btn-xs btn-danger"
@@ -66,12 +69,8 @@ class SatuanBahanController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        // $satuanBahan = SatuanBahan::select(
-        //     'id_satuan',
-        //     'satuan'
-        // )->get();
-        // print_r($satuanBahan);
-        return view('satuan_bahan.index');
+
+        return view('bahan.index');
     }
 
     /**
@@ -85,7 +84,9 @@ class SatuanBahanController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        return view('satuan_bahan.create');
+        $this->params['satuan'] = SatuanBahan::get();
+
+        return view('bahan.create', $this->params);
     }
 
     /**
@@ -96,31 +97,43 @@ class SatuanBahanController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->can('satuan_bahan.create')) {
+        if (!auth()->user()->can('unit.create')) {
             abort(403, 'Unauthorized action.');
         }
 
         $validated = $request->validate(
             [
-                'satuan' => 'required',
+                'nama_bahan' => 'required',
+                'id_satuan' => 'required',
+                'stok' => 'required',
+                'limit_stok' => 'required',
+                'limit_pemakaian' => 'required',
             ],
             [
-                'satuan.required' => 'Nama Satuan Bahan harus diisi.',
+                'nama_bahan.required' => 'Nama Bahan harus diisi.',
+                'id_satuan.required' => 'Satuan Bahan harus diisi.',
+                'stok.required' => 'Stok Bahan harus diisi.',
+                'limit_stok.required' => 'Limit Stok Bahan harus diisi.',
+                'limit_pemakaian.required' => 'Limit Pemakaian Bahan harus diisi.',
             ]
         );
 
         try {
-            $satuan = array(
-                'satuan' => $validated['satuan'],
+            $bahan = array(
+                'nama_bahan' => $validated['nama_bahan'],
+                'id_satuan' => $validated['id_satuan'],
+                'stok' => $validated['stok'],
+                'limit_stok' => $validated['limit_stok'],
+                'limit_pemakaian' => $validated['limit_pemakaian']
             );
-            \DB::table('tb_satuan_bahan')->insert($satuan);
+            \DB::table('tb_bahan')->insert($bahan);
         } catch (Exception $e) {
             return 'Terjadi kesalahan.' . $e;
         } catch (QueryException $e) {
             return 'Terjadi kesalahan pada database.' . $e;
         }
 
-        return redirect()->route('satuan_bahan.create');
+        return redirect()->route('bahan.create');
     }
 
     /**
@@ -142,16 +155,13 @@ class SatuanBahanController extends Controller
      */
     public function edit($id)
     {
-        if (!auth()->user()->can('bahan.create')) {
-            abort(403, 'Unauthorized action.');
-        }
-
         if (!auth()->user()->can('edit.create')) {
             abort(403, 'Unauthorized action.');
         }
-        $this->params['data'] = SatuanBahan::findOrFail($id);
+        $this->params['satuan'] = SatuanBahan::get();
+        $this->params['data'] = Ingredient::findOrFail($id);
         // print_r($this->params['data']);
-        return view('satuan_bahan.edit', $this->params);
+        return view('bahan.edit', $this->params);
     }
 
     /**
@@ -169,26 +179,39 @@ class SatuanBahanController extends Controller
 
         $validated = $request->validate(
             [
-                'satuan' => 'required',
+                'nama_bahan' => 'required',
+                'id_satuan' => 'required',
+                'stok' => 'required',
+                'limit_stok' => 'required',
+                'limit_pemakaian' => 'required',
             ],
             [
-                'satuan.required' => 'Nama Bahan harus diisi.',
+                'nama_bahan.required' => 'Nama Bahan harus diisi.',
+                'id_satuan.required' => 'Satuan Bahan harus diisi.',
+                'stok.required' => 'Stok Bahan harus diisi.',
+                'limit_stok.required' => 'Limit Stok Bahan harus diisi.',
+                'limit_pemakaian.required' => 'Limit Pemakaian Bahan harus diisi.',
             ]
         );
 
         try {
-            $satuanBahan = array(
-                'satuan' => $request->input('satuan'),
+            $bahan = array(
+                'nama_bahan' => $validated['nama_bahan'],
+                'id_satuan' => $validated['id_satuan'],
+                'stok' => $validated['stok'],
+                'limit_stok' => $validated['limit_stok'],
+                'limit_pemakaian' => $validated['limit_pemakaian']
             );
             // dd($bahan);
-            \DB::table('tb_satuan_bahan')->where('id_satuan', $id)
-                ->update($satuanBahan);
+            \DB::table('tb_bahan')->where('id_bahan', $id)
+                ->update($bahan);
         } catch (Exception $e) {
             return 'Terjadi kesalahan.' . $e;
         } catch (QueryException $e) {
             return 'Terjadi kesalahan pada database.' . $e;
         }
-        return redirect()->route('satuan_bahan.index');
+
+        return redirect()->route('bahan.index');
     }
 
     /**
@@ -200,16 +223,14 @@ class SatuanBahanController extends Controller
     public function destroy($id)
     {
         try {
-            // $satuan = SatuanBahan::findOrFail($id);
-            \DB::delete('delete from tb_satuan_bahan where id_satuan = ?', [$id]);
-            // $satuan->delete();
-            // dd($satuan);
+            $ingredient = Ingredient::findOrFail($id);
+            $ingredient->delete();
         } catch (Exception $e) {
             return back()->withError('Terjadi kesalahan.');
         } catch (QueryException $e) {
             return back()->withError('Terjadi kesalahan pada database.');
         }
 
-        return redirect()->route('satuan_bahan.index')->withStatus('Data berhasil dihapus.');
+        return redirect()->route('bahan.index')->withStatus('Data berhasil dihapus.');
     }
 }

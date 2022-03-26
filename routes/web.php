@@ -69,6 +69,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     Route::resource('units', 'UnitController');
     Route::resource('satuan_bahan', 'SatuanBahanController');
+    Route::resource('bahan', 'IngredientController');
 
     Route::get('/contacts/import', 'ContactController@getImportContacts')->name('contacts.import');
     Route::post('/contacts/import', 'ContactController@postImportContacts');
