@@ -41,7 +41,7 @@ class SatuanBahanController extends Controller
         if (request()->ajax()) {
 
             $satuanBahan = SatuanBahan::select([
-                // 'id_satuan',
+                'id_satuan',
                 'satuan',
             ]);
             // dd($satuanBahan);
@@ -50,11 +50,12 @@ class SatuanBahanController extends Controller
                 ->addColumn(
                     'action',
                     '@can("satuan_bahan.update")
-                    <button data-href="{{action(\'SatuanBahanController@edit\', [$id_satuan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    <a href="{{action(\'SatuanBahanController@edit\', [$id_satuan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
                         &nbsp;
                     @endcan
                     @can("satuan_bahan.delete")
-                        <button data-href="{{action(\'SatuanBahanController@destroy\', [$id_satuan])}}" class="btn btn-xs btn-danger delete_bahan_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        
+                    <a href="{{action(\'SatuanBahanController@destroy\', [$id_satuan])}}" class="btn btn-xs btn-danger delete_bahan_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
                     @endcan'
                 )
                 ->rawColumns(['action'])
@@ -172,7 +173,7 @@ class SatuanBahanController extends Controller
 
         try {
             $satuanBahan = array(
-                'satuan' => $validated['satuan'],
+                'satuan' => $request->input('satuan'),
             );
             // dd($bahan);
             \DB::table('tb_satuan_bahan')->where('id_satuan', $id)
@@ -193,6 +194,17 @@ class SatuanBahanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            // $satuan = SatuanBahan::findOrFail($id);
+            \DB::delete('delete from tb_satuan_bahan where id_satuan = ?', [$id]);
+            // $satuan->delete();
+            // dd($satuan);
+        } catch (Exception $e) {
+            return back()->withError('Terjadi kesalahan.');
+        } catch (QueryException $e) {
+            return back()->withError('Terjadi kesalahan pada database.');
+        }
+
+        return redirect()->route('satuan_bahan.index')->withStatus('Data berhasil dihapus.');
     }
 }

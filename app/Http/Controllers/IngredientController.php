@@ -215,17 +215,16 @@ class IngredientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    { {
-            try {
-                $ingredient = Ingredient::findOrFail($id);
-                $ingredient->delete();
-            } catch (Exception $e) {
-                return back()->withError('Terjadi kesalahan.');
-            } catch (QueryException $e) {
-                return back()->withError('Terjadi kesalahan pada database.');
-            }
-
-            return redirect()->route('ingredient.index')->withStatus('Data berhasil dihapus.');
+    {
+        try {
+            $ingredient = Ingredient::findOrFail($id);
+            $ingredient->delete();
+        } catch (Exception $e) {
+            return back()->withError('Terjadi kesalahan.');
+        } catch (QueryException $e) {
+            return back()->withError('Terjadi kesalahan pada database.');
         }
+
+        return redirect()->route('ingredient.index')->withStatus('Data berhasil dihapus.');
     }
 }

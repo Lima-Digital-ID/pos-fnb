@@ -472,14 +472,13 @@ $(document).ready(function() {
         ajax: '/satuan_bahan',
         columnDefs: [
             {
-                targets: 3,
+                // targets: 3,
                 orderable: false,
                 searchable: false,
             },
         ],
         columns: [
-            // { data: 'id_satuan', name: 'id_satuan' },
-            { data: 'satuan', name: 'satuan' },
+            { data: 'id_satuan', name: 'id_satuan' },
             { data: 'satuan', name: 'satuan' },
             { data: 'action', name: 'action' },
         ],

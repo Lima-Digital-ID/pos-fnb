@@ -29,7 +29,7 @@
                             <tr>
                                 <th width="30px">#</th>
                                 <th>Nama Bahan</th>
-                                <th>Tindakan</th>
+                                <th width="200px">Tindakan</th>
                             </tr>
                         </thead>
                     </table>
