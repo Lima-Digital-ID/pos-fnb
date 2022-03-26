@@ -278,6 +278,44 @@ $user=DB::table('users')->where('id', $user_id)->first();
             </ul>
           </li>
         @endif
+        @if(auth()->user()->can('product.create'))
+        <li class="treeview {{ in_array($request->segment(1), ['bahan']) ? 'active active-sub' : '' }}">
+            <a href="#">
+                <i class="fa fa-users"></i>
+                <span class="title">Bahan</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="{{ $request->segment(1) == 'bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                  <a href="{{action('AkuntanController@index')}}">
+                      <i class="fa fa-user"></i>
+                      <span class="title">
+                          Daftar Bahan
+                      </span>
+                  </a>
+                </li>
+                <li class="{{ $request->segment(1) == 'bahan' && $request->segment(2) == 'create' ? 'active active-sub' : '' }}">
+                  <a href="{{action('AkuntanController@index')}}">
+                      <i class="fa fa-user"></i>
+                      <span class="title">
+                          Tambah Bahan
+                      </span>
+                  </a>
+                </li>
+                <li class="{{ $request->segment(1) == 'penyesuaian-stok' && $request->segment(2) == 'create' ? 'active active-sub' : '' }}">
+                  <a href="{{action('AkuntanController@index')}}">
+                      <i class="fa fa-user"></i>
+                      <span class="title">
+                          Penyesuaian Stok
+                      </span>
+                  </a>
+                </li>
+            </ul>
+        </li>
+        @endif
+
         @if(auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update') )
         <li class="treeview {{in_array($request->segment(1), ['purchases', 'purchase-return']) ? 'active active-sub' : '' }}" id="tour_step6">
           <a href="#" id="tour_step6_menu"><i class="fa fa-arrow-circle-down"></i> <span>@lang('purchase.purchases')</span>
