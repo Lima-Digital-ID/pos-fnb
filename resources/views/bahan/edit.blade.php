@@ -14,7 +14,7 @@
     <section class="content">
         @component('components.widget', ['class' => 'box-primary', 'title' => __('Ubah bahan anda')])
             @can('bahan.view')
-                {!! Form::model($data, ['method' => 'PUT', 'route' => ['bahan.update', $data->id]]) !!}
+                {!! Form::open(['url' => action('IngredientController@update', [$data->id_bahan]), 'method' => 'PUT']) !!}
                 <div class="form-group col-sm-12">
                     <label>Nama Bahan</label>
                     <input type="text" placeholder="Nama Bahan" class="form-control" name="nama_bahan"

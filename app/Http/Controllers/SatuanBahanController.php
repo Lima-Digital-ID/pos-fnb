@@ -54,8 +54,13 @@ class SatuanBahanController extends Controller
                         &nbsp;
                     @endcan
                     @can("satuan_bahan.delete")
-                        
-                    <a href="{{action(\'SatuanBahanController@destroy\', [$id_satuan])}}" class="btn btn-xs btn-danger delete_bahan_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
+                    <form action="{{ action(\'SatuanBahanController@destroy\', [$id_satuan]) }}" method="POST">
+                    ' . csrf_field() . '
+                    ' . method_field("DELETE") . '
+                    <button type="submit" class="btn btn-xs btn-danger"
+                        onclick="return confirm(\'Are You Sure Want to Delete?\')"
+                        ><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
+                    </form>
                     @endcan'
                 )
                 ->rawColumns(['action'])

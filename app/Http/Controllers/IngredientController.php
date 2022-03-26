@@ -53,11 +53,17 @@ class IngredientController extends Controller
                 ->addColumn(
                     'action',
                     '@can("bahan.update")
-                    <button data-href="{{action(\'IngredientController@edit\', [$id_bahan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    <a href="{{action(\'IngredientController@edit\', [$id_bahan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
                         &nbsp;
                     @endcan
                     @can("bahan.delete")
-                        <button data-href="{{action(\'IngredientController@destroy\', [$id_bahan])}}" class="btn btn-xs btn-danger delete_bahan_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                    <form action="{{ action(\'IngredientController@destroy\', [$id_bahan]) }}" method="POST">
+                    ' . csrf_field() . '
+                    ' . method_field("DELETE") . '
+                    <button type="submit" class="btn btn-xs btn-danger"
+                        onclick="return confirm(\'Are You Sure Want to Delete?\')"
+                        ><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
+                    </form>
                     @endcan'
                 )
                 ->rawColumns(['action'])
@@ -205,7 +211,7 @@ class IngredientController extends Controller
             return 'Terjadi kesalahan pada database.' . $e;
         }
 
-        // return redirect()->route('bahan.create');
+        return redirect()->route('bahan.index');
     }
 
     /**
@@ -225,6 +231,6 @@ class IngredientController extends Controller
             return back()->withError('Terjadi kesalahan pada database.');
         }
 
-        return redirect()->route('ingredient.index')->withStatus('Data berhasil dihapus.');
+        return redirect()->route('bahan.index')->withStatus('Data berhasil dihapus.');
     }
 }
