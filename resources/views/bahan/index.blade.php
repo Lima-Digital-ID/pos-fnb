@@ -8,10 +8,6 @@
         <h1>@lang( 'Bahan' )
             <small>@lang( 'Mengelola bahan anda' )</small>
         </h1>
-        <!-- <ol class="breadcrumb">
-                                                                            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                                                                            <li class="active">Here</li>
-                                                                        </ol> -->
     </section>
 
     <!-- Main content -->
@@ -20,9 +16,8 @@
             @can('bahan.create')
                 @slot('tool')
                     <div class="box-tools">
-                        <button type="button" class="btn btn-block btn-primary btn-modal"
-                            data-href="{{ action('IngredientController@create') }}" data-container=".unit_modal">
-                            <i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
+                        <a href="{{ action('IngredientController@create') }}" class="btn btn-block btn-primary"><i
+                                class="fa fa-plus"></i> @lang( 'messages.add' )</a>
                     </div>
                 @endslot
             @endcan

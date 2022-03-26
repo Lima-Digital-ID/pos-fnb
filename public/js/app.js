@@ -380,7 +380,7 @@ $(document).ready(function() {
         ],
     });
 
-    $(document).on('submit', 'form#unit_add_form', function(e) {
+    $(document).on('submit', 'form#bahan_add_form', function(e) {
         e.preventDefault();
         $(this)
             .find('button[type="submit"]')
@@ -394,9 +394,114 @@ $(document).ready(function() {
             data: data,
             success: function(result) {
                 if (result.success == true) {
-                    $('div.unit_modal').modal('hide');
+                    $('div.bahan_modal').modal('hide');
                     toastr.success(result.msg);
                     ingredients_table.ajax.reload();
+                } else {
+                    toastr.error(result.msg);
+                }
+            },
+        });
+    });
+
+    $(document).on('click', 'button.edit_unit_button', function() {
+        $('div.unit_modal').load($(this).data('href'), function() {
+            $(this).modal('show');
+
+            $('form#unit_edit_form').submit(function(e) {
+                e.preventDefault();
+                $(this)
+                    .find('button[type="submit"]')
+                    .attr('disabled', true);
+                var data = $(this).serialize();
+
+                $.ajax({
+                    method: 'POST',
+                    url: $(this).attr('action'),
+                    dataType: 'json',
+                    data: data,
+                    success: function(result) {
+                        if (result.success == true) {
+                            $('div.unit_modal').modal('hide');
+                            toastr.success(result.msg);
+                            ingredients_table.ajax.reload();
+                        } else {
+                            toastr.error(result.msg);
+                        }
+                    },
+                });
+            });
+        });
+    });
+
+    $(document).on('click', 'button.delete_unit_button', function() {
+        swal({
+            title: LANG.sure,
+            text: LANG.confirm_delete_unit,
+            icon: 'warning',
+            buttons: true,
+            dangerMode: true,
+        }).then(willDelete => {
+            if (willDelete) {
+                var href = $(this).data('href');
+                var data = $(this).serialize();
+
+                $.ajax({
+                    method: 'DELETE',
+                    url: href,
+                    dataType: 'json',
+                    data: data,
+                    success: function(result) {
+                        if (result.success == true) {
+                            toastr.success(result.msg);
+                            ingredients_table.ajax.reload();
+                        } else {
+                            toastr.error(result.msg);
+                        }
+                    },
+                });
+            }
+        });
+    });
+
+    //Start: CRUD for Satuan Bahan
+    //Satuan Bahan table
+    var satuan_table = $('#satuan_bahan_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '/satuan_bahan',
+        columnDefs: [
+            {
+                targets: 3,
+                orderable: false,
+                searchable: false,
+            },
+        ],
+        columns: [
+            // { data: 'id_satuan', name: 'id_satuan' },
+            { data: 'satuan', name: 'satuan' },
+            { data: 'satuan', name: 'satuan' },
+            { data: 'action', name: 'action' },
+        ],
+    });
+
+    $(document).on('submit', 'form#satuan_add_form', function(e) {
+        e.preventDefault();
+        $(this)
+            .find('button[type="submit"]')
+            .attr('disabled', true);
+        var data = $(this).serialize();
+
+        $.ajax({
+            method: 'POST',
+            url: $(this).attr('action'),
+            dataType: 'json',
+            data: data,
+            success: function(result) {
+                if (result.success == true) {
+                    $('div.satuan_modal').modal('hide');
+                    toastr.success(result.msg);
+                    satuan_table.ajax.reload();
                 } else {
                     toastr.error(result.msg);
                 }

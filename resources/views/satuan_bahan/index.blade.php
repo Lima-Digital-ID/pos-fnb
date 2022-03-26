@@ -8,33 +8,28 @@
         <h1>@lang( 'Satuan Bahan' )
             <small>@lang( 'Mengelola satuan bahan anda' )</small>
         </h1>
-        <!-- <ol class="breadcrumb">
-                                    <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                                    <li class="active">Here</li>
-                                </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
         @component('components.widget', ['class' => 'box-primary', 'title' => __('Semua satuan bahan anda')])
-            @can('unit.create')
+            @can('satuan_bahan.create')
                 @slot('tool')
                     <div class="box-tools">
-                        <button type="button" class="btn btn-block btn-primary btn-modal"
-                            data-href="{{ action('UnitController@create') }}" data-container=".unit_modal">
-                            <i class="fa fa-plus"></i> @lang( 'messages.add' )</button>
+                        <a href="{{ action('SatuanBahanController@create') }}" class="btn btn-block btn-primary"><i
+                                class="fa fa-plus"></i>
+                            @lang( 'messages.add' )</a>
                     </div>
                 @endslot
             @endcan
-            @can('unit.view')
+            @can('satuan_bahan.view')
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped" id="unit_table">
+                    <table class="table table-bordered table-striped" id="satuan_bahan_table">
                         <thead>
                             <tr>
-                                <th>@lang( 'unit.name' )</th>
-                                <th>@lang( 'unit.short_name' )</th>
-                                <th>@lang( 'unit.allow_decimal' ) @show_tooltip(__('tooltip.unit_allow_decimal'))</th>
-                                <th>@lang( 'messages.action' )</th>
+                                <th width="30px">#</th>
+                                <th>Nama Bahan</th>
+                                <th>Tindakan</th>
                             </tr>
                         </thead>
                     </table>
@@ -42,7 +37,7 @@
             @endcan
         @endcomponent
 
-        <div class="modal fade unit_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal fade satuan_bahan_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
         </div>
 
     </section>

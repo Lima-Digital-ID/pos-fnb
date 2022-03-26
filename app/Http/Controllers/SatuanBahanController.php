@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\SatuanBahan;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
-
+use Exception;
+use Illuminate\Database\QueryException;
 use App\Utils\Util;
 
 class SatuanBahanController extends Controller
@@ -38,35 +39,32 @@ class SatuanBahanController extends Controller
         }
 
         if (request()->ajax()) {
-            $business_id = request()->session()->get('user.business_id');
 
-            $satuan = SatuanBahan::select([
-                'id_satuan', 'satuan'
+            $satuanBahan = SatuanBahan::select([
+                // 'id_satuan',
+                'satuan',
             ]);
+            // dd($satuanBahan);
 
-            return Datatables::of($satuan)
+            return Datatables::of($satuanBahan)
                 ->addColumn(
                     'action',
                     '@can("satuan_bahan.update")
-                    <button data-href="{{action(\'SatuanBahanController@edit\', [$id])}}" class="btn btn-xs btn-primary edit_unit_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
+                    <button data-href="{{action(\'SatuanBahanController@edit\', [$id_satuan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</button>
                         &nbsp;
                     @endcan
                     @can("satuan_bahan.delete")
-                        <button data-href="{{action(\'SatuanBahanController@destroy\', [$id])}}" class="btn btn-xs btn-danger delete_unit_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
+                        <button data-href="{{action(\'SatuanBahanController@destroy\', [$id_satuan])}}" class="btn btn-xs btn-danger delete_bahan_button"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</button>
                     @endcan'
                 )
-                ->editColumn('allow_decimal', function ($row) {
-                    if ($row->allow_decimal) {
-                        return __('messages.yes');
-                    } else {
-                        return __('messages.no');
-                    }
-                })
-                ->removeColumn('id')
                 ->rawColumns(['action'])
                 ->make(true);
         }
-
+        // $satuanBahan = SatuanBahan::select(
+        //     'id_satuan',
+        //     'satuan'
+        // )->get();
+        // print_r($satuanBahan);
         return view('satuan_bahan.index');
     }
 
@@ -77,7 +75,11 @@ class SatuanBahanController extends Controller
      */
     public function create()
     {
-        //
+        if (!auth()->user()->can('bahan.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('satuan_bahan.create');
     }
 
     /**
@@ -88,7 +90,31 @@ class SatuanBahanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!auth()->user()->can('satuan_bahan.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate(
+            [
+                'satuan' => 'required',
+            ],
+            [
+                'satuan.required' => 'Nama Satuan Bahan harus diisi.',
+            ]
+        );
+
+        try {
+            $satuan = array(
+                'satuan' => $validated['satuan'],
+            );
+            \DB::table('tb_satuan_bahan')->insert($satuan);
+        } catch (Exception $e) {
+            return 'Terjadi kesalahan.' . $e;
+        } catch (QueryException $e) {
+            return 'Terjadi kesalahan pada database.' . $e;
+        }
+
+        return redirect()->route('satuan_bahan.create');
     }
 
     /**
@@ -110,7 +136,16 @@ class SatuanBahanController extends Controller
      */
     public function edit($id)
     {
-        //
+        if (!auth()->user()->can('bahan.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if (!auth()->user()->can('edit.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $this->params['data'] = SatuanBahan::findOrFail($id);
+        // print_r($this->params['data']);
+        return view('satuan_bahan.edit', $this->params);
     }
 
     /**
@@ -122,7 +157,32 @@ class SatuanBahanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (!auth()->user()->can('unit.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate(
+            [
+                'satuan' => 'required',
+            ],
+            [
+                'satuan.required' => 'Nama Bahan harus diisi.',
+            ]
+        );
+
+        try {
+            $satuanBahan = array(
+                'satuan' => $validated['satuan'],
+            );
+            // dd($bahan);
+            \DB::table('tb_satuan_bahan')->where('id_satuan', $id)
+                ->update($satuanBahan);
+        } catch (Exception $e) {
+            return 'Terjadi kesalahan.' . $e;
+        } catch (QueryException $e) {
+            return 'Terjadi kesalahan pada database.' . $e;
+        }
+        return redirect()->route('satuan_bahan.index');
     }
 
     /**
