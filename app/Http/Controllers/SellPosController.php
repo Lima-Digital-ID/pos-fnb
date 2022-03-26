@@ -387,9 +387,10 @@ class SellPosController extends Controller
         foreach ($akun=$this->getAkunPengeluaran() as $key => $value) {
             $akun_pengeluaran[$value->id_akun]=$value->nama_akun;
         }
-        
+        $kategoriCustomer = \DB::table('tb_kategori_harga')->get();
         return view('sale_pos.create')
             ->with(compact(
+                'kategoriCustomer',
                 'business_details',
                 'taxes',
                 'payment_types',

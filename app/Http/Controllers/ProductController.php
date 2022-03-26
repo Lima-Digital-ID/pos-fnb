@@ -325,9 +325,10 @@ class ProductController extends Controller
 
         $module_form_parts = $this->moduleUtil->getModuleData('product_form_part');
 
+        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->whereRaw('stok>limit_pemakaian')->get();
 
         return view('product.create')
-            ->with(compact('categories','product_option','product_option_js', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'barcode_default', 'business_locations', 'duplicate_product', 'sub_categories', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'location_option'));
+            ->with(compact('categories','product_option','product_option_js', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'barcode_default', 'business_locations', 'duplicate_product', 'sub_categories', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'location_option','bahan'));
     }
 
     /**
@@ -427,6 +428,17 @@ class ProductController extends Controller
             $product_racks = $request->get('product_racks', null);
             if (!empty($product_racks)) {
                 $this->productUtil->addRackDetails($business_id, $product->id, $product_racks);
+            }
+            
+            foreach ($request->input('id_bahan') as $key => $value) {
+                if($value!='' && $request->input('kebutuhan')[$key]){
+                    $bahan = array(
+                        'product_id' => $product->id,
+                        'id_bahan' => $value,
+                        'kebutuhan' => $request->input('kebutuhan')[$key],
+                    );
+                    \DB::table('tb_bahan_product')->insert($bahan);
+                }
             }
 
             DB::commit();
@@ -553,8 +565,12 @@ class ProductController extends Controller
         }
         $product_option_js=json_encode($product_opt);
 
+        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->whereRaw('stok>limit_pemakaian')->get();
+
+        $bahan_produk = \DB::table('tb_bahan_product')->get();
+
         return view('product.edit')
-                ->with(compact('categories', 'product_paket', 'product_option', 'product_option_js', 'brands', 'units', 'taxes', 'tax_attributes', 'barcode_types', 'product', 'sub_categories', 'default_profit_percent', 'business_locations', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'location_option'));
+                ->with(compact('categories', 'product_paket', 'product_option', 'product_option_js', 'brands', 'units', 'taxes', 'tax_attributes', 'barcode_types', 'product', 'sub_categories', 'default_profit_percent', 'business_locations', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'location_option','bahan','bahan_produk'));
     }
 
     /**
@@ -725,6 +741,18 @@ class ProductController extends Controller
                 $this->productUtil->updateRackDetails($business_id, $product->id, $product_racks_update);
             }
 
+            DB::table('tb_bahan_product')->where('product_id',$id)->delete();
+            foreach ($request->input('id_bahan') as $key => $value) {
+                if($value!='' && $request->input('kebutuhan')[$key]){
+                    $bahan = array(
+                        'product_id' => $product->id,
+                        'id_bahan' => $value,
+                        'kebutuhan' => $request->input('kebutuhan')[$key],
+                    );
+                    \DB::table('tb_bahan_product')->insert($bahan);
+                }
+            }
+
             DB::commit();
             $output = ['success' => 1,
                             'msg' => __('product.product_updated_success')
@@ -849,6 +877,7 @@ class ProductController extends Controller
                 }
 
                 DB::table('tb_harga_produk')->where('product_id',$id)->delete();
+                DB::table('tb_bahan_product')->where('product_id',$id)->delete();
             } catch (\Exception $e) {
                 DB::rollBack();
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());

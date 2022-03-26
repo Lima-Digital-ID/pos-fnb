@@ -12,6 +12,14 @@
     </ol> -->
 </section>
 
+<style>
+  .input-group-bahan.isHide{
+    display: block;
+  }
+  .input-group-bahan.isHide .removeBahan{
+    display: none;
+  }
+</style>
 <!-- Main content -->
 <section class="content">
 {!! Form::open(['url' => action('ProductController@store'), 'method' => 'post', 
@@ -121,7 +129,47 @@
                 {!! Form::select('id_lokasi', 
                             $location_option, null, ['class' => 'form-control', 'placeholder' => 'Pilih Lokasi', 'required' => 'required']); !!}
               </div>
-        </div><br>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12" id="append-bahan">
+              <div class="row row-bahan" data-index='0'>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="">Nama Bahan</label>
+                    <div class="input-group input-group-bahan isHide">
+                      <span class="input-group-addon removeBahan"><a href="" onclick="removeBahan(event,this)">X</a></span>
+                      <select name="id_bahan[]" id="" class="form-control" onchange="getSatuan(this)">
+                        <option value="">Pilih Bahan</option>
+                        @foreach ($bahan as $item)
+                        <option data-satuan="{{$item->satuan}}" value="{{$item->id_bahan}}">{{$item->nama_bahan}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group mb-3">
+                    <label for="">Kebutuhan</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control" name="kebutuhan[]" placeholder="Kebutuhan">
+                      <span class="input-group-addon satuanBahan">Satuan</span>
+                    </div>                
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <button id="add-bahan">Tambah Bahan</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <br>
         <div class="col-sm-12">
           <div class="form-group">
               <label>
@@ -328,6 +376,7 @@
 @section('javascript')
   @php $asset_v = env('APP_VERSION'); @endphp
   <script>
+
   $(document).ready(function() {
     $(document).on('ifChecked', 'input#is_paket', function() {
         $('div#col-item-paket').show();

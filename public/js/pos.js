@@ -1222,6 +1222,7 @@ function pos_product_row(variation_id) {
             dataType: 'json',
             success: function(result) {
                 if (result.success) {
+                    console.log('a')
                     $('table#pos_table tbody')
                         .append(result.html_content)
                         .find('input.pos_quantity');

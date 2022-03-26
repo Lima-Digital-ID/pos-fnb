@@ -1,6 +1,34 @@
 //This file contains all functions used products tab
+function removeBahan(e,param){
+    e.preventDefault()
+    $(param).closest('.row-bahan').remove()
+}
+function getSatuan(param){
+    var thisVal = $(param).val()
+
+    if(thisVal!=''){
+    var index = $(param).closest('.row-bahan').attr('data-index')
+    var satuan = $(param).find(':selected').data('satuan')
+    $(".row-bahan[data-index='"+index+"'] .satuanBahan").html(satuan)
+    }
+
+}
 
 $(document).ready(function() {
+    $(document).on('click',"#add-bahan",function(e){
+      e.preventDefault()
+      var lastRow = $('.row-bahan:last-child');
+      var lastIndex = lastRow.attr('data-index')
+      lastRow.clone().appendTo('#append-bahan')
+      var newIndex = parseInt(lastIndex) + 1
+      var newItemSelector = ".row-bahan:last-child"
+      $(newItemSelector).attr('data-index',newIndex)
+      $(newItemSelector+' .satuanBahan').html('Satuan')
+      $(newItemSelector+' select').val('')
+      $(newItemSelector+' input').val('')
+      $(newItemSelector+' .input-group-bahan').removeClass('isHide')
+    })
+
     $(document).on('ifChecked', 'input#enable_stock', function() {
         $('div#alert_quantity_div').show();
         $('div#quick_product_opening_stock_div').show();
