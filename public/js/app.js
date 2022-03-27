@@ -355,219 +355,6 @@ $(document).ready(function() {
         });
     });
 
-
-    //Start: CRUD for Bahan
-    //Bahan table
-    var ingredients_table = $('#ingredient_table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '/bahan',
-        columnDefs: [
-            {
-                targets: 3,
-                orderable: false,
-                searchable: false,
-            },
-        ],
-        columns: [
-            { data: 'id_bahan', name: 'id_bahan' },
-            { data: 'nama_bahan', name: 'nama_bahan' },
-            { data: 'satuan', name: 'satuan' },
-            { data: 'stok', name: 'stok' },
-            { data: 'limit_stok', name: 'limit_stok' },
-            { data: 'limit_pemakaian', name: 'limit_pemakaian' },
-            { data: 'action', name: 'action' },
-        ],
-    });
-
-    $(document).on('submit', 'form#bahan_add_form', function(e) {
-        e.preventDefault();
-        $(this)
-            .find('button[type="submit"]')
-            .attr('disabled', true);
-        var data = $(this).serialize();
-
-        $.ajax({
-            method: 'POST',
-            url: $(this).attr('action'),
-            dataType: 'json',
-            data: data,
-            success: function(result) {
-                if (result.success == true) {
-                    $('div.bahan_modal').modal('hide');
-                    toastr.success(result.msg);
-                    ingredients_table.ajax.reload();
-                } else {
-                    toastr.error(result.msg);
-                }
-            },
-        });
-    });
-
-    $(document).on('click', 'button.edit_unit_button', function() {
-        $('div.unit_modal').load($(this).data('href'), function() {
-            $(this).modal('show');
-
-            $('form#unit_edit_form').submit(function(e) {
-                e.preventDefault();
-                $(this)
-                    .find('button[type="submit"]')
-                    .attr('disabled', true);
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'POST',
-                    url: $(this).attr('action'),
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            $('div.unit_modal').modal('hide');
-                            toastr.success(result.msg);
-                            ingredients_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            });
-        });
-    });
-
-    $(document).on('click', 'button.delete_unit_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_unit,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
-                            ingredients_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
-    });
-
-    //Start: CRUD for Satuan Bahan
-    //Satuan Bahan table
-    var satuan_table = $('#satuan_bahan_table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '/satuan_bahan',
-        columnDefs: [
-            {
-                // targets: 3,
-                orderable: false,
-                searchable: false,
-            },
-        ],
-        columns: [
-            { data: 'id_satuan', name: 'id_satuan' },
-            { data: 'satuan', name: 'satuan' },
-            { data: 'action', name: 'action' },
-        ],
-    });
-
-    $(document).on('submit', 'form#satuan_add_form', function(e) {
-        e.preventDefault();
-        $(this)
-            .find('button[type="submit"]')
-            .attr('disabled', true);
-        var data = $(this).serialize();
-
-        $.ajax({
-            method: 'POST',
-            url: $(this).attr('action'),
-            dataType: 'json',
-            data: data,
-            success: function(result) {
-                if (result.success == true) {
-                    $('div.satuan_modal').modal('hide');
-                    toastr.success(result.msg);
-                    satuan_table.ajax.reload();
-                } else {
-                    toastr.error(result.msg);
-                }
-            },
-        });
-    });
-
-    $(document).on('click', 'button.edit_unit_button', function() {
-        $('div.unit_modal').load($(this).data('href'), function() {
-            $(this).modal('show');
-
-            $('form#unit_edit_form').submit(function(e) {
-                e.preventDefault();
-                $(this)
-                    .find('button[type="submit"]')
-                    .attr('disabled', true);
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'POST',
-                    url: $(this).attr('action'),
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            $('div.unit_modal').modal('hide');
-                            toastr.success(result.msg);
-                            ingredients_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            });
-        });
-    });
-
-    $(document).on('click', 'button.delete_unit_button', function() {
-        swal({
-            title: LANG.sure,
-            text: LANG.confirm_delete_unit,
-            icon: 'warning',
-            buttons: true,
-            dangerMode: true,
-        }).then(willDelete => {
-            if (willDelete) {
-                var href = $(this).data('href');
-                var data = $(this).serialize();
-
-                $.ajax({
-                    method: 'DELETE',
-                    url: href,
-                    dataType: 'json',
-                    data: data,
-                    success: function(result) {
-                        if (result.success == true) {
-                            toastr.success(result.msg);
-                            ingredients_table.ajax.reload();
-                        } else {
-                            toastr.error(result.msg);
-                        }
-                    },
-                });
-            }
-        });
-    });
-
     //Start: CRUD for Contacts
     //contacts table
     var contact_table_type = $('#contact_type').val();
@@ -2384,4 +2171,72 @@ $(document).on('click', 'a.delete_purchase_return', function(e) {
             });
         }
     });
+});
+
+//Start: CRUD for Bahan
+//Bahan table
+var ingredients_table = $('#ingredient_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '/bahan',
+    columnDefs: [
+        {
+            targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'id_bahan', name: 'id_bahan' },
+        { data: 'nama_bahan', name: 'nama_bahan' },
+        { data: 'satuan', name: 'satuan' },
+        { data: 'stok', name: 'stok' },
+        { data: 'limit_stok', name: 'limit_stok' },
+        { data: 'limit_pemakaian', name: 'limit_pemakaian' },
+        { data: 'action', name: 'action' },
+    ],
+});
+
+//Start: CRUD for Satuan Bahan
+//Satuan Bahan table
+var satuan_table = $('#satuan_bahan_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '/satuan_bahan',
+    columnDefs: [
+        {
+            // targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'id_satuan', name: 'id_satuan' },
+        { data: 'satuan', name: 'satuan' },
+        { data: 'action', name: 'action' },
+    ],
+});
+
+//Start: CRUD for Adjust Bahan
+//Adjust Bahan table
+var satuan_table = $('#stock_adjustment_bahan_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '/stock-bahan-adjustment',
+    columnDefs: [
+        {
+            // targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'id', name: 'id' },
+        { data: 'no_referensi', name: 'no_referensi' },
+        { data: 'date', name: 'date' },
+        { data: 'jenis_penyesuaian', name: 'jenis_penyesuaian' },
+        { data: 'nama_bahan', name: 'nama_bahan' },
+        { data: 'stok_adjust', name: 'stok_adjust' },
+        { data: 'alasan', name: 'alasan' },
+    ],
 });

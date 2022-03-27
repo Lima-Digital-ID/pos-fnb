@@ -69,7 +69,7 @@ $(document).ready(function() {
             .autocomplete({
                 source: function(request, response) {
                     $.getJSON(
-                        '/products/list',
+                        '/bahan/list',
                         { location_id: $('#location_id').val(), term: request.term },
                         response
                     );

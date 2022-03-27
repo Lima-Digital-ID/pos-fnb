@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\BusinessLocation;
-use App\PurchaseLine;
+use App\Ingredient;
 use App\User;
-use App\Transaction;
+use App\StockBahanAdj;
 use App\Utils\ModuleUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
@@ -41,6 +41,50 @@ class StockBahanAdjustmenController extends Controller
      */
     public function index()
     {
+        if (request()->ajax()) {
+            $adj = StockBahanAdj::select([
+                'id',
+                'tb_bahan.nama_bahan',
+                'no_referensi',
+                'date',
+                'jenis_penyesuaian',
+                'stok_adjust',
+                'alasan'
+            ])
+                ->join('tb_bahan', 'tbl_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan');
+            // dd($adj);
+
+            return Datatables::of($adj)
+                // ->addColumn(
+                //     'action',
+                //     '@can("bahan.update")
+                //     <a href="{{action(\'IngredientController@edit\', [$id_bahan])}}" class="btn btn-xs btn-primary edit_bahan_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a>
+                //         &nbsp;
+                //     @endcan
+                //     @can("bahan.delete")
+                //     <form action="{{ action(\'IngredientController@destroy\', [$id_bahan]) }}" method="POST">
+                //     ' . csrf_field() . '
+                //     ' . method_field("DELETE") . '
+                //     <button type="submit" class="btn btn-xs btn-danger"
+                //         onclick="return confirm(\'Are You Sure Want to Delete?\')"
+                //         ><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a>
+                //     </form>
+                //     @endcan'
+                // )
+                // ->rawColumns(['action'])
+                ->make(true);
+        }
+        // $adj = StockBahanAdj::select([
+        //     'id',
+        //     'tb_bahan.nama_bahan',
+        //     'no_referensi',
+        //     'date',
+        //     'jenis_penyesuaian',
+        //     'stok_adjust',
+        //     'alasan'
+        // ])
+        //     ->join('tb_bahan', 'tbl_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan');
+        // dd($adj);
         return view('stok_bahan_adjustment.index');
     }
 
@@ -55,26 +99,8 @@ class StockBahanAdjustmenController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $business_id = request()->session()->get('user.business_id');
-        $user_id = request()->session()->get('user.id');
-        $user = User::where('id', $user_id)->first();
-        $location_id = $user->location_id;
-
-        //Check if subscribed or not
-        if (!$this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse(action('StockAdjustmentController@index'));
-        }
-
-        $business_locations = BusinessLocation::forDropdown($business_id);
-        foreach ($business_locations as $key => $value) {
-            if ($location_id != null) {
-                if ($location_id != $key) {
-                    unset($business_locations[$key]);
-                }
-            }
-        }
-        return view('stok_bahan_adjustment.create')
-            ->with(compact('business_locations'));
+        $this->params['bahan'] = Ingredient::get();
+        return view('stok_bahan_adjustment.create', $this->params);
     }
 
     /**
