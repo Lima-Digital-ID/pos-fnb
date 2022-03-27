@@ -68,8 +68,6 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('tax-rates', 'TaxRateController');
 
     Route::resource('units', 'UnitController');
-    Route::resource('satuan_bahan', 'SatuanBahanController');
-    Route::resource('bahan', 'IngredientController');
 
     Route::get('/contacts/import', 'ContactController@getImportContacts')->name('contacts.import');
     Route::post('/contacts/import', 'ContactController@postImportContacts');
@@ -378,4 +376,9 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('bookings/get-todays-bookings', 'Restaurant\BookingController@getTodaysBookings');
     Route::resource('bookings', 'Restaurant\BookingController');
     Route::resource('promo', 'PromoController');
+
+    Route::resource('satuan_bahan', 'SatuanBahanController');
+    Route::get('/bahan/list', 'IngredientController@getIngredient');
+    Route::resource('bahan', 'IngredientController');
+    Route::resource('stock-bahan-adjustment', 'StockBahanAdjustmenController');
 });

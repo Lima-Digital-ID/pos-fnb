@@ -62,11 +62,76 @@ $(document).ready(function() {
         };
     }
 
+    //Add bahan
+    if ($('#search_bahan_for_srock_adjustment').length > 0) {
+        //Add bahan
+        $('#search_bahan_for_srock_adjustment')
+            .autocomplete({
+                source: function(request, response) {
+                    $.getJSON(
+                        '/products/list',
+                        { location_id: $('#location_id').val(), term: request.term },
+                        response
+                    );
+                },
+                minLength: 2,
+                response: function(event, ui) {
+                    if (ui.content.length == 1) {
+                        ui.item = ui.content[0];
+                        if (ui.item.qty_available > 0 && ui.item.enable_stock == 1) {
+                            $(this)
+                                .data('ui-autocomplete')
+                                ._trigger('select', 'autocompleteselect', ui);
+                            $(this).autocomplete('close');
+                        }
+                    } else if (ui.content.length == 0) {
+                        swal(LANG.no_products_found);
+                    }
+                },
+                focus: function(event, ui) {
+                    if (ui.item.qty_available <= 0) {
+                        return false;
+                    }
+                },
+                select: function(event, ui) {
+                    if (ui.item.qty_available > 0) {
+                        $(this).val(null);
+                        stock_adjustment_product_row(ui.item.variation_id);
+                    } else {
+                        alert(LANG.out_of_stock);
+                    }
+                },
+            })
+            .autocomplete('instance')._renderItem = function(ul, item) {
+            if (item.qty_available <= 0) {
+                var string = '<li class="ui-state-disabled">' + item.name;
+                if (item.type == 'variable') {
+                    string += '-' + item.variation;
+                }
+                string += ' (' + item.sub_sku + ') (Out of stock) </li>';
+                return $(string).appendTo(ul);
+            } else if (item.enable_stock != 1) {
+                return ul;
+            } else {
+                var string = '<div>' + item.name;
+                if (item.type == 'variable') {
+                    string += '-' + item.variation;
+                }
+                string += ' (' + item.sub_sku + ') </div>';
+                return $('<li>')
+                    .append(string)
+                    .appendTo(ul);
+            }
+        };
+    }
+
     $('select#location_id').change(function() {
         if ($(this).val()) {
             $('#search_product_for_srock_adjustment').removeAttr('disabled');
+            $('#search_bahan_for_srock_adjustment').removeAttr('disabled');
         } else {
             $('#search_product_for_srock_adjustment').attr('disabled', 'disabled');
+            $('#search_bahan_for_srock_adjustment').attr('disabled', 'disabled');
         }
         $('table#stock_adjustment_product_table tbody').html('');
         $('#product_row_index').val(0);
