@@ -282,7 +282,21 @@
 								</div>
 							</div>
 						@endif
+						<div class="col-sm-6">
+							<div class="form-group">
+								<select name="" id="kategori_customer" class="form-control select2">
+									@foreach ($kategoriCustomer as $item)
+										<option value="{{$item->id}}">Harga {{$item->kategori}}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
 
+						<div class="col-sm-6">
+							<div class="form-group">
+								<input type="" id="contact_number" readonly="" placeholder="No. Hp" class="form-control">
+							</div>
+						</div>
 						<div class="@if(!empty($commission_agent)) col-sm-4 @else col-sm-6 @endif">
 							<div class="form-group">
 								<div class="input-group">
@@ -299,20 +313,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<input type="" id="contact_number" readonly="" placeholder="No. Hp" class="form-control">
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="form-group">
-								<select name="" id="" class="form-control select2">
-									@foreach ($kategoriCustomer as $item)
-										<option value="{{$item->id}}">Harga {{$item->kategori}}</option>
-									@endforeach
-								</select>
-							</div>
-						</div>
+
 						<div class="col-sm-6" hidden>
 							<div class="form-group">
 								<input class="form-check-input" type="checkbox" value="" id="contact_member" disabled>

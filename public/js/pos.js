@@ -138,12 +138,14 @@ $(document).ready(function() {
                 if ($('#price_group').length > 0) {
                     price_group = $('#price_group').val();
                 }
+                var kategori_customer = $("#kategori_customer").val()
                 $.getJSON(
                     '/products/list',
                     {
                         price_group: price_group,
                         location_id: $('input#location_id').val(),
                         term: request.term,
+                        kategori_customer: kategori_customer,
                     },
                     response
                 );
@@ -1196,6 +1198,7 @@ function pos_product_row(variation_id) {
         var product_row = $('input#product_row_count').val();
         var location_id = $('input#location_id').val();
         var customer_id = $('select#customer_id').val();
+        var kategori_customer = $('select#kategori_customer').val();
         var is_direct_sell = false;
         if (
             $('input[name="is_direct_sale"]').length > 0 &&
@@ -1218,6 +1221,7 @@ function pos_product_row(variation_id) {
                 customer_id: customer_id,
                 is_direct_sell: is_direct_sell,
                 price_group: price_group,
+                kategori_customer: kategori_customer,
             },
             dataType: 'json',
             success: function(result) {

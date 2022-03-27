@@ -1535,6 +1535,7 @@ class SellPosController extends Controller
         $output = [];
 
         try {
+            $kategori_customer = request()->get('kategori_customer');
             $row_count = request()->get('product_row');
             $row_count = $row_count + 1;
             $is_direct_sell = false;
@@ -1574,6 +1575,14 @@ class SellPosController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $product = $this->productUtil->getDetailsFromVariation($variation_id, $business_id, $location_id);
+
+            $getHarga = DB::table('tb_harga_produk')->select('harga','harga_inc_tax')
+            ->where('product_id',$product->product_id)
+            ->where('id_kategori',$kategori_customer)->first();
+
+            $product->default_sell_price = $getHarga->harga;
+            $product->sell_price_inc_tax = $getHarga->harga_inc_tax;
+
             $category=Category::where('id', $product->category_id)->first();
             
             $product->formatted_qty_available = $this->productUtil->num_f($product->qty_available, false, null, true);
@@ -3107,5 +3116,14 @@ class SellPosController extends Controller
                         ];
             Request::server('HTTP_REFERER');
         }
+    }
+    public function test()
+    {
+        $stok = 20;
+        $limit = 6;
+        $stokLimit = $stok-$limit;
+        $kebutuhan = 3;
+        $stokProduct = floor($stokLimit/$kebutuhan);
+        echo $stokProduct;
     }
 }

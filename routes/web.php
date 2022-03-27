@@ -108,6 +108,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/purchases/print/{id}', 'PurchaseController@printInvoice');
     Route::resource('purchases', 'PurchaseController');
 
+    Route::get('/pos/test', 'SellPosController@test');
     Route::get('/toggle-subscription/{id}', 'SellPosController@toggleRecurringInvoices');
     Route::get('/sells/subscriptions', 'SellPosController@listSubscriptions');
     Route::get('/sells/invoice-url/{id}', 'SellPosController@showInvoiceUrl');

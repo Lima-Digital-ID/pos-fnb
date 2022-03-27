@@ -1041,6 +1041,7 @@ class ProductController extends Controller
             $check_qty = request()->input('check_qty', false);
 
             $price_group_id = request()->input('price_group', '');
+            $kategori_customer = request()->input('kategori_customer', '');
 
             $business_id = request()->session()->get('user.business_id');
 
@@ -1074,6 +1075,8 @@ class ProductController extends Controller
                     }
                 );
             }
+            $products->leftJoin('tb_harga_produk as hp','products.id','hp.product_id')
+            ->where('hp.id_kategori',$kategori_customer);
             $products->where('products.business_id', $business_id)
                 ->where('products.type', '!=', 'modifier');
 
@@ -1099,7 +1102,8 @@ class ProductController extends Controller
                 'variations.id as variation_id',
                 'variations.name as variation',
                 'VLD.qty_available',
-                'variations.sell_price_inc_tax as selling_price',
+                // 'variations.sell_price_inc_tax as selling_price',
+                'hp.harga_inc_tax as selling_price',
                 'variations.sub_sku',
                 'U.short_name as unit'
             );
@@ -1108,6 +1112,10 @@ class ProductController extends Controller
             }
             $result = $products->orderBy('VLD.qty_available', 'desc')
                         ->get();
+            
+            // foreach ($result as $key => $value) {
+            //     $getBahan = DB::table('tb_bahan_product as bp')->join('');
+            // }
             return json_encode($result);
         }
     }
