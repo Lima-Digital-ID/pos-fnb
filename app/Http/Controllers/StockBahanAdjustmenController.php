@@ -122,7 +122,8 @@ class StockBahanAdjustmenController extends Controller
                 'stok_adjust' => $request->get('stok_adjust')[$key],
             ];
             \DB::table('tbl_d_stok_bahan_adjust')->insert($detail);
-            \DB::table('tb_bahan')->where('id_bahan', $value)->update(array('stok' => $request->get('stok_adjust')[$key]));
+            $realStok = Ingredient::findOrFail($value);
+            \DB::table('tb_bahan')->where('id_bahan', $value)->update(array('stok' => $realStok->stok - $request->get('stok_adjust')[$key]));
         }
         // dd($detail);
         return redirect()->route('stock-bahan-adjustment.create');

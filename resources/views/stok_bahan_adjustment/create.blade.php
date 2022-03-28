@@ -133,6 +133,7 @@
             var data = "";
             var maxField = 100;
             var addButton = $('#tambah_bahan');
+            var deleteButton = $('#delete_bahan');
             var wrapper = $('#add_bahan');
             var fieldHTML = `
                 <div>
@@ -167,12 +168,13 @@
             $(addButton).click(function() {
                 if (x < maxField) {
                     x++;
-                    $(wrapper).append(fieldHTML);
+                    $(wrapper).html(fieldHTML);
                 }
             });
-            $('#delete_bahan').on('click', '#', function(e) {
+            $("body").on("click", "#delete_bahan", function(e) {
                 e.preventDefault();
-                $(this).parent('div').remove();
+                console.log("bisa");
+                $(this).parent().remove();
                 x--;
             });
             $(document).ready(function() {

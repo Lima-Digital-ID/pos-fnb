@@ -375,6 +375,15 @@ $user = DB::table('users')
                             </span>
                         </a>
                     </li>
+                    <li
+                        class="{{ $request->segment(1) == 'po-bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('PoBahanController@index') }}">
+                            <i class="fa fa-user"></i>
+                            <span class="title">
+                                PO Bahan
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </li>
         @endif
