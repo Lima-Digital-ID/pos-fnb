@@ -36,7 +36,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             {!! Form::label('adjustment_type', __('stock_adjustment.adjustment_type') . ':*') !!} @show_tooltip(__('tooltip.adjustment_type'))
-                            {!! Form::select('jenis_penyesuaian', ['normal' => __('stock_adjustment.normal'), 'abnormal' => __('stock_adjustment.abnormal')], null, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'required']) !!}
+                            {!! Form::select('jenis_penyesuaian', ['Normal' => __('stock_adjustment.normal'), 'Abnormal' => __('stock_adjustment.abnormal')], null, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'required']) !!}
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-dropbox"></i>
                                 </span>
-                                <input type="text" class="form-control" placeholder="Stok" name="stok[]">
+                                <input type="text" class="form-control" placeholder="Stok" name="stok_adjust[]">
                             </div>
                         </div>
                     </div>
@@ -101,9 +101,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="float: right;">
                     <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary pull-right">@lang('messages.save')</button>
+                        <a href="{{ route('stock-bahan-adjustment.index') }}" class="btn btn-info">
+                            Kembali</a>
+                        <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
                     </div>
                 </div>
 
@@ -154,7 +156,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-dropbox"></i>
                                     </span>
-                                    <input type="text" name="stok[]" class="form-control" placeholder="Stok">
+                                    <input type="text" name="stok_adjust[]" class="form-control" placeholder="Stok">
                                 </div>
                             </div>
                         </div>

@@ -69,16 +69,6 @@ class IngredientController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        $ingredient = Ingredient::select([
-            'id_bahan',
-            'nama_bahan',
-            'tb_satuan_bahan.satuan',
-            'stok',
-            'limit_stok',
-            'limit_pemakaian'
-        ])
-            ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan');
-        dd($ingredient);
 
         return view('bahan.index');
     }
