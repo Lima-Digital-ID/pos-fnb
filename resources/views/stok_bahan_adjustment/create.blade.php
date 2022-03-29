@@ -81,7 +81,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-dropbox"></i>
                                 </span>
-                                <input type="text" class="form-control" placeholder="Stok" name="stok_adjust[]">
+                                <input type="number" class="form-control" placeholder="Stok" name="stok_adjust[]">
                             </div>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-dropbox"></i>
                                     </span>
-                                    <input type="text" name="stok_adjust[]" class="form-control" placeholder="Stok">
+                                    <input type="number" name="stok_adjust[]" class="form-control" placeholder="Stok">
                                 </div>
                             </div>
                         </div>

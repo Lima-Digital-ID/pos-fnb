@@ -54,7 +54,8 @@ class StockBahanAdjustmenController extends Controller
             ])
                 ->join('tbl_d_stok_bahan_adjust', 'tbl_stok_bahan_adjust.id_stock_adj', 'tbl_d_stok_bahan_adjust.id_stock_adj')
                 ->join('tb_bahan', 'tbl_d_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan')
-                ->join('business_locations', 'tbl_stok_bahan_adjust.id_location', 'business_locations.id');
+                ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
+                ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id');
             // dd($adj);
 
             return Datatables::of($adj)
@@ -108,9 +109,9 @@ class StockBahanAdjustmenController extends Controller
         // dd($lastId == null ? 1 : $lastId->id_stock_adj + 1);
         $stokAdj = array(
             'no_referensi' => $request->no_referensi,
-            // 'date' => $request->date . ":00",
+            'date' => $request->date . ":00",
             'id_stock_adj' =>  $lastId == null ? 1 :  $lastId->id_stock_adj + 1,
-            'id_location' => $request->id_location,
+            // 'id_location' => $request->id_location,
             'jenis_penyesuaian' => $request->jenis_penyesuaian,
             'alasan' => $request->alasan,
         );
@@ -124,10 +125,13 @@ class StockBahanAdjustmenController extends Controller
                 'id_stock_adj' => $lastIdAdj->id_stock_adj,
                 'id_bahan' => $value,
                 'stok_adjust' => $request->get('stok_adjust')[$key],
+                // 'stok_adjust' => $request->get('stok_adjust')[$key],
             ];
             \DB::table('tbl_d_stok_bahan_adjust')->insert($detail);
-            $realStok = Ingredient::findOrFail($value);
-            \DB::table('tb_bahan')->where('id_bahan', $value)->update(array('stok' => $realStok->stok - $request->get('stok_adjust')[$key]));
+            // $realStok = Ingredient::findOrFail($value);
+            $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
+            // dd($realStok->stok);
+            \DB::table('tb_stok_bahan')->where('id_bahan', $value)->where('location_id', $request->get('id_location'))->update((array('stok' => $realStok->stok - $request->get('stok_adjust')[$key])));
         }
         // dd($detail);
         return redirect()->route('stock-bahan-adjustment.create');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ingredient;
+use App\BusinessLocation;
 use App\SatuanBahan;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
@@ -39,13 +40,16 @@ class IngredientController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $ingredient = Ingredient::select([
-                'id_bahan',
+                'tb_bahan.id_bahan',
                 'nama_bahan',
+                'business_locations.name',
                 'tb_satuan_bahan.satuan',
-                'stok',
+                'tb_stok_bahan.stok',
                 'limit_stok',
                 'limit_pemakaian'
             ])
+                ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
+                ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
                 ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan');
             // dd($ingredient);
 
@@ -85,6 +89,7 @@ class IngredientController extends Controller
         }
 
         $this->params['satuan'] = SatuanBahan::get();
+        $this->params['lokasi'] = BusinessLocation::get();
 
         return view('bahan.create', $this->params);
     }
@@ -122,11 +127,19 @@ class IngredientController extends Controller
             $bahan = array(
                 'nama_bahan' => $validated['nama_bahan'],
                 'id_satuan' => $validated['id_satuan'],
-                'stok' => $validated['stok'],
                 'limit_stok' => $validated['limit_stok'],
                 'limit_pemakaian' => $validated['limit_pemakaian']
             );
             \DB::table('tb_bahan')->insert($bahan);
+            $lastId = \DB::table('tb_bahan')->latest('id_bahan')->first();
+            $stok = array(
+                'id_bahan' => $lastId->id_bahan,
+                'stok' => $validated['stok'],
+                'location_id' => $request->get('location_id'),
+
+            );
+            \DB::table('tb_stok_bahan')->insert($stok);
+            // dd($stok);
         } catch (Exception $e) {
             return 'Terjadi kesalahan.' . $e;
         } catch (QueryException $e) {
