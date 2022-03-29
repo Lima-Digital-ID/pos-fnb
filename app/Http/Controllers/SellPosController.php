@@ -1534,7 +1534,7 @@ class SellPosController extends Controller
     {
         $output = [];
 
-        try {
+        // try {
             $kategori_customer = request()->get('kategori_customer');
             $row_count = request()->get('product_row');
             $row_count = $row_count + 1;
@@ -1575,6 +1575,9 @@ class SellPosController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $product = $this->productUtil->getDetailsFromVariation($variation_id, $business_id, $location_id);
+            if(count((array)$product)==0){
+                $product = $this->productUtil->getDetailsFromVariation($variation_id, $business_id,null,true,true);
+            }
 
             $getHarga = DB::table('tb_harga_produk')->select('harga','harga_inc_tax')
             ->where('product_id',$product->product_id)
@@ -1678,12 +1681,12 @@ class SellPosController extends Controller
             }
 
             // print_r($output);exit();
-        } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+        // } catch (\Exception $e) {
+        //     \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
 
-            $output['success'] = false;
-            $output['msg'] = __('lang_v1.item_out_of_stock');
-        }
+        //     $output['success'] = false;
+        //     $output['msg'] = __('lang_v1.item_out_of_stock');
+        // }
 
         return $output;
     }
@@ -3125,5 +3128,17 @@ class SellPosController extends Controller
         $kebutuhan = 3;
         $stokProduct = floor($stokLimit/$kebutuhan);
         echo $stokProduct;
+    }
+    public function cekAvabilityStok()
+    {
+        $getProductId = request()->input('product_id');
+        $productId = explode(',',$getProductId);
+
+        $getQtyProduk = request()->input('qty');
+        $qtyProduk = explode(',',$getQtyProduk);
+
+        foreach ($productId as $key => $value) {
+            
+        }
     }
 }

@@ -211,8 +211,31 @@ $(document).ready(function() {
         iraqi_selling_price_adjustment = false;
     }
 
+    function cekAvabilityStok() {
+        var arrProduk = []
+        var ttlProduk = []
+        var productId = $(this).closest('td').find('.product_id')
+
+        console.log(productId)
+        $(".product_id").each(function(i,v){
+            arrProduk.push(v.value)
+            ttlProduk.push($(".input_quantity")[i].value)
+        })
+
+        arrProduk = arrProduk.join(',')
+        ttlProduk = ttlProduk.join(',')
+        $.ajax({
+            url : "/pos/cek-avability-stok?product_id="+arrProduk+"&qty="+ttlProduk,
+            method : 'get',
+            success : function(res){
+                
+            }
+        })
+    }
+
     //Input number
     $(document).on('click', '.input-number .quantity-up, .input-number .quantity-down', function() {
+        cekAvabilityStok()
         var input = $(this)
             .closest('.input-number')
             .find('input');

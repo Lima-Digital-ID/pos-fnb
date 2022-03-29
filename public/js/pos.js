@@ -171,16 +171,29 @@ $(document).ready(function() {
                 }
             },
             select: function(event, ui) {
-                if (ui.item.enable_stock != 1 || ui.item.qty_available > 0) {
+                // if (ui.item.enable_stock != 1 || ui.item.qty_available > 0) {
+                if (ui.item.enable_stock == 1 || ui.item.qty_available == false) {
                     $(this).val(null);
-                    pos_product_row(ui.item.variation_id);
+                    var sameProduct = 0
+                    if(typeof $(".product_id").val()!='undefined'){
+                        $(".product_id").each(function(i,v) {
+                            if(v.value==ui.item.product_id){
+                                sameProduct++;
+                            }
+                        })
+                    }
+
+                    if(sameProduct==0){
+                        pos_product_row(ui.item.variation_id);
+                    }
                 } else {
                     alert(LANG.out_of_stock);
                 }
             },
         })
         .autocomplete('instance')._renderItem = function(ul, item) {
-        if (item.enable_stock == 1 && item.qty_available <= 0) {
+        // if (item.enable_stock == 1 && item.qty_available <= 0) {
+        if (item.enable_stock == 1 && item.qty_available == false) {
             var string = '<li class="ui-state-disabled">' + item.name;
             if (item.type == 'variable') {
                 string += '-' + item.variation;
@@ -211,7 +224,7 @@ $(document).ready(function() {
             string += ' (' + item.sub_sku + ')' + '<br> Price: ' + selling_price;
             if (item.enable_stock == 1) {
                 var qty_available = __currency_trans_from_en(item.qty_available, false, false, __currency_precision, true);
-                string += ' - ' + qty_available + item.unit;
+                // string += ' - ' + qty_available + item.unit;
             }
             string += '</div>';
 
@@ -1226,7 +1239,6 @@ function pos_product_row(variation_id) {
             dataType: 'json',
             success: function(result) {
                 if (result.success) {
-                    console.log('a')
                     $('table#pos_table tbody')
                         .append(result.html_content)
                         .find('input.pos_quantity');

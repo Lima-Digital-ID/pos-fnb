@@ -11,7 +11,6 @@ function getSatuan(param){
     var satuan = $(param).find(':selected').data('satuan')
     $(".row-bahan[data-index='"+index+"'] .satuanBahan").html(satuan)
     }
-
 }
 
 $(document).ready(function() {

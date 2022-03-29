@@ -369,7 +369,7 @@ class ProductUtil extends Util
      *
      * @return array
      */
-    public function getDetailsFromVariation($variation_id, $business_id, $location_id = null, $check_qty = true)
+    public function getDetailsFromVariation($variation_id, $business_id, $location_id = null, $check_qty = true,$noStok=false)
     {
         $query = Variation::join('products AS p', 'variations.product_id', '=', 'p.id')
                 ->join('product_variations AS pv', 'variations.product_variation_id', '=', 'pv.id')
@@ -383,7 +383,7 @@ class ProductUtil extends Util
                 ->where('variations.id', $variation_id);
 
         //Add condition for check of quantity. (if stock is not enabled or qty_available > 0)
-        if ($check_qty) {
+        if($noStok==false && $check_qty==true){
             $query->where(function ($query) use ($location_id) {
                 $query->where('p.enable_stock', '!=', 1)
                     ->orWhere('vld.qty_available', '>', 0);
@@ -393,8 +393,13 @@ class ProductUtil extends Util
         if (!empty($location_id)) {
             //Check for enable stock, if enabled check for location id.
             $query->where(function ($query) use ($location_id) {
-                $query->where('p.enable_stock', '!=', 1)
-                            ->orWhere('vld.location_id', $location_id);
+                if($location_id==null){
+                    $query->whereNull('vld.location_id');
+                }
+                else{
+                    $query->where('p.enable_stock', '!=', 1)
+                                ->orWhere('vld.location_id', $location_id);
+                }
             });
         }
         

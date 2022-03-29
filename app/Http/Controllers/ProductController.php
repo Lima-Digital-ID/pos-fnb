@@ -325,7 +325,7 @@ class ProductController extends Controller
 
         $module_form_parts = $this->moduleUtil->getModuleData('product_form_part');
 
-        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->whereRaw('stok>limit_pemakaian')->get();
+        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->join('tb_stok_bahan as sb','b.id_bahan','sb.id_bahan')->whereRaw('stok>limit_pemakaian')->get();
 
         return view('product.create')
             ->with(compact('categories','product_option','product_option_js', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'barcode_default', 'business_locations', 'duplicate_product', 'sub_categories', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'location_option','bahan'));
@@ -567,7 +567,7 @@ class ProductController extends Controller
 
         $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->whereRaw('stok>limit_pemakaian')->get();
 
-        $bahan_produk = \DB::table('tb_bahan_product')->get();
+        $bahan_produk = \DB::table('tb_bahan_product')->where('product_id',$id)->get();
 
         return view('product.edit')
                 ->with(compact('categories', 'product_paket', 'product_option', 'product_option_js', 'brands', 'units', 'taxes', 'tax_attributes', 'barcode_types', 'product', 'sub_categories', 'default_profit_percent', 'business_locations', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'location_option','bahan','bahan_produk'));
@@ -1113,9 +1113,23 @@ class ProductController extends Controller
             $result = $products->orderBy('VLD.qty_available', 'desc')
                         ->get();
             
-            // foreach ($result as $key => $value) {
-            //     $getBahan = DB::table('tb_bahan_product as bp')->join('');
-            // }
+            foreach ($result as $key => $value) {
+                $getBahan = DB::table('tb_bahan_product as bp')->select('stok','limit_pemakaian','kebutuhan')->join('tb_bahan as b','bp.id_bahan','b.id_bahan')->join('tb_stok_bahan as sb','b.id_bahan','sb.id_bahan')->where('bp.product_id',$value->product_id)->get();
+                $value->qty_available = true; //ada
+                foreach ($getBahan as $i => $v) {
+                    if($v->stok<=$v->limit_pemakaian){
+                        $value->qty_available = false; //kosong
+                    }
+                    else{
+                        $stokLimit = $v->stok-$v->limit_pemakaian;
+                        $cekStokProduk = floor($stokLimit/$v->kebutuhan);
+                        if($cekStokProduk==0){
+                            $value->qty_available = false; //kosong
+                        }
+                    }
+
+                }
+            }
             return json_encode($result);
         }
     }
