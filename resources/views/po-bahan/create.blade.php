@@ -31,16 +31,6 @@
                     </select>
                 </div>
                 <div class="form-group col-sm-12">
-                    <label>Lokasi Bisnis</label>
-                    <select name="location_id" id="" class="form-control">
-                        <option value="">---Pilih Lokasi---</option>
-                        @foreach ($lokasi as $item)
-                            <option value="{{ $item->id }}" {{ old('location_id') == $item->location_id ? 'selected' : '' }}>
-                                {{ $item->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-sm-12">
                     <label>Stok Bahan</label>
                     <input type="number" placeholder="Stok Bahan" class="form-control" name="stok" value="{{ old('stok') }}">
                 </div>

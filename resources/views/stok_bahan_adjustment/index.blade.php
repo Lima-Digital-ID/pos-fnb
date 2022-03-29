@@ -20,17 +20,18 @@
                 </div>
             @endslot
             <div class="table-responsive">
-                <table class="table table-bordered table-striped" id="stock_adjustment_table">
+                <table class="table table-bordered table-striped" id="stock_adjustment_bahan_table">
                     <thead>
                         <tr>
-                            <th>@lang('messages.date')</th>
-                            <th>@lang('purchase.ref_no')</th>
-                            <th>@lang('business.location')</th>
-                            <th>@lang('stock_adjustment.adjustment_type')</th>
-                            <th>@lang('stock_adjustment.total_amount')</th>
-                            <th>@lang('stock_adjustment.total_amount_recovered')</th>
-                            <th>@lang('stock_adjustment.reason_for_stock_adjustment')</th>
-                            <th>@lang('messages.action')</th>
+                            <th width="30px">#</th>
+                            <th>No Referensi</th>
+                            <th>Lokasi Binsis</th>
+                            <th>Tanggal</th>
+                            <th>Jenis Penyesuaian</th>
+                            <th>Nama Bahan</th>
+                            <th>Jumlah Stok</th>
+                            <th>Alasan</th>
+                            {{-- <th>Tindakan</th> --}}
                         </tr>
                     </thead>
                 </table>
