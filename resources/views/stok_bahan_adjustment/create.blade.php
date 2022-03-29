@@ -16,13 +16,24 @@
         <div class="box box-solid">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Lokasi Bisnis</label>
+                            <select name="id_location" id="" class="form-control select2">
+                                <option value="">---Pilih Lokasi---</option>
+                                @foreach ($lokasi as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
                         <div class="form-group">
                             {!! Form::label('ref_no', __('purchase.ref_no') . ':') !!}
                             {!! Form::text('no_referensi', null, ['class' => 'form-control']) !!}
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             {!! Form::label('transaction_date', __('messages.date') . ':*') !!}
                             <div class="input-group">
@@ -33,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             {!! Form::label('adjustment_type', __('stock_adjustment.adjustment_type') . ':*') !!} @show_tooltip(__('tooltip.adjustment_type'))
                             {!! Form::select('jenis_penyesuaian', ['Normal' => __('stock_adjustment.normal'), 'Abnormal' => __('stock_adjustment.abnormal')], null, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'required']) !!}
@@ -135,6 +146,7 @@
             var addButton = $('#tambah_bahan');
             var deleteButton = $('#delete_bahan');
             var wrapper = $('#add_bahan');
+            var loop = "";
             var fieldHTML = `
                 <div>
                     <div class="row">
@@ -168,13 +180,14 @@
             $(addButton).click(function() {
                 if (x < maxField) {
                     x++;
-                    $(wrapper).html(fieldHTML);
+                    $(wrapper).append(fieldHTML);
                 }
             });
             $("body").on("click", "#delete_bahan", function(e) {
                 e.preventDefault();
                 console.log("bisa");
-                $(this).parent().remove();
+                // $(this).parent().remove();
+                $(this).closest(".row").remove();
                 x--;
             });
             $(document).ready(function() {

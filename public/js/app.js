@@ -2233,6 +2233,7 @@ var satuan_table = $('#stock_adjustment_bahan_table').DataTable({
     columns: [
         { data: 'id', name: 'id' },
         { data: 'no_referensi', name: 'no_referensi' },
+        { data: 'name', name: 'name' },
         { data: 'date', name: 'date' },
         { data: 'jenis_penyesuaian', name: 'jenis_penyesuaian' },
         { data: 'nama_bahan', name: 'nama_bahan' },

@@ -367,7 +367,7 @@ $user = DB::table('users')
                         </a>
                     </li>
                     <li
-                        class="{{ $request->segment(1) == 'penyesuaian-stok' && $request->segment(2) == 'create' ? 'active active-sub' : '' }}">
+                        class="{{ $request->segment(1) == 'penyesuaian-stok' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
                         <a href="{{ action('StockBahanAdjustmenController@index') }}">
                             <i class="fa fa-user"></i>
                             <span class="title">

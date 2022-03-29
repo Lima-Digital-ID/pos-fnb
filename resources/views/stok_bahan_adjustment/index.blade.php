@@ -25,6 +25,7 @@
                         <tr>
                             <th width="30px">#</th>
                             <th>No Referensi</th>
+                            <th>Lokasi Binsis</th>
                             <th>Tanggal</th>
                             <th>Jenis Penyesuaian</th>
                             <th>Nama Bahan</th>

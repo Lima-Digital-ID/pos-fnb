@@ -43,8 +43,9 @@ class StockBahanAdjustmenController extends Controller
     {
         if (request()->ajax()) {
             $adj = StockBahanAdj::select([
-                'id',
+                'tbl_stok_bahan_adjust.id',
                 'tb_bahan.nama_bahan',
+                'business_locations.name',
                 'no_referensi',
                 'date',
                 'jenis_penyesuaian',
@@ -52,7 +53,8 @@ class StockBahanAdjustmenController extends Controller
                 'alasan'
             ])
                 ->join('tbl_d_stok_bahan_adjust', 'tbl_stok_bahan_adjust.id_stock_adj', 'tbl_d_stok_bahan_adjust.id_stock_adj')
-                ->join('tb_bahan', 'tbl_d_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan');
+                ->join('tb_bahan', 'tbl_d_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan')
+                ->join('business_locations', 'tbl_stok_bahan_adjust.id_location', 'business_locations.id');
             // dd($adj);
 
             return Datatables::of($adj)
@@ -89,6 +91,7 @@ class StockBahanAdjustmenController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $this->params['lokasi'] = BusinessLocation::get();
         $this->params['bahan'] = Ingredient::get();
         return view('stok_bahan_adjustment.create', $this->params);
     }
@@ -107,6 +110,7 @@ class StockBahanAdjustmenController extends Controller
             'no_referensi' => $request->no_referensi,
             // 'date' => $request->date . ":00",
             'id_stock_adj' =>  $lastId == null ? 1 :  $lastId->id_stock_adj + 1,
+            'id_location' => $request->id_location,
             'jenis_penyesuaian' => $request->jenis_penyesuaian,
             'alasan' => $request->alasan,
         );
