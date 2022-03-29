@@ -2242,3 +2242,29 @@ var satuan_table = $('#stock_adjustment_bahan_table').DataTable({
         { data: 'alasan', name: 'alasan' },
     ],
 });
+
+//Start: CRUD for Po Bahan
+//Po Bahan table
+var satuan_table = $('#po-bahan').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '/po-bahan',
+    columnDefs: [
+        {
+            // targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'id', name: 'id' },
+        { data: 'no_referensi', name: 'no_referensi' },
+        { data: 'name', name: 'name' },
+        { data: 'date', name: 'date' },
+        { data: 'nama_bahan', name: 'nama_bahan' },
+        { data: 'qty', name: 'qty' },
+        { data: 'price', name: 'price' },
+        { data: 'subtotal', name: 'subtotal' },
+        { data: 'subtotal_tax', name: 'subtotal_tax' },
+    ],
+});

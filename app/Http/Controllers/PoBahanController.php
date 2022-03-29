@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\TaxRate;
 use App\Ingredient;
+use App\PoBahan;
+use Datatables;
 
 class PoBahanController extends Controller
 {
@@ -15,6 +17,26 @@ class PoBahanController extends Controller
      */
     public function index()
     {
+        if (request()->ajax()) {
+            $po = PoBahan::select([
+                'tbl_po_bahan.id',
+                'no_referensi',
+                'tax_rates.name',
+                'date',
+                'tb_bahan.nama_bahan',
+                'tbl_d_po_bahan.qty',
+                'tbl_d_po_bahan.price',
+                'tbl_d_po_bahan.subtotal',
+                'tbl_d_po_bahan.subtotal_tax',
+            ])
+                ->join('tax_rates', 'tbl_po_bahan.id_pajak', 'tax_rates.id')
+                ->join('tbl_d_po_bahan', 'tbl_po_bahan.id_po_bahan', 'tbl_d_po_bahan.id_po_bahan')
+                ->join('tb_bahan', 'tbl_d_po_bahan.id_bahan', 'tb_bahan.id_bahan');
+            // dd($adj);
+
+            return Datatables::of($po)
+                ->make(true);
+        }
         return view('po-bahan.index');
     }
 
