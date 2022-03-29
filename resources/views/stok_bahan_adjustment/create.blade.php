@@ -59,7 +59,7 @@
                 <h3 class="box-title">{{ __('Cari Bahan') }}</h3>
             </div>
             <div class="box-body">
-                <div class="row" data-no="0">
+                <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <div class="input-group">

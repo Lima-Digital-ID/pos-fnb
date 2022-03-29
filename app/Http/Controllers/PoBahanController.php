@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\TaxRate;
+use App\Ingredient;
 
 class PoBahanController extends Controller
 {
@@ -23,7 +25,9 @@ class PoBahanController extends Controller
      */
     public function create()
     {
-        //
+        $this->params['tax'] = TaxRate::get();
+        $this->params['bahan'] = Ingredient::get();
+        return view('po-bahan.create', $this->params);
     }
 
     /**
@@ -34,7 +38,30 @@ class PoBahanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $lastId = \DB::table('tbl_po_bahan')->latest('id')->first();
+        // dd($lastId);
+        $po = array(
+            'id_pajak' => $request->id_pajak,
+            'no_referensi' => $request->no_referensi,
+            'date' => $request->date . ":00",
+            'id_po_bahan' =>  $lastId == null ? 1 :  $lastId->id_pajak + 1,
+        );
+        // dd($po);
+        \DB::table('tbl_po_bahan')->insert($po);
+        $lastIdAdj = \DB::table('tbl_po_bahan')->latest('id')->first();
+
+        foreach ($request->get('bahan') as $key => $value) {
+            $detail = [
+                'id_po_bahan' => $lastIdAdj->id_po_bahan,
+                'id_bahan' => $value,
+                'qty' => $request->get('qty')[$key],
+                'price' => $request->get('price')[$key],
+                'subtotal' => $request->get('subtotal')[$key],
+                'subtotal_tax' => $request->get('subtotaltax')[$key],
+            ];
+            \DB::table('tbl_d_po_bahan')->insert($detail);
+        }
+        return redirect()->route('po-bahan.create');
     }
 
     /**

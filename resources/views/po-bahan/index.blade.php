@@ -27,12 +27,14 @@
                         <thead>
                             <tr>
                                 <th width="30px">#</th>
-                                <th>Nama Bahan</th>
-                                <th>Satuan</th>
-                                <th>Stok</th>
-                                <th>Limit Stok</th>
-                                <th>Limit Bahan</th>
-                                <th>Tindakan</th>
+                                <th>No Referensi</th>
+                                <th>Jenis Pajak</th>
+                                <th>Tanggal PO</th>
+                                <th>Bahan</th>
+                                <th>Kuantitas</th>
+                                <th>Harga Satuan</th>
+                                <th>Harga Sebelum Pajak</th>
+                                <th>Harga Sesudah Pajak</th>
                             </tr>
                         </thead>
                     </table>
