@@ -59,34 +59,35 @@
                 <h3 class="box-title">{{ __('Cari Bahan') }}</h3>
             </div>
             <div class="box-body">
-                <div class="row" data-no="0">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-search"></i>
-                                </span>
-                                <select name="bahan[]" id="" class="form-control select2">
-                                    <option value="">---Pilih Bahan---</option>
-                                    @foreach ($bahan as $item)
-                                        <option value="{{ $item->id_bahan }}">{{ $item->nama_bahan }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-dropbox"></i>
-                                </span>
-                                <input type="number" class="form-control" placeholder="Stok" name="stok_adjust[]">
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div id="add_bahan">
+                    <div class="row row-adj" data-no='1'>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon dynamic_button">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                    <select name="bahan[]" id="" class="form-control">
+                                        <option value="">---Pilih Bahan---</option>
+                                        @foreach ($bahan as $item)
+                                            <option value="{{ $item->id_bahan }}">{{ $item->nama_bahan }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-dropbox"></i>
+                                    </span>
+                                    <input type="number" class="form-control" placeholder="Stok" name="stok_adjust[]">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                 </div>
                 <div class="row">
@@ -129,99 +130,30 @@
 @section('javascript')
     <script>
         $(document).ready(function() {
-            $.ajax({
-                url: "/bahan/list",
-                type: "GET",
-                async: false,
-                success: function(response) {
-                    data = jQuery.parseJSON(response);
-                    $.each(data, function(k, v) {
-                        id_bahan = v.id_bahan
-                        bahan = v.nama_bahan
-                    });
-                }
-            })
-            var data = "";
             var maxField = 100;
             var addButton = $('#tambah_bahan');
             var deleteButton = $('#delete_bahan');
             var wrapper = $('#add_bahan');
-            var loop = "";
-            var fieldHTML = `
-                <div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <a href="javascript:void(0);" class="remove_button" id="delete_bahan" title="Remove field">X</i></a>
-                                    </span>
-                                    <select name="bahan[]" id="" class="form-control select2">
-                                        <option value="">---Pilih Bahan---</option>
-                                        <option value="${id_bahan}">${bahan}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-dropbox"></i>
-                                    </span>
-                                    <input type="number" name="stok_adjust[]" class="form-control" placeholder="Stok">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                `;
             var x = 1;
             $(addButton).click(function() {
+                var fieldHTML = $(".row-adj:last").clone()
                 if (x < maxField) {
                     x++;
                     $(wrapper).append(fieldHTML);
+                    $(".row-adj:last").attr('data-no', x)
+                    $(".row-adj:last").change(function() {
+                        subTotal(x)
+                    })
+                    $(".row-adj:last input,.row-adj:last select").val('')
+                    $(".row-adj:last .dynamic_button").empty().html(
+                        `<a href="javascript:void(0);" class="remove_button" title="Remove field">X</i></a>`
+                    )
+                    $(".row-adj .remove_button").click(function() {
+                        $(this).closest('.row-adj').remove()
+                        x--
+                    })
                 }
             });
-            $("body").on("click", "#delete_bahan", function(e) {
-                e.preventDefault();
-                console.log("bisa");
-                // $(this).parent().remove();
-                $(this).closest(".row").remove();
-                x--;
-            });
-            $(document).ready(function() {
-                $('.select2').select2();
-            });
         });
-        // $("#tambah_bahan").click(function() {
-        //     var no = 1;
-        //     $("#add_bahan").append(`
-    //         <div class="row">
-    //             <div class="col-sm-6">
-    //                 <div class="form-group">
-    //                     <div class="input-group">
-    //                         <span class="input-group-addon">
-    //                             <a href="#" id="delete_bahan">X</a>
-    //                         </span>
-    //                         <select name="bahan" id="" class="form-control select2">
-    //                             <option value="">---Pilih Bahan---</option>
-    //                         </select>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //             <div class="col-sm-6">
-    //                 <div class="form-group">
-    //                     <div class="input-group">
-    //                         <span class="input-group-addon">
-    //                             <i class="fa fa-dropbox"></i>
-    //                         </span>
-    //                         <input type="text" name="stok" class="form-control" placeholder="Stok">
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     `);
-        // });
     </script>
 @endsection
