@@ -2198,6 +2198,52 @@ var ingredients_table = $('#ingredient_table').DataTable({
     ],
 });
 
+//Limit Stok Bahan table
+var limit_stok_table = $('#limit_stok_ingredient_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '/bahan/limit-stok',
+    columnDefs: [
+        {
+            targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'id_bahan', name: 'id_bahan' },
+        { data: 'name', name: 'name' },
+        { data: 'nama_bahan', name: 'nama_bahan' },
+        { data: 'satuan', name: 'satuan' },
+        { data: 'stok', name: 'stok' },
+        { data: 'limit_stok', name: 'limit_stok' },
+        { data: 'limit_pemakaian', name: 'limit_pemakaian' },
+    ],
+});
+
+//Limit Pemakaian Bahan table
+var limit_pemakaian_table = $('#limit_pemakaian_ingredient_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: '/bahan/limit-pemakaian',
+    columnDefs: [
+        {
+            targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'id_bahan', name: 'id_bahan' },
+        { data: 'name', name: 'name' },
+        { data: 'nama_bahan', name: 'nama_bahan' },
+        { data: 'satuan', name: 'satuan' },
+        { data: 'stok', name: 'stok' },
+        { data: 'limit_stok', name: 'limit_stok' },
+        { data: 'limit_pemakaian', name: 'limit_pemakaian' },
+    ],
+});
+
 //Start: CRUD for Satuan Bahan
 //Satuan Bahan table
 var satuan_table = $('#satuan_bahan_table').DataTable({
