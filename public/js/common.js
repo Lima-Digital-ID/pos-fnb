@@ -211,31 +211,33 @@ $(document).ready(function() {
         iraqi_selling_price_adjustment = false;
     }
 
-    function cekAvabilityStok() {
+    function cekAvabilityStok(productId,locationId) {
         var arrProduk = []
         var ttlProduk = []
-        var productId = $(this).closest('td').find('.product_id')
 
-        console.log(productId)
         $(".product_id").each(function(i,v){
             arrProduk.push(v.value)
-            ttlProduk.push($(".input_quantity")[i].value)
+            ttlProduk.push(parseInt($(".input_quantity")[i].value)+1)
         })
 
         arrProduk = arrProduk.join(',')
         ttlProduk = ttlProduk.join(',')
+        var isAdd
         $.ajax({
-            url : "/pos/cek-avability-stok?product_id="+arrProduk+"&qty="+ttlProduk,
+            url : "/pos/cek-avability-stok?selected_product="+arrProduk+"&qty="+ttlProduk+"&product_id="+productId+"&location_id="+locationId,
             method : 'get',
+            async : false,
             success : function(res){
-                
+                isAdd = res
             }
         })
+        return isAdd
     }
 
     //Input number
     $(document).on('click', '.input-number .quantity-up, .input-number .quantity-down', function() {
-        cekAvabilityStok()
+        var productId = $(this).closest('td').find('.product_id').val()
+        var locationId = $("#select_location_id").val()
         var input = $(this)
             .closest('.input-number')
             .find('input');
@@ -249,12 +251,17 @@ $(document).ready(function() {
 
         if ($(this).hasClass('quantity-up')) {
             //if max reached return false
-            if (typeof max != 'undefined' && qty + step > max) {
-                return false;
+            // if (typeof max != 'undefined' && qty + step > max) {
+            //     return false;
+            // }
+            if(cekAvabilityStok(productId,locationId)==1){
+                __write_number(input, qty + step);
+                input.change();
             }
-
-            __write_number(input, qty + step);
-            input.change();
+            else{
+                return false
+            }
+        
         } else if ($(this).hasClass('quantity-down')) {
             //if max reached return false
             if (typeof min != 'undefined' && qty - step < min) {

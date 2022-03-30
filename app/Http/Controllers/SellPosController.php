@@ -3131,14 +3131,50 @@ class SellPosController extends Controller
     }
     public function cekAvabilityStok()
     {
-        $getProductId = request()->input('product_id');
-        $productId = explode(',',$getProductId);
+        $selectedProduct = request()->input('selected_product');
+        $arrProduct = explode(',',$selectedProduct);
 
         $getQtyProduk = request()->input('qty');
         $qtyProduk = explode(',',$getQtyProduk);
 
-        foreach ($productId as $key => $value) {
-            
+        $productId = request()->input('product_id');
+        $locationId = request()->input('location_id');
+        $bahanProduk = DB::table('tb_bahan_product as bp')
+        ->select('bp.id_bahan','bp.kebutuhan','sb.stok','b.limit_pemakaian')
+        ->join('tb_bahan as b','bp.id_bahan','b.id_bahan')
+        ->join('tb_stok_bahan as sb','b.id_bahan','sb.id_bahan')
+        ->where('bp.product_id',$productId)
+        ->where('sb.location_id',$locationId)
+        ->get();    
+        $bahan = [];
+        foreach ($bahanProduk as $key => $value) {
+            $bahan[$value->id_bahan] = [
+                'kebutuhan' => $value->kebutuhan,
+                'stok' => $value->stok,
+                'stok_temp' => $value->stok,
+                'limit_pemakaian' => $value->limit_pemakaian,
+            ];
         }
+
+        foreach ($arrProduct as $key => $value) {
+            $getBahanProduk = DB::table('tb_bahan_product')->where('product_id',$value)->get();
+
+            foreach ($getBahanProduk as $i => $v) {
+                if(isset($bahan[$v->id_bahan])){
+                    $bahan[$v->id_bahan]['stok_temp']-=($v->kebutuhan*$qtyProduk[$key]);
+                }
+            }
+        }
+
+        $isAdd = true;
+        
+        foreach ($bahan as $id_bahan => $value) {
+            $cekStok = $value['stok_temp'] - $value['kebutuhan'];
+            if($value['stok_temp']<$value['limit_pemakaian']){
+                $isAdd = false;
+                break;
+            }
+        }
+        echo $isAdd;
     }
 }
