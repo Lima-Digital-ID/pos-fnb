@@ -70,7 +70,7 @@ class PoBahanController extends Controller
             'id_pajak' => $request->id_pajak,
             'no_referensi' => $request->no_referensi,
             'location_id' => $request->id_lokasi,
-            'date' => $request->date . ":00",
+            // 'date' => $request->date . ":00",
             'id_po_bahan' =>  $lastId == null ? 1 :  $lastId->id_po_bahan + 1,
         );
         // dd($po);

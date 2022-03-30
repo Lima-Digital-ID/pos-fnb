@@ -109,7 +109,7 @@ class StockBahanAdjustmenController extends Controller
         // dd($lastId == null ? 1 : $lastId->id_stock_adj + 1);
         $stokAdj = array(
             'no_referensi' => $request->no_referensi,
-            'date' => $request->date . ":00",
+            // 'date' => $request->date . ":00",
             'id_stock_adj' =>  $lastId == null ? 1 :  $lastId->id_stock_adj + 1,
             // 'id_location' => $request->id_location,
             'jenis_penyesuaian' => $request->jenis_penyesuaian,
