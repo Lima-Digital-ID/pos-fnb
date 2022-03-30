@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', __('Tambah Penyesuaian Stok Bahan'))
+@section('title', __('Tambah PO Stok Bahan'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <br>
-        <h1>@lang('Tambah Penyesuaian Stok Bahan')</h1>
+        <h1>@lang('Tambah PO Stok Bahan')</h1>
         <!-- <ol class="breadcrumb">                                                                                                               </ol> -->
     </section>
 
@@ -16,11 +16,23 @@
         <div class="box box-solid">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="">Lokasi</label>
+                            <select name="id_lokasi" id="id_lokasi" class="form-control select2">
+                                <option value="0">---Pilih Lokasi---</option>
+                                @foreach ($lokasi as $item)
+                                    <option value="{{ $item->id }}">
+                                        {{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
                         <div class="form-group">
                             <label for="">Pajak</label>
                             <select name="id_pajak" id="tax" class="form-control">
-                                <option value="0" data-pajak="0">---Tanpa Pajak---</option>
+                                <option value="0" data-pajak="0">---Pilih Pajak---</option>
                                 @foreach ($tax as $item)
                                     <option value="{{ $item->id }}" data-pajak="{{ $item->amount }}">
                                         {{ $item->name }}</option>
@@ -29,13 +41,13 @@
                         </div>
                     </div>
                     <input type="hidden" id="price-tax">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             {!! Form::label('ref_no', __('purchase.ref_no') . ':') !!}
-                            {!! Form::text('no_referensi', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('no_referensi', 'PO' . time(), ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group">
                             {!! Form::label('transaction_date', __('messages.date') . ':*') !!}
                             <div class="input-group">
@@ -140,7 +152,7 @@
             <div class="box-body">
                 <div class="row" style="float: right;">
                     <div class="col-sm-12">
-                        <a href="{{ route('stock-bahan-adjustment.index') }}" class="btn btn-info">
+                        <a href="{{ route('po-bahan.index') }}" class="btn btn-info">
                             Kembali</a>
                         <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
                     </div>

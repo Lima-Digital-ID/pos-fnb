@@ -2305,12 +2305,13 @@ var satuan_table = $('#po-bahan').DataTable({
     columns: [
         // { data: 'id', name: 'id' },
         { data: 'no_referensi', name: 'no_referensi' },
-        { data: 'name', name: 'name' },
+        { data: 'location', name: 'location' },
+        { data: 'tax', name: 'tax' },
         { data: 'date', name: 'date' },
         { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'qty', name: 'qty' },
-        { data: 'price', name: 'price' },
-        { data: 'subtotal', name: 'subtotal' },
-        { data: 'subtotal_tax', name: 'subtotal_tax' },
+        { data: 'price', name: 'price',render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
+        { data: 'subtotal', name: 'subtotal', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
+        { data: 'subtotal_tax', name: 'subtotal_tax', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
     ],
 });

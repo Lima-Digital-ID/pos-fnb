@@ -43,17 +43,17 @@ class StockBahanAdjustmenController extends Controller
     {
         if (request()->ajax()) {
             $adj = StockBahanAdj::select([
-                // 'tbl_stok_bahan_adjust.id',
+                // 'tb_stok_bahan_adjust.id',
                 'tb_bahan.nama_bahan',
                 'business_locations.name',
                 'no_referensi',
                 'date',
                 'jenis_penyesuaian',
-                'tbl_d_stok_bahan_adjust.stok_adjust',
+                'tb_d_stok_bahan_adjust.stok_adjust',
                 'alasan'
             ])
-                ->join('tbl_d_stok_bahan_adjust', 'tbl_stok_bahan_adjust.id_stock_adj', 'tbl_d_stok_bahan_adjust.id_stock_adj')
-                ->join('tb_bahan', 'tbl_d_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan')
+                ->join('tb_d_stok_bahan_adjust', 'tb_stok_bahan_adjust.id_stock_adj', 'tb_d_stok_bahan_adjust.id_stock_adj')
+                ->join('tb_bahan', 'tb_d_stok_bahan_adjust.id_bahan', 'tb_bahan.id_bahan')
                 ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
                 ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id');
             // dd($adj);
@@ -105,7 +105,7 @@ class StockBahanAdjustmenController extends Controller
      */
     public function store(Request $request)
     {
-        $lastId = \DB::table('tbl_stok_bahan_adjust')->latest('id')->first();
+        $lastId = \DB::table('tb_stok_bahan_adjust')->latest('id')->first();
         // dd($lastId == null ? 1 : $lastId->id_stock_adj + 1);
         $stokAdj = array(
             'no_referensi' => $request->no_referensi,
@@ -116,8 +116,8 @@ class StockBahanAdjustmenController extends Controller
             'alasan' => $request->alasan,
         );
         // dd($request->date . ":00");
-        \DB::table('tbl_stok_bahan_adjust')->insert($stokAdj);
-        $lastIdAdj = \DB::table('tbl_stok_bahan_adjust')->latest('id')->first();
+        \DB::table('tb_stok_bahan_adjust')->insert($stokAdj);
+        $lastIdAdj = \DB::table('tb_stok_bahan_adjust')->latest('id')->first();
         // dd($lastIdAdj->id_stock_adj);
 
         foreach ($request->get('bahan') as $key => $value) {
@@ -127,7 +127,7 @@ class StockBahanAdjustmenController extends Controller
                 'stok_adjust' => $request->get('stok_adjust')[$key],
                 // 'stok_adjust' => $request->get('stok_adjust')[$key],
             ];
-            \DB::table('tbl_d_stok_bahan_adjust')->insert($detail);
+            \DB::table('tb_d_stok_bahan_adjust')->insert($detail);
             // $realStok = Ingredient::findOrFail($value);
             $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
             // dd($realStok->stok);

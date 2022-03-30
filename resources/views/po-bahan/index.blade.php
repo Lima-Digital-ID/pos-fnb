@@ -28,6 +28,7 @@
                             <tr>
                                 {{-- <th width="30px">#</th> --}}
                                 <th>No Referensi</th>
+                                <th>Lokasi Bisnis</th>
                                 <th>Jenis Pajak</th>
                                 <th>Tanggal PO</th>
                                 <th>Bahan</th>

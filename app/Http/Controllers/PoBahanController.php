@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\TaxRate;
 use App\Ingredient;
 use App\PoBahan;
+use App\BusinessLocation;
 use Datatables;
 
 class PoBahanController extends Controller
@@ -19,19 +20,22 @@ class PoBahanController extends Controller
     {
         if (request()->ajax()) {
             $po = PoBahan::select([
-                'tbl_po_bahan.id',
+                'tb_po_bahan.id',
                 'no_referensi',
-                'tax_rates.name',
+                'tax_rates.name as tax',
                 'date',
+                // 'tb_po_bahan.location_id',
+                'business_locations.name as location',
                 'tb_bahan.nama_bahan',
-                'tbl_d_po_bahan.qty',
-                'tbl_d_po_bahan.price',
-                'tbl_d_po_bahan.subtotal',
-                'tbl_d_po_bahan.subtotal_tax',
+                'tb_d_po_bahan.qty',
+                'tb_d_po_bahan.price',
+                'tb_d_po_bahan.subtotal',
+                'tb_d_po_bahan.subtotal_tax',
             ])
-                ->join('tax_rates', 'tbl_po_bahan.id_pajak', 'tax_rates.id')
-                ->join('tbl_d_po_bahan', 'tbl_po_bahan.id_po_bahan', 'tbl_d_po_bahan.id_po_bahan')
-                ->join('tb_bahan', 'tbl_d_po_bahan.id_bahan', 'tb_bahan.id_bahan');
+                ->join('tax_rates', 'tb_po_bahan.id_pajak', 'tax_rates.id')
+                ->join('tb_d_po_bahan', 'tb_po_bahan.id_po_bahan', 'tb_d_po_bahan.id_po_bahan')
+                ->join('tb_bahan', 'tb_d_po_bahan.id_bahan', 'tb_bahan.id_bahan')
+                ->join('business_locations', 'tb_po_bahan.location_id', 'business_locations.id');
             // dd($adj);
 
             return Datatables::of($po)
@@ -48,6 +52,7 @@ class PoBahanController extends Controller
     public function create()
     {
         $this->params['tax'] = TaxRate::get();
+        $this->params['lokasi'] = BusinessLocation::get();
         $this->params['bahan'] = Ingredient::get();
         return view('po-bahan.create', $this->params);
     }
@@ -60,17 +65,17 @@ class PoBahanController extends Controller
      */
     public function store(Request $request)
     {
-        $lastId = \DB::table('tbl_po_bahan')->latest('id')->first();
-        // dd($lastId);
+        $lastId = \DB::table('tb_po_bahan')->latest('id')->first();
         $po = array(
             'id_pajak' => $request->id_pajak,
             'no_referensi' => $request->no_referensi,
+            'location_id' => $request->id_lokasi,
             'date' => $request->date . ":00",
-            'id_po_bahan' =>  $lastId == null ? 1 :  $lastId->id_pajak + 1,
+            'id_po_bahan' =>  $lastId == null ? 1 :  $lastId->id_po_bahan + 1,
         );
         // dd($po);
-        \DB::table('tbl_po_bahan')->insert($po);
-        $lastIdAdj = \DB::table('tbl_po_bahan')->latest('id')->first();
+        \DB::table('tb_po_bahan')->insert($po);
+        $lastIdAdj = \DB::table('tb_po_bahan')->latest('id')->first();
 
         foreach ($request->get('bahan') as $key => $value) {
             $detail = [
@@ -81,7 +86,9 @@ class PoBahanController extends Controller
                 'subtotal' => $request->get('subtotal')[$key],
                 'subtotal_tax' => $request->get('subtotaltax')[$key],
             ];
-            \DB::table('tbl_d_po_bahan')->insert($detail);
+            \DB::table('tb_d_po_bahan')->insert($detail);
+            $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
+            \DB::table('tb_stok_bahan')->where('id_bahan', $value)->where('location_id', $request->get('id_lokasi'))->update((array('stok' => $realStok->stok + $request->get('qty')[$key])));
         }
         return redirect()->route('po-bahan.create');
     }
