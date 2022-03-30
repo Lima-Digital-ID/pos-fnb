@@ -2188,7 +2188,7 @@ var ingredients_table = $('#ingredient_table').DataTable({
     ],
     columns: [
         // { data: 'id_bahan', name: 'id_bahan' },
-        { data: 'name', name: 'name' },
+        // { data: 'name', name: 'name' },
         { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'satuan', name: 'satuan' },
         { data: 'stok', name: 'stok' },

@@ -27,7 +27,7 @@
                         <thead>
                             <tr>
                                 {{-- <th width="30px">#</th> --}}
-                                <th>Lokasi Bisnis</th>
+                                {{-- <th>Lokasi Bisnis</th> --}}
                                 <th>Nama Bahan</th>
                                 <th>Satuan</th>
                                 <th>Stok</th>
