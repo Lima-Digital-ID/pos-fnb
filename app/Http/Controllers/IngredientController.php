@@ -255,6 +255,20 @@ class IngredientController extends Controller
         return json_encode($bahan);
     }
 
+    public function getIngredientByLocation($id)
+    {
+        $bahan = Ingredient::select([
+            'nama_bahan',
+            'business_locations.name',
+        ])
+            ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
+            ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
+            ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan')
+            ->where('tb_stok_bahan.location_id', $id)
+            ->get();
+        return json_encode($bahan);
+    }
+
     public function get_limit_stok()
     {
         $stok = \DB::table('tb_stok_bahan')->get();

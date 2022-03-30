@@ -19,10 +19,10 @@
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="">Lokasi</label>
-                            <select name="id_lokasi" id="id_lokasi" class="form-control select2">
+                            <select name="id_lokasi" id="id_lokasi" class="form-control select2 lokasi">
                                 <option value="0">---Pilih Lokasi---</option>
                                 @foreach ($lokasi as $item)
-                                    <option value="{{ $item->id }}">
+                                    <option value="{{ $item->id }}" data-id="{{ $item->id }}">
                                         {{ $item->name }}</option>
                                 @endforeach
                             </select>
@@ -76,12 +76,12 @@
                                     <span class="input-group-addon dynamic_button">
                                         <i class="fa fa-search"></i>
                                     </span>
-                                    <select name="bahan[]" id="bahan" class="form-control">
-                                        <option value="">---Pilih Bahan---</option>
-                                        @foreach ($bahan as $item)
-                                            <option value="{{ $item->id_bahan }}" data-harga="{{ $item->id }}">
+                                    <select name="bahan[]" id="bahan" class="form-control bahan">
+                                        <option value="" class="opt-bahan">---Pilih Bahan---</option>
+                                        {{-- @foreach ($bahan as $item)
+                                            <option value="{{ $item->id_bahan }}">
                                                 {{ $item->nama_bahan }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -185,6 +185,30 @@
             var no = $(this).closest(".row-bahan").attr('data-no')
             subTotal(no)
         })
+
+        $(".lokasi").change(function() {
+            var id = $(".lokasi").find(":selected").attr('data-id')
+            getIngredientByLocation(id)
+        })
+        // $(".bahan").change(function() {
+        //     $(".bahan").val('');
+        // })
+
+        function getIngredientByLocation(id) {
+            $.ajax({
+                url: "/bahan/list/" + id,
+                type: "GET",
+                async: false,
+                success: function(response) {
+                    data = jQuery.parseJSON(response);
+                    console.log(data);
+                    $.each(data, function(k, v) {
+                        $(".bahan").append("<option value=" + v.id_bahan + ">" + v.nama_bahan +
+                            "</option>");
+                    });
+                }
+            })
+        }
 
         function grandTotal() {
             var qty = $('#qty').val();
