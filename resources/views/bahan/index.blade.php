@@ -26,7 +26,7 @@
                     <table class="table table-bordered table-striped" id="ingredient_table">
                         <thead>
                             <tr>
-                                <th width="30px">#</th>
+                                {{-- <th width="30px">#</th> --}}
                                 <th>Lokasi Bisnis</th>
                                 <th>Nama Bahan</th>
                                 <th>Satuan</th>

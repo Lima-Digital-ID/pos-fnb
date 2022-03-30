@@ -23,7 +23,7 @@
                 <table class="table table-bordered table-striped" id="stock_adjustment_bahan_table">
                     <thead>
                         <tr>
-                            <th width="30px">#</th>
+                            {{-- <th width="30px">#</th> --}}
                             <th>No Referensi</th>
                             <th>Lokasi Binsis</th>
                             <th>Tanggal</th>

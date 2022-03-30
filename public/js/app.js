@@ -2187,7 +2187,7 @@ var ingredients_table = $('#ingredient_table').DataTable({
         },
     ],
     columns: [
-        { data: 'id_bahan', name: 'id_bahan' },
+        // { data: 'id_bahan', name: 'id_bahan' },
         { data: 'name', name: 'name' },
         { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'satuan', name: 'satuan' },
@@ -2211,7 +2211,7 @@ var limit_stok_table = $('#limit_stok_ingredient_table').DataTable({
         },
     ],
     columns: [
-        { data: 'id_bahan', name: 'id_bahan' },
+        // { data: 'id_bahan', name: 'id_bahan' },
         { data: 'name', name: 'name' },
         { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'satuan', name: 'satuan' },
@@ -2234,7 +2234,7 @@ var limit_pemakaian_table = $('#limit_pemakaian_ingredient_table').DataTable({
         },
     ],
     columns: [
-        { data: 'id_bahan', name: 'id_bahan' },
+        // { data: 'id_bahan', name: 'id_bahan' },
         { data: 'name', name: 'name' },
         { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'satuan', name: 'satuan' },
@@ -2258,7 +2258,7 @@ var satuan_table = $('#satuan_bahan_table').DataTable({
         },
     ],
     columns: [
-        { data: 'id_satuan', name: 'id_satuan' },
+        // { data: 'id_satuan', name: 'id_satuan' },
         { data: 'satuan', name: 'satuan' },
         { data: 'action', name: 'action' },
     ],
@@ -2278,7 +2278,7 @@ var satuan_table = $('#stock_adjustment_bahan_table').DataTable({
         },
     ],
     columns: [
-        { data: 'id', name: 'id' },
+        // { data: 'id', name: 'id' },
         { data: 'no_referensi', name: 'no_referensi' },
         { data: 'name', name: 'name' },
         { data: 'date', name: 'date' },
@@ -2303,7 +2303,7 @@ var satuan_table = $('#po-bahan').DataTable({
         },
     ],
     columns: [
-        { data: 'id', name: 'id' },
+        // { data: 'id', name: 'id' },
         { data: 'no_referensi', name: 'no_referensi' },
         { data: 'name', name: 'name' },
         { data: 'date', name: 'date' },

@@ -43,7 +43,7 @@ class StockBahanAdjustmenController extends Controller
     {
         if (request()->ajax()) {
             $adj = StockBahanAdj::select([
-                'tbl_stok_bahan_adjust.id',
+                // 'tbl_stok_bahan_adjust.id',
                 'tb_bahan.nama_bahan',
                 'business_locations.name',
                 'no_referensi',

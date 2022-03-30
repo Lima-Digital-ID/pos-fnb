@@ -261,7 +261,7 @@ class IngredientController extends Controller
         // dd($stok);
         if (request()->ajax()) {
             $limit_stok = Ingredient::select([
-                'tb_bahan.id_bahan',
+                // 'tb_bahan.id_bahan',
                 'nama_bahan',
                 'business_locations.name',
                 'tb_satuan_bahan.satuan',
@@ -286,7 +286,7 @@ class IngredientController extends Controller
     {
         if (request()->ajax()) {
             $limitPemakaian = Ingredient::select([
-                'tb_bahan.id_bahan',
+                // 'tb_bahan.id_bahan',
                 'nama_bahan',
                 'business_locations.name',
                 'tb_satuan_bahan.satuan',

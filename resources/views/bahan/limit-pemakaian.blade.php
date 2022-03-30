@@ -18,7 +18,7 @@
                     <table class="table table-bordered table-striped" id="limit_pemakaian_ingredient_table">
                         <thead>
                             <tr>
-                                <th width="30px">#</th>
+                                {{-- <th width="30px">#</th> --}}
                                 <th>Lokasi Bisnis</th>
                                 <th>Nama Bahan</th>
                                 <th>Satuan</th>

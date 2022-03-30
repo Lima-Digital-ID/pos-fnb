@@ -26,7 +26,7 @@
                     <table class="table table-bordered table-striped" id="po-bahan">
                         <thead>
                             <tr>
-                                <th width="30px">#</th>
+                                {{-- <th width="30px">#</th> --}}
                                 <th>No Referensi</th>
                                 <th>Jenis Pajak</th>
                                 <th>Tanggal PO</th>
