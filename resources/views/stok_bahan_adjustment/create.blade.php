@@ -30,7 +30,7 @@
                     <div class="col-sm-3">
                         <div class="form-group">
                             {!! Form::label('ref_no', __('purchase.ref_no') . ':') !!}
-                            {!! Form::text('no_referensi', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('no_referensi', 'ADJ' . time(), ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                         </div>
                     </div>
                     <div class="col-sm-3">

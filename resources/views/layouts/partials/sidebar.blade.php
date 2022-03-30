@@ -367,7 +367,7 @@ $user = DB::table('users')
                         </a>
                     </li>
                     <li
-                        class="{{ $request->segment(1) == 'penyesuaian-stok' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        class="{{ $request->segment(1) == 'stock-bahan-adjustment' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
                         <a href="{{ action('StockBahanAdjustmenController@index') }}">
                             <i class="fa fa-user"></i>
                             <span class="title">
@@ -376,11 +376,29 @@ $user = DB::table('users')
                         </a>
                     </li>
                     <li
-                        class="{{ $request->segment(1) == 'po-bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        class="{{ $request->segment(1) == ' po-bahan ' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
                         <a href="{{ action('PoBahanController@index') }}">
                             <i class="fa fa-user"></i>
                             <span class="title">
                                 PO Bahan
+                            </span>
+                        </a>
+                    </li>
+                    <li
+                        class="{{ $request->segment(1) == 'bahan/limit-stok' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('IngredientController@get_limit_stok') }}">
+                            <i class="fa fa-user"></i>
+                            <span class="title">
+                                Limit Stok Bahan
+                            </span>
+                        </a>
+                    </li>
+                    <li
+                        class="{{ $request->segment(1) == 'bahan/limit-pemakaian' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('IngredientController@getLimitPemakaian') }}">
+                            <i class="fa fa-user"></i>
+                            <span class="title">
+                                Limit Stok Pemakaian
                             </span>
                         </a>
                     </li>

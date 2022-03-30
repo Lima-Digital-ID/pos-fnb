@@ -1,29 +1,21 @@
 @extends('layouts.app')
-@section('title', __('Bahan'))
+@section('title', __('Limit Pemakaian'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>@lang( 'Bahan' )
-            <small>@lang( 'Mengelola bahan anda' )</small>
+        <h1>@lang( 'Limit Pemakaian' )
+            <small>@lang( 'Mengelola Limit Pemakaian anda' )</small>
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
-        @component('components.widget', ['class' => 'box-primary', 'title' => __('Semua bahan anda')])
-            @can('bahan.create')
-                @slot('tool')
-                    <div class="box-tools">
-                        <a href="{{ action('IngredientController@create') }}" class="btn btn-block btn-primary"><i
-                                class="fa fa-plus"></i> @lang( 'messages.add' )</a>
-                    </div>
-                @endslot
-            @endcan
+        @component('components.widget', ['class' => 'box-primary', 'title' => __('Semua Limit Pemakaian anda')])
             @can('bahan.view')
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped" id="ingredient_table">
+                    <table class="table table-bordered table-striped" id="limit_pemakaian_ingredient_table">
                         <thead>
                             <tr>
                                 {{-- <th width="30px">#</th> --}}
@@ -33,7 +25,6 @@
                                 <th>Stok</th>
                                 <th>Limit Stok</th>
                                 <th>Limit Bahan</th>
-                                <th>Tindakan</th>
                             </tr>
                         </thead>
                     </table>
