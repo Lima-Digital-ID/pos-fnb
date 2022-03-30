@@ -581,6 +581,15 @@ class SellPosController extends Controller
              //jika berupa item paket, detail stok item yang ada dalam paket akan berkurang
             foreach ($input['products'] as $key => $value) {
                 $product_temp=$value;
+
+                $getBahanProduk = DB::table('tb_bahan_product')->where('product_id',$product_temp['product_id'])->get();
+
+                foreach ($getBahanProduk as $i => $v) {
+                    $decrase_stok = $v->kebutuhan * $product_temp['quantity'];
+                    DB::statement("update tb_stok_bahan set stok = stok - $decrase_stok where id_bahan = '".$v->id_bahan."' and location_id = '".$request->input('select_location_id')."' ");
+                }
+
+
                 $cekProduct=Product::find($product_temp['product_id']);
                 if ($cekProduct->is_paket == 1) {
                     $paket_detail=DB::table('product_pakets')

@@ -211,9 +211,11 @@ $(document).ready(function() {
         iraqi_selling_price_adjustment = false;
     }
 
-    function cekAvabilityStok(productId,locationId) {
+    function cekAvabilityStok(productId) {
         var arrProduk = []
         var ttlProduk = []
+        var locationId = $("#select_location_id").val()
+
 
         $(".product_id").each(function(i,v){
             arrProduk.push(v.value)
@@ -237,7 +239,6 @@ $(document).ready(function() {
     //Input number
     $(document).on('click', '.input-number .quantity-up, .input-number .quantity-down', function() {
         var productId = $(this).closest('td').find('.product_id').val()
-        var locationId = $("#select_location_id").val()
         var input = $(this)
             .closest('.input-number')
             .find('input');
@@ -254,7 +255,7 @@ $(document).ready(function() {
             // if (typeof max != 'undefined' && qty + step > max) {
             //     return false;
             // }
-            if(cekAvabilityStok(productId,locationId)==1){
+            if(cekAvabilityStok(productId)==1){
                 __write_number(input, qty + step);
                 input.change();
             }

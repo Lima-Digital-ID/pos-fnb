@@ -565,7 +565,7 @@ class ProductController extends Controller
         }
         $product_option_js=json_encode($product_opt);
 
-        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->whereRaw('stok>limit_pemakaian')->get();
+        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan','b.nama_bahan','s.satuan')->join('tb_satuan_bahan as s','b.id_satuan','s.id_satuan')->join('tb_stok_bahan as sb','b.id_bahan','sb.id_bahan')->where('sb.location_id',$product->location_id)->whereRaw('stok>limit_pemakaian')->get();
 
         $bahan_produk = \DB::table('tb_bahan_product')->where('product_id',$id)->get();
 
