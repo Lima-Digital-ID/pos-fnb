@@ -48,8 +48,8 @@ class IngredientController extends Controller
                 'limit_stok',
                 'limit_pemakaian'
             ])
-                ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
-                ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
+                ->leftJoin('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
+                ->leftJoin('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
                 ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan');
             // dd($ingredient);
 
@@ -110,14 +110,12 @@ class IngredientController extends Controller
             [
                 'nama_bahan' => 'required',
                 'id_satuan' => 'required',
-                'stok' => 'required',
                 'limit_stok' => 'required',
                 'limit_pemakaian' => 'required',
             ],
             [
                 'nama_bahan.required' => 'Nama Bahan harus diisi.',
                 'id_satuan.required' => 'Satuan Bahan harus diisi.',
-                'stok.required' => 'Stok Bahan harus diisi.',
                 'limit_stok.required' => 'Limit Stok Bahan harus diisi.',
                 'limit_pemakaian.required' => 'Limit Pemakaian Bahan harus diisi.',
             ]
@@ -131,14 +129,14 @@ class IngredientController extends Controller
                 'limit_pemakaian' => $validated['limit_pemakaian']
             );
             \DB::table('tb_bahan')->insert($bahan);
-            $lastId = \DB::table('tb_bahan')->latest('id_bahan')->first();
-            $stok = array(
-                'id_bahan' => $lastId->id_bahan,
-                'stok' => $validated['stok'],
-                'location_id' => $request->get('location_id'),
+            // $lastId = \DB::table('tb_bahan')->latest('id_bahan')->first();
+            // $stok = array(
+            //     'id_bahan' => $lastId->id_bahan,
+            //     'stok' => $validated['stok'],
+            //     'location_id' => $request->get('location_id'),
 
-            );
-            \DB::table('tb_stok_bahan')->insert($stok);
+            // );
+            // \DB::table('tb_stok_bahan')->insert($stok);
             // dd($stok);
         } catch (Exception $e) {
             return 'Terjadi kesalahan.' . $e;
@@ -252,7 +250,7 @@ class IngredientController extends Controller
         $bahan = Ingredient::get();
         // $result = $bahan->orderBy('VLD.qty_available', 'desc')
         //     ->get();
-        return json_encode($bahan);
+        echo json_encode($bahan);
     }
 
     public function getIngredientByLocation($id)
@@ -260,6 +258,7 @@ class IngredientController extends Controller
         $bahan = Ingredient::select([
             'nama_bahan',
             'business_locations.name',
+            'tb_stok_bahan.id_bahan'
         ])
             ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
             ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
@@ -286,7 +285,7 @@ class IngredientController extends Controller
                 ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
                 ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
                 ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan')
-                ->whereRaw('limit_stok <= tb_stok_bahan.stok');
+                ->whereRaw('tb_stok_bahan.stok < limit_stok ');
 
             // dd($limit_stok);
 
@@ -311,7 +310,7 @@ class IngredientController extends Controller
                 ->join('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
                 ->join('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
                 ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan')
-                ->whereRaw('limit_pemakaian <= tb_stok_bahan.stok');
+                ->whereRaw('tb_stok_bahan.stok < limit_pemakaian');
             // dd($limitPemakaian);
 
             return Datatables::of($limitPemakaian)

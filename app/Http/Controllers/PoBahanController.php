@@ -87,8 +87,8 @@ class PoBahanController extends Controller
                 'subtotal_tax' => $request->get('subtotaltax')[$key],
             ];
             \DB::table('tb_d_po_bahan')->insert($detail);
-            $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
-            \DB::table('tb_stok_bahan')->where('id_bahan', $value)->where('location_id', $request->get('id_lokasi'))->update((array('stok' => $realStok->stok + $request->get('qty')[$key])));
+            // $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
+            \DB::statement("update tb_stok_bahan set stok = stok + ".$request->get('qty')[$key]." where id_bahan = '$value' and location_id = '".$request->get('id_lokasi')."'  ");
         }
         return redirect()->route('po-bahan.create');
     }

@@ -32,11 +32,11 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-sm-12">
+                {{-- <div class="form-group col-sm-12">
                     <label>Stok Bahan</label>
                     <input type="number" placeholder="Stok Bahan" class="form-control" name="stok"
                         value="{{ old('stok', $data->stok) }}">
-                </div>
+                </div> --}}
                 <div class="form-group col-sm-12">
                     <label>Limit Stok Bahan</label>
                     <input type="number" placeholder="Limit Stok Bahan" class="form-control" name="limit_stok"
