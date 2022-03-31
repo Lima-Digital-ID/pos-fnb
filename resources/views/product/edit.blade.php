@@ -94,15 +94,18 @@
               <div class="form-group">
               <br>
                 <label>
-                  {!! Form::checkbox('enable_stock', 1, $product->enable_stock, ['class' => 'input-icheck', 'id' => 'enable_stock']); !!} <strong>@lang('product.manage_stock')</strong>
-                </label>@show_tooltip(__('tooltip.enable_stock')) <p class="help-block"><i>@lang('product.enable_stock_help')</i></p>
+                  {{-- {!! Form::checkbox('enable_stock', 1, $product->enable_stock, ['class' => 'input-icheck', 'id' => 'enable_stock']); !!} <strong>@lang('product.manage_stock')</strong> --}}
+                  <input type="hidden" name="enable_stock" value='1'>
+
+                </label>
+                {{-- @show_tooltip(__('tooltip.enable_stock')) <p class="help-block"><i>@lang('product.enable_stock_help')</i></p> --}}
               </div>
             </div>
             <div class="col-sm-4" id="alert_quantity_div" @if(!$product->enable_stock) style="display:none" @endif>
               <div class="form-group">
-                {!! Form::label('alert_quantity', __('product.alert_quantity') . ':*') !!} @show_tooltip(__('tooltip.alert_quantity'))
-                {!! Form::number('alert_quantity', $product->alert_quantity, ['class' => 'form-control', 'required',
-                'placeholder' => __('product.alert_quantity') , 'min' => '0']); !!}
+                {{-- {!! Form::label('alert_quantity', __('product.alert_quantity') . ':*') !!} @show_tooltip(__('tooltip.alert_quantity')) --}}
+                {!! Form::hidden('alert_quantity', $product->alert_quantity, ['class' => 'form-control', 'required',
+                'placeholder' => __('product.alert_quantity') , 'min' => '0','value' => '0']); !!}
               </div>
             </div>
 
