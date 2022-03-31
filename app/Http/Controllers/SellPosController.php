@@ -586,7 +586,7 @@ class SellPosController extends Controller
 
                 foreach ($getBahanProduk as $i => $v) {
                     $decrase_stok = $v->kebutuhan * $product_temp['quantity'];
-                    DB::statement("update tb_stok_bahan set stok = stok - $decrase_stok where id_bahan = '".$v->id_bahan."' and location_id = '".$request->input('select_location_id')."' ");
+                    DB::statement("update tb_stok_bahan set stok = stok - $decrase_stok where id_bahan = '".$v->id_bahan."' and location_id = '".$request->input('location_id')."' ");
                 }
 
 

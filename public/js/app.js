@@ -2175,10 +2175,12 @@ $(document).on('click', 'a.delete_purchase_return', function(e) {
 
 //Start: CRUD for Bahan
 //Bahan table
+var urlStart = '/'
+
 var ingredients_table = $('#ingredient_table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/bahan',
+    ajax: urlStart+'bahan',
     columnDefs: [
         {
             targets: 3,
@@ -2202,7 +2204,7 @@ var ingredients_table = $('#ingredient_table').DataTable({
 var limit_stok_table = $('#limit_stok_ingredient_table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/bahan/limit-stok',
+    ajax: urlStart+'bahan/limit-stok',
     columnDefs: [
         {
             targets: 3,
@@ -2225,7 +2227,7 @@ var limit_stok_table = $('#limit_stok_ingredient_table').DataTable({
 var limit_pemakaian_table = $('#limit_pemakaian_ingredient_table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/bahan/limit-pemakaian',
+    ajax: urlStart+'bahan/limit-pemakaian',
     columnDefs: [
         {
             targets: 3,
@@ -2249,7 +2251,7 @@ var limit_pemakaian_table = $('#limit_pemakaian_ingredient_table').DataTable({
 var satuan_table = $('#satuan_bahan_table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/satuan_bahan',
+    ajax: urlStart+'satuan_bahan',
     columnDefs: [
         {
             // targets: 3,
@@ -2269,7 +2271,7 @@ var satuan_table = $('#satuan_bahan_table').DataTable({
 var satuan_table = $('#stock_adjustment_bahan_table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/stock-bahan-adjustment',
+    ajax: urlStart+'stock-bahan-adjustment',
     columnDefs: [
         {
             // targets: 3,
@@ -2294,7 +2296,7 @@ var satuan_table = $('#stock_adjustment_bahan_table').DataTable({
 var satuan_table = $('#po-bahan').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/po-bahan',
+    ajax: urlStart+'po-bahan',
     columnDefs: [
         {
             // targets: 3,

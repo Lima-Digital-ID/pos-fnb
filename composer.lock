@@ -3298,16 +3298,16 @@
         },
         {
             "name": "spatie/dropbox-api",
-            "version": "1.20.0",
+            "version": "1.20.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/dropbox-api.git",
-                "reference": "d9b888559b8fc6186ab2586919368f3c44748118"
+                "reference": "f7563632fa6e4970b895805169688be273fcbf19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/dropbox-api/zipball/d9b888559b8fc6186ab2586919368f3c44748118",
-                "reference": "d9b888559b8fc6186ab2586919368f3c44748118",
+                "url": "https://api.github.com/repos/spatie/dropbox-api/zipball/f7563632fa6e4970b895805169688be273fcbf19",
+                "reference": "f7563632fa6e4970b895805169688be273fcbf19",
                 "shasum": ""
             },
             "require": {
@@ -3356,7 +3356,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/dropbox-api/issues",
-                "source": "https://github.com/spatie/dropbox-api/tree/1.20.0"
+                "source": "https://github.com/spatie/dropbox-api/tree/1.20.1"
             },
             "funding": [
                 {
@@ -3368,7 +3368,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-24T13:58:37+00:00"
+            "time": "2022-03-29T06:41:44+00:00"
         },
         {
             "name": "spatie/flysystem-dropbox",
@@ -6869,16 +6869,16 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "93ebd0014cab80c4ea9f5e297ea48672f1b87706"
+                "reference": "77a32518733312af16a44300404e945338981de3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/93ebd0014cab80c4ea9f5e297ea48672f1b87706",
-                "reference": "93ebd0014cab80c4ea9f5e297ea48672f1b87706",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/77a32518733312af16a44300404e945338981de3",
+                "reference": "77a32518733312af16a44300404e945338981de3",
                 "shasum": ""
             },
             "require": {
@@ -6913,9 +6913,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.1"
             },
-            "time": "2022-01-04T19:58:01+00:00"
+            "time": "2022-03-15T21:29:03+00:00"
         },
         {
             "name": "phpspec/prophecy",
