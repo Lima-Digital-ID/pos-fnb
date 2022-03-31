@@ -101,8 +101,8 @@
         <div class="col-sm-4 @if(!empty($duplicate_product) && $duplicate_product->enable_stock == 0) hide @endif" id="alert_quantity_div">
           <div class="form-group">
             {{-- {!! Form::label('alert_quantity',  __('product.alert_quantity') . ':*') !!} @show_tooltip(__('tooltip.alert_quantity')) --}}
-            {!! Form::hidden('alert_quantity', !empty($duplicate_product->alert_quantity) ? $duplicate_product->alert_quantity : null , ['class' => 'form-control', 'required',
-            'placeholder' => __('product.alert_quantity'), 'min' => '0', 'value' => '0']); !!}
+            {!! Form::hidden('alert_quantity', !empty($duplicate_product->alert_quantity) ? $duplicate_product->alert_quantity : 0 , ['class' => 'form-control', 'required',
+            'placeholder' => __('product.alert_quantity'), 'min' => '0']); !!}
           </div>
         </div>
         <div class="clearfix"></div>

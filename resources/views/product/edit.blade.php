@@ -105,7 +105,7 @@
               <div class="form-group">
                 {{-- {!! Form::label('alert_quantity', __('product.alert_quantity') . ':*') !!} @show_tooltip(__('tooltip.alert_quantity')) --}}
                 {!! Form::hidden('alert_quantity', $product->alert_quantity, ['class' => 'form-control', 'required',
-                'placeholder' => __('product.alert_quantity') , 'min' => '0','value' => '0']); !!}
+                'placeholder' => __('product.alert_quantity') , 'min' => '0']); !!}
               </div>
             </div>
 
