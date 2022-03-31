@@ -203,12 +203,13 @@
 	@endif
 	<td class="{{$hide_tax}}">
 		<input type="text" name="products[{{$row_count}}][unit_price_inc_tax]" class="form-control pos_unit_price_inc_tax input_number" value="{{@num_format($unit_price_inc_tax)}}" @if(!auth()->user()->can('edit_product_price_from_sale_screen')) readonly @endif @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$unit_price_inc_tax}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($unit_price_inc_tax)])}}" @endif>
+		
+		@php
+			$idPegawaiSelect = auth()->user()->id_pegawai==null || auth()->user()->id_pegawai==0 ? 1 : auth()->user()->id_pegawai;	
+		@endphp
+		{!! Form::hidden("products[" . $row_count . "][pegawai]",$idPegawaiSelect); !!}
 	</td>
 
-	<td class="text-center">
-		{!! Form::select("products[" . $row_count . "][pegawai]", 
-										$pegawai_option, $product->id_pegawai, ['class' => 'form-control select2', 'placeholder' => 'Pilih Pegawai', 'required' => 'required']); !!}
-	</td>
 	<td class="text-center v-center">
 		@php
 			$subtotal_type = !empty($pos_settings['is_pos_subtotal_editable']) ? 'text' : 'hidden';

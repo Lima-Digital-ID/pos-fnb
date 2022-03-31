@@ -90,18 +90,18 @@
         		<td align="left">{{$receipt_details->date_label}}</td>
         		<td align="left">: {{$receipt_details->invoice_date}}</td>
         	</tr>
-        	<tr>
+        	{{-- <tr>
         		<td align="left">{{$receipt_details->sales_person_label}}</td>
         		<td align="left">: {{$receipt_details->sales_person}}</td>
-        	</tr>
+        	</tr> --}}
         	<tr>
         		<td align="left">{{$receipt_details->customer_label}}</td>
         		<td align="left">: {{$receipt_details->customer_name}}</td>
         	</tr>
-        	<tr>
+        	{{-- <tr>
         		<td align="left">Barberman</td>
         		<td align="left">: {{$receipt_details->nama_pegawai}}</td>
-        	</tr>
+        	</tr> --}}
 
         	@php
         	function splitMethod($val){

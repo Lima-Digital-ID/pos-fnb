@@ -374,9 +374,6 @@
 										@lang('sale.price_inc_tax')
 									</th>
 									<th class="text-center col-md-2">
-										Pegawai
-									</th>
-									<th class="text-center col-md-2">
 										@lang('sale.subtotal')
 									</th>
 									<th class="text-center"><i class="fa fa-close" aria-hidden="true"></i></th>

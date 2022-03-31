@@ -39,7 +39,7 @@
                             <!--<th>@lang('purchase.payment_due')</th>-->
                             <th>@lang('contact.contact')</th>
                             <th>Keterangan</th>
-                            <th>Barber/Pegawai</th>
+                            <th>Pegawai</th>
                             <th>@lang('messages.action')</th>
                         </tr>
                     </thead>
