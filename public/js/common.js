@@ -70,15 +70,15 @@ $(document).ready(function() {
         },
     });
 
-    jQuery.validator.addMethod(
-        'max-value',
-        function(value, element, param) {
-            return this.optional(element) || !(param < __number_uf(value));
-        },
-        function(params, element) {
-            return $(element).data('msg-max-value');
-        }
-    );
+    // jQuery.validator.addMethod(
+    //     'max-value',
+    //     function(value, element, param) {
+    //         return this.optional(element) || !(param < __number_uf(value));
+    //     },
+    //     function(params, element) {
+    //         return $(element).data('msg-max-value');
+    //     }
+    // );
 
     jQuery.validator.addMethod('abs_digit', function(value, element) {
         return this.optional(element) || Number.isInteger(Math.abs(__number_uf(value)));

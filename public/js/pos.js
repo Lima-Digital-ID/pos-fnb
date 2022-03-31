@@ -236,12 +236,12 @@ $(document).ready(function() {
 
     //Update line total and check for quantity not greater than max quantity
     $('table#pos_table tbody').on('change', 'input.pos_quantity', function() {
-        if (sell_form_validator) {
-            sell_form_validator.element($(this));
-        }
-        if (pos_form_validator) {
-            pos_form_validator.element($(this));
-        }
+        // if (sell_form_validator) {
+        //     sell_form_validator.element($(this));
+        // }
+        // if (pos_form_validator) {
+        //     pos_form_validator.element($(this));
+        // }
         // var max_qty = parseFloat($(this).data('rule-max'));
         var entered_qty = __read_number($(this));
 
@@ -653,9 +653,8 @@ $(document).ready(function() {
             // var total_payble = __read_number($('input#final_total_input'));
             // var total_paying = __read_number($('input#total_paying_input'));
             var cnf = true;
-
             //Ignore if the difference is less than 0.5
-            if ($('input#in_balance_due').val() >= 0.5) {
+/*             if ($('input#in_balance_due').val() >= 0.5) {
                 cnf = confirm(LANG.paid_amount_is_less_than_payable);
                 // if( total_payble > total_paying ){
                 // 	cnf = confirm( LANG.paid_amount_is_less_than_payable );
@@ -664,7 +663,7 @@ $(document).ready(function() {
                 // 	cnf = false;
                 // }
             }
-
+ */
             if (cnf) {
                 $('div.pos-processing').show();
                 $('#pos-save').attr('disabled', 'true');

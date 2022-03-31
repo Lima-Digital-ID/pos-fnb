@@ -829,7 +829,7 @@ class SellPosController extends Controller
                                     'location_id' => $input['location_id'],
                                     'pos_settings' => $pos_settings
                                 ];
-                    $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
+                    // $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
                     //Auto send notification
                     $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
