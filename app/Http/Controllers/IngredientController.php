@@ -192,14 +192,14 @@ class IngredientController extends Controller
             [
                 'nama_bahan' => 'required',
                 'id_satuan' => 'required',
-                'stok' => 'required',
+                // 'stok' => 'required',
                 'limit_stok' => 'required',
                 'limit_pemakaian' => 'required',
             ],
             [
                 'nama_bahan.required' => 'Nama Bahan harus diisi.',
                 'id_satuan.required' => 'Satuan Bahan harus diisi.',
-                'stok.required' => 'Stok Bahan harus diisi.',
+                // 'stok.required' => 'Stok Bahan harus diisi.',
                 'limit_stok.required' => 'Limit Stok Bahan harus diisi.',
                 'limit_pemakaian.required' => 'Limit Pemakaian Bahan harus diisi.',
             ]
@@ -209,7 +209,7 @@ class IngredientController extends Controller
             $bahan = array(
                 'nama_bahan' => $validated['nama_bahan'],
                 'id_satuan' => $validated['id_satuan'],
-                'stok' => $validated['stok'],
+                // 'stok' => $validated['stok'],
                 'limit_stok' => $validated['limit_stok'],
                 'limit_pemakaian' => $validated['limit_pemakaian']
             );
