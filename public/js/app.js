@@ -2310,7 +2310,6 @@ var satuan_table = $('#po-bahan').DataTable({
         { data: 'location', name: 'location' },
         { data: 'tax', name: 'tax' },
         { data: 'date', name: 'date' },
-        { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'qty', name: 'qty' },
         { data: 'price', name: 'price',render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
         { data: 'subtotal', name: 'subtotal', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },

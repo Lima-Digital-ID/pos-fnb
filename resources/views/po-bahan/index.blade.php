@@ -31,7 +31,6 @@
                                 <th>Lokasi Bisnis</th>
                                 <th>Jenis Pajak</th>
                                 <th>Tanggal PO</th>
-                                <th>Bahan</th>
                                 <th>Kuantitas</th>
                                 <th>Harga Satuan</th>
                                 <th>Harga Sebelum Pajak</th>
