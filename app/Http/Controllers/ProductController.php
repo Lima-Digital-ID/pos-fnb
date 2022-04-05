@@ -1128,13 +1128,18 @@ class ProductController extends Controller
 
             foreach ($result as $key => $value) {
                 $getBahan = DB::table('tb_bahan_product as bp')->select('stok', 'limit_pemakaian', 'kebutuhan')->join('tb_bahan as b', 'bp.id_bahan', 'b.id_bahan')->join('tb_stok_bahan as sb', 'b.id_bahan', 'sb.id_bahan')->where('bp.product_id', $value->product_id)->where('sb.location_id', $location_id)->get();
-                $value->qty_available = false; //kosong
+                $value->qty_available = true; //ada
                 foreach ($getBahan as $i => $v) {
-                    if ($v->stok > $v->limit_pemakaian) {
+                    if($v->stok < $v->limit_pemakaian){
+                        $value->qty_available = false; //kosong
+                        break;
+                    }
+                    else{
                         $stokLimit = $v->stok - $v->limit_pemakaian;
                         $cekStokProduk = floor($stokLimit / $v->kebutuhan);
-                        if ($cekStokProduk != 0) {
-                            $value->qty_available = true; //kosong
+                        if ($cekStokProduk == 0) {
+                            $value->qty_available = false; //kosong
+                            break;
                         }
                     }
                 }

@@ -26,7 +26,6 @@ class PoBahanController extends Controller
                 'date',
                 // 'tb_po_bahan.location_id',
                 'business_locations.name as location',
-                'tb_bahan.nama_bahan',
                 'tb_d_po_bahan.qty',
                 'tb_d_po_bahan.price',
                 'tb_d_po_bahan.subtotal',
@@ -34,7 +33,6 @@ class PoBahanController extends Controller
             ])
                 ->join('tax_rates', 'tb_po_bahan.id_pajak', 'tax_rates.id')
                 ->join('tb_d_po_bahan', 'tb_po_bahan.id_po_bahan', 'tb_d_po_bahan.id_po_bahan')
-                ->join('tb_bahan', 'tb_d_po_bahan.id_bahan', 'tb_bahan.id_bahan')
                 ->join('business_locations', 'tb_po_bahan.location_id', 'business_locations.id');
             // dd($adj);
 
@@ -65,13 +63,11 @@ class PoBahanController extends Controller
      */
     public function store(Request $request)
     {
-        $lastId = \DB::table('tb_po_bahan')->latest('id')->first();
         $po = array(
             'id_pajak' => $request->id_pajak,
             'no_referensi' => $request->no_referensi,
             'location_id' => $request->id_lokasi,
-            // 'date' => $request->date . ":00",
-            'id_po_bahan' =>  $lastId == null ? 1 :  $lastId->id_po_bahan + 1,
+            'date' => $request->date,
         );
         // dd($po);
         \DB::table('tb_po_bahan')->insert($po);

@@ -308,6 +308,9 @@ class SellPosController extends Controller
         $payment_type_setor = $this->productUtil->payment_types();
         unset($payment_type_setor['ovo']);
         unset($payment_types['bank_transfer']);
+        unset($payment_type_setor['gopay']);
+        unset($payment_type_setor['qris']);
+        unset($payment_type_setor['shopee_pay']);
         $payment_lines[] = $this->dummyPaymentLine;
         
         $business_locations = BusinessLocation::forDropdown($business_id, false, true);

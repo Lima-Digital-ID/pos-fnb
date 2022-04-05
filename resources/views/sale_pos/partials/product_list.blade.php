@@ -1,5 +1,5 @@
 @forelse($products as $product)
-	<div class="col-md-3 col-xs-4 product_list no-print">
+	<div class="col-md-3 col-xs-6 product_list no-print">
 		<div class="product_box bg-gray" data-toggle="tooltip" data-placement="bottom" data-variation_id="{{$product->variation_id}}" title="{{$product->name}} @if($product->type == 'variable')- {{$product->variation}} @endif {{ '(' . $product->sub_sku . ')'}}">
 		<div class="image-container">
 			<img src="{{$product->image_url}}" alt="">
@@ -11,9 +11,9 @@
 				@endif
 				</small>
 			</div>
-			<small class="text-muted">
+			{{-- <small class="text-muted">
 				({{$product->sub_sku}})
-			</small>
+			</small> --}}
 		</div>
 	</div>
 @empty

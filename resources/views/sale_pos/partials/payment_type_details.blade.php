@@ -94,11 +94,16 @@
 		</div>
 	</div>
 </div>
-<div class="payment_details_div @if( $payment_line['method'] !== 'ovo' ) {{ 'hide' }} @endif" data-type="ovo" >
-	<div class="col-md-12">
-		<div class="form-group">
-			{!! Form::label("transaction_no_3_$row_index", __('Reference Code')) !!}
-			{!! Form::text("payment[$row_index][ref_code]", $payment_line['ref_code'], ['class' => 'form-control', 'placeholder' => 'Reference Code', 'id' => "transaction_no_3_$row_index"]); !!}
+<?php 
+	$arrPaymentOpt = array('ovo','gopay','qris','shopee_pay');
+?>
+	@foreach ($arrPaymentOpt as $v)
+		<div class="payment_details_div @if( $payment_line['method'] !== 'ovo' || $payment_line['method'] !== 'gopay' || $payment_line['method'] !== 'qris' || $payment_line['method'] !== 'shopee_pay' ) {{ 'hide' }} @endif" data-type="{{$v}}" >
+			<div class="col-md-12">
+				<div class="form-group">
+					{!! Form::label("transaction_no_3_$row_index", __('Reference Code')) !!}
+					{!! Form::text("payment[$row_index][ref_code]", $payment_line['ref_code'], ['class' => 'form-control', 'placeholder' => 'Reference Code', 'id' => "transaction_no_3_$row_index"]); !!}
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
+	@endforeach
