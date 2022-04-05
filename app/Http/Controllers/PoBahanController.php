@@ -86,9 +86,17 @@ class PoBahanController extends Controller
                 'subtotal' => $request->get('subtotal')[$key],
                 'subtotal_tax' => $request->get('subtotaltax')[$key],
             ];
+            $kartuStok = [
+                'id_bahan' => $value,
+                'jml_stok' => $request->get('qty')[$key],
+                'tipe' => 'po',
+                'no_transaksi' => $request->no_referensi,
+                'tanggal' => date('Y-m-d'),
+            ];
             \DB::table('tb_d_po_bahan')->insert($detail);
+            \DB::table('tb_kartu_stok')->insert($kartuStok);
             // $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
-            \DB::statement("update tb_stok_bahan set stok = stok + ".$request->get('qty')[$key]." where id_bahan = '$value' and location_id = '".$request->get('id_lokasi')."'  ");
+            \DB::statement("update tb_stok_bahan set stok = stok + " . $request->get('qty')[$key] . " where id_bahan = '$value' and location_id = '" . $request->get('id_lokasi') . "'  ");
         }
         return redirect()->route('po-bahan.create');
     }

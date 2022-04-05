@@ -127,7 +127,15 @@ class StockBahanAdjustmenController extends Controller
                 'stok_adjust' => $request->get('stok_adjust')[$key],
                 // 'stok_adjust' => $request->get('stok_adjust')[$key],
             ];
+            $kartuStok = [
+                'id_bahan' => $value,
+                'jml_stok' => $request->get('stok_adjust')[$key],
+                'tipe' => 'adj',
+                'no_transaksi' => $request->no_referensi,
+                'tanggal' => date('Y-m-d'),
+            ];
             \DB::table('tb_d_stok_bahan_adjust')->insert($detail);
+            \DB::table('tb_kartu_stok')->insert($kartuStok);
             // $realStok = Ingredient::findOrFail($value);
             $realStok = \DB::table('tb_stok_bahan')->where('id_bahan', $value)->first();
             // dd($realStok->stok);

@@ -78,10 +78,10 @@
                                     </span>
                                     <select name="bahan[]" id="bahan" class="form-control bahan">
                                         <option value="" class="opt-bahan">---Pilih Bahan---</option>
-                                        {{-- @foreach ($bahan as $item)
+                                        @foreach ($bahan as $item)
                                             <option value="{{ $item->id_bahan }}">
                                                 {{ $item->nama_bahan }}</option>
-                                        @endforeach --}}
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -194,21 +194,21 @@
         //     $(".bahan").val('');
         // })
 
-        function getIngredientByLocation(id) {
-            $.ajax({
-                url: "/bahan/list/" + id,
-                type: "GET",
-                async: false,
-                success: function(response) {
-                    data = jQuery.parseJSON(response);
-                    console.log(data);
-                    $.each(data, function(k, v) {
-                        $(".bahan").append("<option value=" + v.id_bahan + ">" + v.nama_bahan +
-                            "</option>");
-                    });
-                }
-            })
-        }
+        // function getIngredientByLocation(id) {
+        //     $.ajax({
+        //         url: "/bahan/list/" + id,
+        //         type: "GET",
+        //         async: false,
+        //         success: function(response) {
+        //             data = jQuery.parseJSON(response);
+        //             console.log(data);
+        //             $.each(data, function(k, v) {
+        //                 $(".bahan").append("<option value=" + v.id_bahan + ">" + v.nama_bahan +
+        //                     "</option>");
+        //             });
+        //         }
+        //     })
+        // }
 
         function grandTotal() {
             var qty = $('#qty').val();
