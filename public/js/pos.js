@@ -174,18 +174,7 @@ $(document).ready(function() {
                 // if (ui.item.enable_stock != 1 || ui.item.qty_available > 0) {
                 if (ui.item.enable_stock == 1 || ui.item.qty_available == false) {
                     $(this).val(null);
-                    var sameProduct = 0
-                    if(typeof $(".product_id").val()!='undefined'){
-                        $(".product_id").each(function(i,v) {
-                            if(v.value==ui.item.product_id){
-                                sameProduct++;
-                            }
-                        })
-                    }
-
-                    if(sameProduct==0){
                         pos_product_row(ui.item.variation_id);
-                    }
                 } else {
                     alert(LANG.out_of_stock);
                 }
@@ -1153,138 +1142,181 @@ function get_recent_transactions(status, element_obj) {
     });
 }
 
-function pos_product_row(variation_id) {
-    //Get item addition method
-    var item_addtn_method = 0;
-    var add_via_ajax = true;
-    if ($('#item_addition_method').length) {
-        item_addtn_method = $('#item_addition_method').val();
-    }
+    function cekAvabilityStok(variationId) {
+        var arrProduk = []
+        var ttlProduk = []
+        var locationId = $("#select_location_id").val()
 
-    // console.log(item_addtn_method);
-    if (item_addtn_method != 0) {
-        add_via_ajax = true;
-    } else {
-        var is_added = false;
 
-        //Search for variation id in each row of pos table
-        $('#pos_table tbody')
-            .find('tr')
-            .each(function() {
-                var row_v_id = $(this)
-                    .find('.row_variation_id')
-                    .val();
-                var enable_sr_no = $(this)
-                    .find('.enable_sr_no')
-                    .val();
-                var modifiers_exist = false;
-                if ($(this).find('input.modifiers_exist').length > 0) {
-                    modifiers_exist = true;
-                }
+        $(".row_variation_id").each(function(i,v){
+            arrProduk.push(v.value)
+            ttlProduk.push(parseInt($(".input_quantity")[i].value)+1)
+        })
 
-                if (
-                    row_v_id == variation_id &&
-                    enable_sr_no !== '1' &&
-                    !modifiers_exist &&
-                    !is_added
-                ) {
-                    add_via_ajax = false;
-                    is_added = true;
-
-                    //Increment product quantity
-                    qty_element = $(this).find('.pos_quantity');
-                    var qty = __read_number(qty_element);
-                    __write_number(qty_element, qty + 1);
-                    qty_element.change();
-
-                    round_row_to_iraqi_dinnar($(this));
-
-                    $('input#search_product')
-                        .focus()
-                        .select();
-                }
-            });
-    }
-
-    if (add_via_ajax) {
-        var product_row = $('input#product_row_count').val();
-        var location_id = $('input#location_id').val();
-        var customer_id = $('select#customer_id').val();
-        var kategori_customer = $('select#kategori_customer').val();
-        var is_direct_sell = false;
-        if (
-            $('input[name="is_direct_sale"]').length > 0 &&
-            $('input[name="is_direct_sale"]').val() == 1
-        ) {
-            is_direct_sell = true;
-        }
-
-        var price_group = '';
-        if ($('#price_group').length > 0) {
-            price_group = $('#price_group').val();
-        }
-
+        arrProduk = arrProduk.join(',')
+        ttlProduk = ttlProduk.join(',')
+        var isAdd
         $.ajax({
-            method: 'GET',
-            url: '/sells/pos/get_product_row/' + variation_id + '/' + location_id,
-            async: false,
-            data: {
-                product_row: product_row,
-                customer_id: customer_id,
-                is_direct_sell: is_direct_sell,
-                price_group: price_group,
-                kategori_customer: kategori_customer,
-            },
-            dataType: 'json',
-            success: function(result) {
-                if (result.success) {
-                    $('table#pos_table tbody')
-                        .append(result.html_content)
-                        .find('input.pos_quantity');
-                    //increment row count
-                    $('input#product_row_count').val(parseInt(product_row) + 1);
-                    var this_row = $('table#pos_table tbody')
-                        .find('tr')
-                        .last();
-                    pos_each_row(this_row);
+            url : "/pos/cek-avability-stok?selected_product="+arrProduk+"&qty="+ttlProduk+"&variation_id="+variationId+"&location_id="+locationId,
+            method : 'get',
+            async : false,
+            success : function(res){
+                isAdd = res
+            }
+        })
+        return isAdd
+    }
 
-                    //For initial discount if present
-                    var line_total = __read_number(this_row.find('input.pos_line_total'));
-                    this_row.find('span.pos_line_total_text').text(line_total);
 
-                    pos_total_row();
-                    if (result.enable_sr_no == '1') {
-                        var new_row = $('table#pos_table tbody')
+function pos_product_row(variation_id) {
+    var sameProduct = 0
+    if(typeof $(".row_variation_id").val()!='undefined'){
+        $(".row_variation_id").each(function(i,v) {
+            if(v.value==variation_id){
+                sameProduct++;
+            }
+        })
+    }
+
+    if(sameProduct==0 && cekAvabilityStok(variation_id)==1){
+        //Get item addition method
+        var item_addtn_method = 0;
+        var add_via_ajax = true;
+        if ($('#item_addition_method').length) {
+            item_addtn_method = $('#item_addition_method').val();
+        }
+
+        // console.log(item_addtn_method);
+        if (item_addtn_method != 0) {
+            add_via_ajax = true;
+        } else {
+            var is_added = false;
+
+            //Search for variation id in each row of pos table
+            $('#pos_table tbody')
+                .find('tr')
+                .each(function() {
+                    var row_v_id = $(this)
+                        .find('.row_variation_id')
+                        .val();
+                    var enable_sr_no = $(this)
+                        .find('.enable_sr_no')
+                        .val();
+                    var modifiers_exist = false;
+                    if ($(this).find('input.modifiers_exist').length > 0) {
+                        modifiers_exist = true;
+                    }
+
+                    if (
+                        row_v_id == variation_id &&
+                        enable_sr_no !== '1' &&
+                        !modifiers_exist &&
+                        !is_added
+                    ) {
+                        add_via_ajax = false;
+                        is_added = true;
+
+                        //Increment product quantity
+                        qty_element = $(this).find('.pos_quantity');
+                        var qty = __read_number(qty_element);
+                        __write_number(qty_element, qty + 1);
+                        qty_element.change();
+
+                        round_row_to_iraqi_dinnar($(this));
+
+                        $('input#search_product')
+                            .focus()
+                            .select();
+                    }
+                });
+        }
+
+        if (add_via_ajax) {
+            var product_row = $('input#product_row_count').val();
+            var location_id = $('input#location_id').val();
+            var customer_id = $('select#customer_id').val();
+            var kategori_customer = $('select#kategori_customer').val();
+            var is_direct_sell = false;
+            if (
+                $('input[name="is_direct_sale"]').length > 0 &&
+                $('input[name="is_direct_sale"]').val() == 1
+            ) {
+                is_direct_sell = true;
+            }
+
+            var price_group = '';
+            if ($('#price_group').length > 0) {
+                price_group = $('#price_group').val();
+            }
+
+            $.ajax({
+                method: 'GET',
+                url: '/sells/pos/get_product_row/' + variation_id + '/' + location_id,
+                async: false,
+                data: {
+                    product_row: product_row,
+                    customer_id: customer_id,
+                    is_direct_sell: is_direct_sell,
+                    price_group: price_group,
+                    kategori_customer: kategori_customer,
+                },
+                dataType: 'json',
+                success: function(result) {
+                    if (result.success) {
+                        $('table#pos_table tbody')
+                            .append(result.html_content)
+                            .find('input.pos_quantity');
+                        //increment row count
+                        $('input#product_row_count').val(parseInt(product_row) + 1);
+                        var this_row = $('table#pos_table tbody')
                             .find('tr')
                             .last();
-                        new_row.find('.add-pos-row-description').trigger('click');
+                        pos_each_row(this_row);
+
+                        //For initial discount if present
+                        var line_total = __read_number(this_row.find('input.pos_line_total'));
+                        this_row.find('span.pos_line_total_text').text(line_total);
+
+                        pos_total_row();
+                        if (result.enable_sr_no == '1') {
+                            var new_row = $('table#pos_table tbody')
+                                .find('tr')
+                                .last();
+                            new_row.find('.add-pos-row-description').trigger('click');
+                        }
+
+                        round_row_to_iraqi_dinnar(this_row);
+                        __currency_convert_recursively(this_row);
+
+                        $('input#search_product')
+                            .focus()
+                            .select();
+
+                        //Used in restaurant module
+                        if (result.html_modifier) {
+                            $('table#pos_table tbody')
+                                .find('tr')
+                                .last()
+                                .find('td:first')
+                                .append(result.html_modifier);
+                        }
+                    } else {
+                        toastr.error(result.msg);
+                        $('input#search_product')
+                            .focus()
+                            .select();
                     }
-
-                    round_row_to_iraqi_dinnar(this_row);
-                    __currency_convert_recursively(this_row);
-
-                    $('input#search_product')
-                        .focus()
-                        .select();
-
-                    //Used in restaurant module
-                    if (result.html_modifier) {
-                        $('table#pos_table tbody')
-                            .find('tr')
-                            .last()
-                            .find('td:first')
-                            .append(result.html_modifier);
-                    }
-                } else {
-                    toastr.error(result.msg);
-                    $('input#search_product')
-                        .focus()
-                        .select();
-                }
-            },
-        });
+                },
+            });
+        }
+        cekDiskon();
     }
-    cekDiskon();
+    else{
+        if(cekAvabilityStok(variation_id)==0){
+            toastr.error('Bahan Produk Tidak Cukup');
+        }
+    }
+
 }
 
 //Update values for each row

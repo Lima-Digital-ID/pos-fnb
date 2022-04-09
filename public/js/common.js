@@ -211,13 +211,13 @@ $(document).ready(function() {
         iraqi_selling_price_adjustment = false;
     }
 
-    function cekAvabilityStok(productId) {
+    function cekAvabilityStok(variationId) {
         var arrProduk = []
         var ttlProduk = []
         var locationId = $("#select_location_id").val()
 
 
-        $(".product_id").each(function(i,v){
+        $(".row_variation_id").each(function(i,v){
             arrProduk.push(v.value)
             ttlProduk.push(parseInt($(".input_quantity")[i].value)+1)
         })
@@ -226,7 +226,7 @@ $(document).ready(function() {
         ttlProduk = ttlProduk.join(',')
         var isAdd
         $.ajax({
-            url : "/pos/cek-avability-stok?selected_product="+arrProduk+"&qty="+ttlProduk+"&product_id="+productId+"&location_id="+locationId,
+            url : "/pos/cek-avability-stok?selected_product="+arrProduk+"&qty="+ttlProduk+"&variation_id="+variationId+"&location_id="+locationId,
             method : 'get',
             async : false,
             success : function(res){
@@ -238,7 +238,7 @@ $(document).ready(function() {
 
     //Input number
     $(document).on('click', '.input-number .quantity-up, .input-number .quantity-down', function() {
-        var productId = $(this).closest('td').find('.product_id').val()
+        var variationId = $(this).closest('td').find('.row_variation_id').val()
         var input = $(this)
             .closest('.input-number')
             .find('input');
@@ -255,12 +255,13 @@ $(document).ready(function() {
             // if (typeof max != 'undefined' && qty + step > max) {
             //     return false;
             // }
-            if(cekAvabilityStok(productId)==1){
+            if(cekAvabilityStok(variationId)==1){
                 __write_number(input, qty + step);
                 input.change();
             }
             else{
-                return false
+                toastr.error('Bahan Produk Tidak Cukup');
+                // return false
             }
         
         } else if ($(this).hasClass('quantity-down')) {

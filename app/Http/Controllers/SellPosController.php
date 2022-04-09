@@ -752,6 +752,18 @@ class SellPosController extends Controller
                         // $sum_komisi+=(($kasir != null ? $kasir->kom_trx : 0) * ($value['quantity'] * $total_item_paket));
                         // $sum_komisi+=(($komisi != null ? ($komisi->commission != null ? $komisi->commission : 0) : 0) * $value['quantity']);
                     }
+                    $bahanProduk = DB::table('tb_bahan_product')->where('product_id',$value['product_id'])->get();
+                    foreach ($bahanProduk as $index => $v) {
+                        $kartuStok = [
+                            'id_bahan' => $v->id_bahan,
+                            'jml_stok' => $v->kebutuhan,
+                            'tipe' => 'pos',
+                            'no_transaksi' => $transaction->invoice_no,
+                            'tanggal' => date('Y-m-d'),
+                        ];
+                        \DB::table('tb_kartu_stok')->insert($kartuStok);
+                    }
+        
                 }
                 
                 $data_jurnal=array(
@@ -3144,13 +3156,16 @@ class SellPosController extends Controller
     public function cekAvabilityStok()
     {
         $selectedProduct = request()->input('selected_product');
-        $arrProduct = explode(',',$selectedProduct);
+        $arrProduct = explode(',',$selectedProduct); //variation_id
 
         $getQtyProduk = request()->input('qty');
         $qtyProduk = explode(',',$getQtyProduk);
 
-        $productId = request()->input('product_id');
+        $getProdukId = \DB::table('variations')->select('product_id')->where('id',request()->input('variation_id'))->first();
+
+        $productId = $getProdukId->product_id;
         $locationId = request()->input('location_id');
+
         $bahanProduk = DB::table('tb_bahan_product as bp')
         ->select('bp.id_bahan','bp.kebutuhan','sb.stok','b.limit_pemakaian')
         ->join('tb_bahan as b','bp.id_bahan','b.id_bahan')
@@ -3169,7 +3184,7 @@ class SellPosController extends Controller
         }
 
         foreach ($arrProduct as $key => $value) {
-            $getBahanProduk = DB::table('tb_bahan_product')->where('product_id',$value)->get();
+            $getBahanProduk = DB::table('variations as v')->select('bp.*')->join('tb_bahan_product as bp','v.product_id','bp.product_id')->where('v.id',$value)->get();
 
             foreach ($getBahanProduk as $i => $v) {
                 if(isset($bahan[$v->id_bahan])){
@@ -3179,7 +3194,6 @@ class SellPosController extends Controller
         }
 
         $isAdd = true;
-        
         foreach ($bahan as $id_bahan => $value) {
             $cekStok = $value['stok_temp'] - $value['kebutuhan'];
             if($value['stok_temp']<$value['limit_pemakaian']){
