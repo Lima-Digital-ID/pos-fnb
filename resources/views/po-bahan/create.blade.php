@@ -79,7 +79,8 @@
                                     <select name="bahan[]" id="bahan" class="form-control bahan">
                                         <option value="" class="opt-bahan">---Pilih Bahan---</option>
                                         @foreach ($bahan as $item)
-                                            <option value="{{ $item->id_bahan }}">
+                                            <option value="{{ $item->id_bahan }}"
+                                                data-satuan="{{ $item->satuan->satuan }}">
                                                 {{ $item->nama_bahan }}</option>
                                         @endforeach
                                     </select>
@@ -94,6 +95,11 @@
                                     </span>
                                     <input type="number" class="form-control qty getSubtotal" placeholder="Kuantitas"
                                         id="qty" name="qty[]">
+                                    <span class="input-group-addon">
+                                        <div id="satuan" class="satuan-bahan">
+                                            -
+                                        </div>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -186,13 +192,16 @@
             subTotal(no)
         })
 
-        $(".lokasi").change(function() {
-            var id = $(".lokasi").find(":selected").attr('data-id')
-            getIngredientByLocation(id)
-        })
-        // $(".bahan").change(function() {
-        //     $(".bahan").val('');
+        // $(".lokasi").change(function() {
+        //     var id = $(".lokasi").find(":selected").attr('data-id')
+        //     getIngredientByLocation(id)
         // })
+        $(".bahan").change(function() {
+            // $("#satuan").hide("")
+            var no = $(this).closest(".row-bahan").attr('data-no')
+            var satuan = $(".row-bahan[data-no='" + no + "'] .bahan").find(":selected").attr('data-satuan')
+            $(".row-bahan[data-no='" + no + "'] .satuan-bahan").html(satuan);
+        })
 
         // function getIngredientByLocation(id) {
         //     $.ajax({
@@ -241,6 +250,13 @@
                     $(".row-bahan .remove_button").click(function() {
                         $(this).closest('.row-bahan').remove()
                         x--
+                    })
+                    $(".bahan").change(function() {
+                        // $("#satuan").hide("")
+                        var no = $(this).closest(".row-bahan").attr('data-no')
+                        var satuan = $(".row-bahan[data-no='" + no + "'] .bahan").find(":selected")
+                            .attr('data-satuan')
+                        $(".row-bahan[data-no='" + no + "'] .satuan-bahan").html(satuan);
                     })
                 }
             });

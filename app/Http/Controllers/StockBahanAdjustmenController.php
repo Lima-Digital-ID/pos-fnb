@@ -93,7 +93,10 @@ class StockBahanAdjustmenController extends Controller
         }
 
         $this->params['lokasi'] = BusinessLocation::get();
-        $this->params['bahan'] = Ingredient::get();
+        $this->params['bahan'] = \DB::table('tb_bahan')
+            ->leftJoin('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
+            ->get();
+        // dd($this->params['bahan']);
         return view('stok_bahan_adjustment.create', $this->params);
     }
 

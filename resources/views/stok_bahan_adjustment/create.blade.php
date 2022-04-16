@@ -67,10 +67,11 @@
                                     <span class="input-group-addon dynamic_button">
                                         <i class="fa fa-search"></i>
                                     </span>
-                                    <select name="bahan[]" id="" class="form-control">
+                                    <select name="bahan[]" id="bahan" class="form-control bahan">
                                         <option value="">---Pilih Bahan---</option>
                                         @foreach ($bahan as $item)
-                                            <option value="{{ $item->id_bahan }}">{{ $item->nama_bahan }}</option>
+                                            <option value="{{ $item->id_bahan }}" data-stok="{{ $item->stok }}">
+                                                {{ $item->nama_bahan }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -82,7 +83,13 @@
                                     <span class="input-group-addon">
                                         <i class="fa fa-dropbox"></i>
                                     </span>
-                                    <input type="number" class="form-control" placeholder="Stok" name="stok_adjust[]">
+                                    <input type="number" class="form-control stokInput" placeholder="Stok"
+                                        name="stok_adjust[]">
+                                    <span class="input-group-addon">
+                                        <div id="stok" class="stok-bahan">
+                                            -
+                                        </div>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -129,6 +136,21 @@
 @stop
 @section('javascript')
     <script>
+        $(".stokInput").keyup(function() {
+            var no = $(this).closest(".row-adj").attr('data-no')
+            var stokAwal = $(".row-adj[data-no='" + no + "'] .bahan").find(":selected").attr(
+                'data-stok')
+            var stokInput = $(".row-adj[data-no='" + no + "'] .stokInput").val()
+            var stok = stokAwal - stokInput
+            console.log(stok);
+            $(".row-adj[data-no='" + no + "'] .stok-bahan").html(stok);
+        })
+        $(".bahan").change(function() {
+            var no = $(this).closest(".row-adj").attr('data-no')
+            var stok = $(".row-adj[data-no='" + no + "'] .bahan").find(":selected").attr(
+                'data-stok')
+            $(".row-adj[data-no='" + no + "'] .stok-bahan").html(stok);
+        })
         $(document).ready(function() {
             var maxField = 100;
             var addButton = $('#tambah_bahan');
@@ -141,9 +163,6 @@
                     x++;
                     $(wrapper).append(fieldHTML);
                     $(".row-adj:last").attr('data-no', x)
-                    $(".row-adj:last").change(function() {
-                        subTotal(x)
-                    })
                     $(".row-adj:last input,.row-adj:last select").val('')
                     $(".row-adj:last .dynamic_button").empty().html(
                         `<a href="javascript:void(0);" class="remove_button" title="Remove field">X</i></a>`
@@ -151,6 +170,23 @@
                     $(".row-adj .remove_button").click(function() {
                         $(this).closest('.row-adj').remove()
                         x--
+                    })
+                    $(".stokInput").keyup(function() {
+                        var no = $(this).closest(".row-adj").attr('data-no')
+                        var stokAwal = $(".row-adj[data-no='" + no + "'] .bahan").find(":selected")
+                            .attr(
+                                'data-stok')
+                        var stokInput = $(".row-adj[data-no='" + no + "'] .stokInput").val()
+                        var stok = stokAwal - stokInput
+                        console.log(stok);
+                        $(".row-adj[data-no='" + no + "'] .stok-bahan").html(stok);
+                    })
+                    $(".bahan").change(function() {
+                        var no = $(this).closest(".row-adj").attr('data-no')
+                        var stok = $(".row-adj[data-no='" + no + "'] .bahan").find(":selected")
+                            .attr(
+                                'data-stok')
+                        $(".row-adj[data-no='" + no + "'] .stok-bahan").html(stok);
                     })
                 }
             });
