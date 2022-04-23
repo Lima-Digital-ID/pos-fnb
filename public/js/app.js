@@ -2354,8 +2354,8 @@ var satuan_table = $('#rekap-penjualan').DataTable({
     ],
     columns: [
         // { data: 'id', name: 'id' },
-        { data: 'invoice_no', name: 'invoice_no' },
         { data: 'tanggal_rekap', name: 'tanggal_rekap' },
         { data: 'total', name: 'total', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
+        { data: 'action', name: 'action' },
     ],
 });

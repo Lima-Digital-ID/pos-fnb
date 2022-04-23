@@ -390,5 +390,6 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('po-bahan', 'PoBahanController');
 
     // Rekap
+    Route::get('rekap-penjualan/detail-json/{id}', 'RekapPenjualanOnlineController@detailJson');
     Route::resource('rekap-penjualan', 'RekapPenjualanOnlineController');
 });

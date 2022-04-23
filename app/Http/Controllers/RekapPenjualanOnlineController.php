@@ -12,7 +12,7 @@ class RekapPenjualanOnlineController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (request()->ajax()) {
             $rekap = \DB::table('tb_rekap_penjualan_online')
@@ -23,10 +23,17 @@ class RekapPenjualanOnlineController extends Controller
                     'tb_rekap_penjualan_online.total',
                 ])
                 ->leftJoin('tb_rekap_penjualan_online_detail', 'tb_rekap_penjualan_online_detail.id_rekap_penjualan', 'tb_rekap_penjualan_online.id')
-                ->leftJoin('transactions', 'transactions.id', 'tb_rekap_penjualan_online_detail.inv_id');
-            // dd($adj);
+                ->leftJoin('transactions', 'transactions.id', 'tb_rekap_penjualan_online_detail.inv_id')
+                ->groupBy('tb_rekap_penjualan_online.id');
 
             return Datatables::of($rekap)
+                ->addColumn(
+                    'action',
+                    function ($rekap) {
+                        return '<a href="{{[$id]}}" class="btn btn-xs btn-info showDetail" data-toggle="modal" data-target="#exampleModal" data-id="" onClick="javasciprt: cekDetail(' . $rekap->id . ')"><i class="glyphicon glyphicon-eye-open"></i> Detail</a>';
+                    }
+                )
+                ->rawColumns(['action'])
                 ->make(true);
         }
         return view('rekap-penjualan.index');
@@ -117,5 +124,15 @@ class RekapPenjualanOnlineController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function detailJson($id)
+    {
+        $getDetail = \DB::table('tb_rekap_penjualan_online_detail')
+            ->select('transactions.invoice_no')
+            ->leftJoin('transactions', 'transactions.id', 'tb_rekap_penjualan_online_detail.inv_id')
+            ->where('id_rekap_penjualan', $id)
+            ->get();
+        echo json_encode($getDetail);
     }
 }
