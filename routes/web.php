@@ -379,6 +379,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('bookings', 'Restaurant\BookingController');
     Route::resource('promo', 'PromoController');
 
+    // Bahhan
     Route::resource('satuan_bahan', 'SatuanBahanController');
     Route::get('/bahan/list', 'IngredientController@getIngredient');
     Route::get('/bahan/list/{id}', 'IngredientController@getIngredientByLocation');
@@ -387,4 +388,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('bahan', 'IngredientController');
     Route::resource('stock-bahan-adjustment', 'StockBahanAdjustmenController');
     Route::resource('po-bahan', 'PoBahanController');
+
+    // Rekap
+    Route::resource('rekap-penjualan', 'RekapPenjualanOnlineController');
 });

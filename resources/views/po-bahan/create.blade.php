@@ -54,7 +54,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </span>
-                                {!! Form::text('date', @format_datetime('now'), ['class' => 'form-control', 'readonly', 'required']) !!}
+                                {!! Form::text('date', date('Y-m-d H:i'), ['class' => 'form-control', 'readonly', 'required']) !!}
                             </div>
                         </div>
                     </div>

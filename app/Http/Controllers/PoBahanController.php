@@ -63,11 +63,13 @@ class PoBahanController extends Controller
      */
     public function store(Request $request)
     {
+        $lastIdPo = \DB::table('tb_po_bahan')->latest('id')->first();
         $po = array(
             'id_pajak' => $request->id_pajak,
             'no_referensi' => $request->no_referensi,
             'location_id' => $request->id_lokasi,
             'date' => $request->date,
+            'id_po_bahan' => ($lastIdPo != null) ? 1 : $lastIdPo + 1
         );
         // dd($po);
         \DB::table('tb_po_bahan')->insert($po);

@@ -405,6 +405,29 @@ $user = DB::table('users')
                 </ul>
             </li>
         @endif
+        @if (auth()->user()->can('rekap-penjualan.create'))
+            <li
+                class="treeview {{ in_array($request->segment(1), ['rekap-penjualan']) ? 'active active-sub' : '' }}">
+                <a href="#">
+                    <i class="fa fa-archive"></i>
+                    <span class="title">Rekap Penjualan Non Tunai</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li
+                        class="{{ $request->segment(1) == 'rekap-penjualan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('RekapPenjualanOnlineController@index') }}">
+                            <i class="fa fa-archive"></i>
+                            <span class="title">
+                                Rekap Penjualan
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
 
         @if (auth()->user()->can('purchase.view') ||
     auth()->user()->can('purchase.create') ||
@@ -511,7 +534,8 @@ $user = DB::table('users')
                     @endcan
                     <li {{ auth()->user()['role'] != 2 ? '' : 'hidden' }}
                         class="{{ $request->segment(1) == 'promo' ? 'active' : '' }}"><a
-                            href="{{ action('PromoController@index') }}"><i class="fa fa-tag"></i>Promo</a>
+                            href="{{ action('PromoController@index') }}"><i
+                                class="fa fa-tag"></i>Promo</a>
                     </li>
                     @if (in_array('subscription', $enabled_modules))
                         <li class="{{ $request->segment(1) == 'subscriptions' ? 'active' : '' }}"><a

@@ -122,21 +122,23 @@ class IngredientController extends Controller
         );
 
         try {
-            $bahan = array(
+            $$bahan = array(
                 'nama_bahan' => $validated['nama_bahan'],
                 'id_satuan' => $validated['id_satuan'],
                 'limit_stok' => $validated['limit_stok'],
                 'limit_pemakaian' => $validated['limit_pemakaian']
             );
             \DB::table('tb_bahan')->insert($bahan);
-            // $lastId = \DB::table('tb_bahan')->latest('id_bahan')->first();
-            // $stok = array(
-            //     'id_bahan' => $lastId->id_bahan,
-            //     'stok' => $validated['stok'],
-            //     'location_id' => $request->get('location_id'),
+            $lastId = \DB::table('tb_bahan')->latest('id_bahan')->first();
+            $stok = array(
+                'id_bahan' => $lastId->id_bahan,
+                'stok' => '0',
+                'location_id' => '1',
+                // 'stok' => $validated['stok'],
+                // 'location_id' => $request->get('location_id'),
 
-            // );
-            // \DB::table('tb_stok_bahan')->insert($stok);
+            );
+            \DB::table('tb_stok_bahan')->insert($stok);
             // dd($stok);
         } catch (Exception $e) {
             return 'Terjadi kesalahan.' . $e;

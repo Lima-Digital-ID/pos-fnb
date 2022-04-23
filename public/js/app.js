@@ -2316,3 +2316,46 @@ var satuan_table = $('#po-bahan').DataTable({
         { data: 'subtotal_tax', name: 'subtotal_tax', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
     ],
 });
+
+//Start: CRUD for Kartu Stok
+//Kartu Stok table
+var satuan_table = $('#kartu-stok').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: urlStart+'kartu-stok',
+    columnDefs: [
+        {
+            // targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: 'no_transaksi', name: 'no_transaksi' },
+        { data: 'nama_bahan', name: 'nama_bahan' },
+        { data: 'jml_stok', name: 'jml_stok' },
+        { data: 'tipe', name: 'tipe' },
+        { data: 'tanggal', name: 'tanggal' },
+    ],
+});
+
+//Start: CRUD for Rekap Penjualan
+//Rekap Penjualan table
+var satuan_table = $('#rekap-penjualan').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: urlStart+'rekap-penjualan',
+    columnDefs: [
+        {
+            // targets: 3,
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        // { data: 'id', name: 'id' },
+        { data: 'invoice_no', name: 'invoice_no' },
+        { data: 'tanggal_rekap', name: 'tanggal_rekap' },
+        { data: 'total', name: 'total', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
+    ],
+});
