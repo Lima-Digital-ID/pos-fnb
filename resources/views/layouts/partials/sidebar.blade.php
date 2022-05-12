@@ -385,6 +385,24 @@ $user = DB::table('users')
                         </a>
                     </li>
                     <li
+                        class="{{ $request->segment(1) == 'satuan_besar' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('SatuanBesarController@index') }}">
+                            <i class="fa fa-user"></i>
+                            <span class="title">
+                                Satuan Besar
+                            </span>
+                        </a>
+                    </li>
+                    <li
+                        class="{{ $request->segment(1) == 'satuan_bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('SatuanBahanController@index') }}">
+                            <i class="fa fa-user"></i>
+                            <span class="title">
+                                Satuan Bahan
+                            </span>
+                        </a>
+                    </li>
+                    <li
                         class="{{ $request->segment(1) == 'bahan/limit-stok' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
                         <a href="{{ action('IngredientController@get_limit_stok') }}">
                             <i class="fa fa-user"></i>

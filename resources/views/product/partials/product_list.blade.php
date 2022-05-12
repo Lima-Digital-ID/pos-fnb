@@ -14,6 +14,7 @@
                 <th>@lang('product.tax')</th>
                 <th>@lang('product.sku')</th>
                 <th>Lokasi</th>
+                <th>HPP</th>
                 <th>@lang('messages.action')</th>
             </tr>
         </thead>

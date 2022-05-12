@@ -95,7 +95,8 @@ class ProductController extends Controller
                     'business_locations.name as lokasi',
                     DB::raw('SUM(vld.qty_available) as current_stock'),
                     DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
-                    DB::raw('MIN(v.sell_price_inc_tax) as min_price')
+                    DB::raw('MIN(v.sell_price_inc_tax) as min_price'),
+                    DB::raw('(select sum(bp.kebutuhan * tb.harga_bahan) from tb_bahan_product as bp join tb_bahan as tb on tb.id_bahan = bp.id_bahan where bp.product_id = products.id) as hpp')
                 )->groupBy('products.id');
 
             $type = request()->get('type', null);
@@ -326,7 +327,7 @@ class ProductController extends Controller
 
         $module_form_parts = $this->moduleUtil->getModuleData('product_form_part');
 
-        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan', 'b.nama_bahan', 's.satuan')->join('tb_satuan_bahan as s', 'b.id_satuan', 's.id_satuan')
+        $bahan = \DB::table('tb_bahan as b')->select('b.id_bahan', 'b.nama_bahan', 's.satuan', 'b.harga_bahan')->join('tb_satuan_bahan as s', 'b.id_satuan', 's.id_satuan')
             // ->join('tb_stok_bahan as sb', 'b.id_bahan', 'sb.id_bahan')
             // ->whereRaw('stok>limit_pemakaian')
             ->get();

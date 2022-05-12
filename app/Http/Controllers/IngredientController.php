@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Ingredient;
 use App\BusinessLocation;
 use App\SatuanBahan;
+use App\SatuanBesar;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Exception;
@@ -42,15 +43,19 @@ class IngredientController extends Controller
             $ingredient = Ingredient::select([
                 'tb_bahan.id_bahan',
                 'nama_bahan',
+                'harga_bahan',
+                'stok_besar',
                 'business_locations.name',
                 'tb_satuan_bahan.satuan',
+                'tb_satuan_besar.satuan_besar',
                 'tb_stok_bahan.stok',
                 'limit_stok',
                 'limit_pemakaian'
             ])
                 ->leftJoin('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
                 ->leftJoin('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
-                ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan');
+                ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan')
+                ->leftJoin('tb_satuan_besar', 'tb_satuan_besar.id_satuan_besar', 'tb_bahan.id_satuan_besar');
             // dd($ingredient);
 
             return Datatables::of($ingredient)
@@ -89,6 +94,7 @@ class IngredientController extends Controller
         }
 
         $this->params['satuan'] = SatuanBahan::get();
+        $this->params['satuanBesar'] = SatuanBesar::get();
         $this->params['lokasi'] = BusinessLocation::get();
 
         return view('bahan.create', $this->params);
@@ -110,21 +116,30 @@ class IngredientController extends Controller
             [
                 'nama_bahan' => 'required',
                 'id_satuan' => 'required',
+                'price_ingredient' => 'required',
+                'id_satuan_besar' => 'required',
+                'stok_besar' => 'required',
                 'limit_stok' => 'required',
                 'limit_pemakaian' => 'required',
             ],
             [
                 'nama_bahan.required' => 'Nama Bahan harus diisi.',
                 'id_satuan.required' => 'Satuan Bahan harus diisi.',
+                'price_ingredient.required' => 'Harga Bahan harus diisi.',
+                'id_satuan_besar.required' => 'Satuan Besar harus diisi.',
+                'stok_besar.required' => 'Stok Satuan Besar harus diisi.',
                 'limit_stok.required' => 'Limit Stok Bahan harus diisi.',
                 'limit_pemakaian.required' => 'Limit Pemakaian Bahan harus diisi.',
             ]
         );
 
         try {
-            $$bahan = array(
+            $bahan = array(
                 'nama_bahan' => $validated['nama_bahan'],
                 'id_satuan' => $validated['id_satuan'],
+                'harga_bahan' => $validated['price_ingredient'],
+                'id_satuan_besar' => $validated['id_satuan_besar'],
+                'stok_besar' => $validated['stok_besar'],
                 'limit_stok' => $validated['limit_stok'],
                 'limit_pemakaian' => $validated['limit_pemakaian']
             );
@@ -172,6 +187,7 @@ class IngredientController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $this->params['satuan'] = SatuanBahan::get();
+        $this->params['satuanBesar'] = SatuanBesar::get();
         $this->params['data'] = Ingredient::findOrFail($id);
         // print_r($this->params['data']);
         return view('bahan.edit', $this->params);
@@ -194,14 +210,18 @@ class IngredientController extends Controller
             [
                 'nama_bahan' => 'required',
                 'id_satuan' => 'required',
-                // 'stok' => 'required',
+                'price_ingredient' => 'required',
+                'id_satuan_besar' => 'required',
+                'stok_besar' => 'required',
                 'limit_stok' => 'required',
                 'limit_pemakaian' => 'required',
             ],
             [
                 'nama_bahan.required' => 'Nama Bahan harus diisi.',
                 'id_satuan.required' => 'Satuan Bahan harus diisi.',
-                // 'stok.required' => 'Stok Bahan harus diisi.',
+                'price_ingredient.required' => 'Harga Bahan harus diisi.',
+                'id_satuan_besar.required' => 'Satuan Besar harus diisi.',
+                'stok_besar.required' => 'Stok Satuan Besar harus diisi.',
                 'limit_stok.required' => 'Limit Stok Bahan harus diisi.',
                 'limit_pemakaian.required' => 'Limit Pemakaian Bahan harus diisi.',
             ]
@@ -211,7 +231,9 @@ class IngredientController extends Controller
             $bahan = array(
                 'nama_bahan' => $validated['nama_bahan'],
                 'id_satuan' => $validated['id_satuan'],
-                // 'stok' => $validated['stok'],
+                'harga_bahan' => $validated['price_ingredient'],
+                'id_satuan_besar' => $validated['id_satuan_besar'],
+                'stok_besar' => $validated['stok_besar'],
                 'limit_stok' => $validated['limit_stok'],
                 'limit_pemakaian' => $validated['limit_pemakaian']
             );
@@ -250,8 +272,6 @@ class IngredientController extends Controller
     public function getIngredient()
     {
         $bahan = Ingredient::get();
-        // $result = $bahan->orderBy('VLD.qty_available', 'desc')
-        //     ->get();
         echo json_encode($bahan);
     }
 

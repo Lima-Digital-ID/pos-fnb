@@ -145,7 +145,7 @@
                       <select name="id_bahan[]" id="" class="form-control" onchange="getSatuan(this)">
                         <option value="">Pilih Bahan</option>
                         @foreach ($bahan as $item)
-                        <option data-satuan="{{$item->satuan}}" value="{{$item->id_bahan}}">{{$item->nama_bahan}}</option>
+                        <option data-satuan="{{$item->satuan}}" data-harga="{{$item->harga_bahan}}" value="{{$item->id_bahan}}">{{$item->nama_bahan}}</option>
                         @endforeach
                       </select>
                     </div>
@@ -155,11 +155,13 @@
                   <div class="form-group mb-3">
                     <label for="">Kebutuhan</label>
                     <div class="input-group">
-                      <input type="number" class="form-control" name="kebutuhan[]" placeholder="Kebutuhan">
+                      <input type="number" class="form-control kebutuhanBahan" name="kebutuhan[]" placeholder="Kebutuhan"  onkeyup="getStok(this)">
                       <span class="input-group-addon satuanBahan">Satuan</span>
                     </div>                
                   </div>
                 </div>
+                <input type="hidden" class="form-control hpp" name="hpp[]" placeholder="" readonly>
+                <input type="hidden" class="form-control hargaBahan" name="" placeholder="" readonly>
               </div>
             </div>
           </div>

@@ -9,8 +9,29 @@ function getSatuan(param){
     if(thisVal!=''){
     var index = $(param).closest('.row-bahan').attr('data-index')
     var satuan = $(param).find(':selected').data('satuan')
+    var harga = $(param).find(':selected').data('harga')
     $(".row-bahan[data-index='"+index+"'] .satuanBahan").html(satuan)
+    $(".row-bahan[data-index='"+index+"'] .hargaBahan").val(harga)
+    total(index)
     }
+}
+
+function getStok(param) {
+    var thisVal = $(param).val()
+
+    if(thisVal!=''){
+    var index = $(param).closest('.row-bahan').attr('data-index')
+    var stok = $(".row-bahan[data-index='" + index + "'] .kebutuhanBahan").val()
+    total(index)
+    }
+}
+
+function total(no) {
+    var selector = ".row-bahan[data-index='" + no + "']"
+    var stok = $(selector + ".row-bahan[data-index='" + no + "'] .kebutuhanBahan").val()
+    var price = $(selector + ".row-bahan[data-index='" + no + "'] .hargaBahan").val()
+    var hpp = stok * price
+    $(selector + ".row-bahan[data-index='" + no + "'] .hpp").val(hpp)
 }
 
 $(document).ready(function() {

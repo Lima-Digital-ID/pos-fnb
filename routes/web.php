@@ -381,6 +381,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
 
     // Bahhan
     Route::resource('satuan_bahan', 'SatuanBahanController');
+    Route::resource('satuan_besar', 'SatuanBesarController');
     Route::get('/bahan/list', 'IngredientController@getIngredient');
     Route::get('/bahan/list/{id}', 'IngredientController@getIngredientByLocation');
     Route::get('bahan/limit-stok', 'IngredientController@get_limit_stok');

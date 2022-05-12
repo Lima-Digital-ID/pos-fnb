@@ -45,6 +45,26 @@
                     <input type="number" placeholder="Stok Bahan" class="form-control" name="stok" value="{{ old('stok') }}">
                 </div> --}}
                 <div class="form-group col-sm-12">
+                    <label>Harga Bahan</label>
+                    <input type="number" placeholder="Harga Bahan" class="form-control" name="price_ingredient"
+                        value="{{ old('price_ingredient') }}">
+                </div>
+                <div class="form-group col-sm-12">
+                    <label>Satuan Besar</label>
+                    <select name="id_satuan_besar" id="" class="form-control">
+                        <option value="">---Pilih Satuan Besar---</option>
+                        @foreach ($satuanBesar as $item)
+                            <option value="{{ $item->id_satuan_besar }}" {{ old('id_satuan_besar') == $item->id_satuan_besar ? 'selected' : '' }}>
+                                {{ $item->satuan_besar }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label>Stok Satuan Besar</label>
+                    <input type="number" placeholder="Stok Satuan Besar" class="form-control" name="stok_besar"
+                        value="{{ old('stok_besar') }}">
+                </div>
+                <div class="form-group col-sm-12">
                     <label>Limit Stok Bahan</label>
                     <input type="number" placeholder="Limit Stok Bahan" class="form-control" name="limit_stok"
                         value="{{ old('limit_stok') }}">
