@@ -148,7 +148,7 @@
                         { data: 'tax', name: 'tax_rates.name', searchable: false},
                         { data: 'sku', name: 'products.sku'},
                         { data: 'lokasi'},
-                        { data: 'hpp',render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' )},
+                        { data: 'hpp',render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ), searchable: false},
                         { data: 'action', name: 'action'}
                     ],
                     createdRow: function( row, data, dataIndex ) {
