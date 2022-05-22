@@ -338,7 +338,7 @@ $user = DB::table('users')
                 </ul>
             </li>
         @endif
-        @if (auth()->user()->can('product.create'))
+        {{-- @if (auth()->user()->can('product.create')) --}}
             <li class="treeview {{ in_array($request->segment(1), ['bahan']) ? 'active active-sub' : '' }}">
                 <a href="#">
                     <i class="fa fa-users"></i>
@@ -422,7 +422,7 @@ $user = DB::table('users')
                     </li>
                 </ul>
             </li>
-        @endif
+        {{-- @endif --}}
         @if (auth()->user()->can('rekap-penjualan.create'))
             <li
                 class="treeview {{ in_array($request->segment(1), ['rekap-penjualan']) ? 'active active-sub' : '' }}">
@@ -893,6 +893,12 @@ $user = DB::table('users')
                             class="{{ $request->segment(2) == 'report-month' ? 'active' : '' }}"><a
                                 href="{{ action('ReportController@getReportMonth') }}"><i
                                     class="fa fa-money"></i>Laporan Keuangan</a></li>
+                    @endcan
+                    @can('report.finance')
+                        <li @if ($user->location_id == 4) hidden @endif
+                            class="{{ $request->segment(2) == 'report-sales' ? 'active' : '' }}"><a
+                                href="{{ action('ReportController@reportSales') }}"><i
+                                    class="fa fa-money"></i>Laporan Penjualan</a></li>
                     @endcan
                 </ul>
             </li>

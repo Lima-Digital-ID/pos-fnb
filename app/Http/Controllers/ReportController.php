@@ -3306,6 +3306,34 @@ class ReportController extends Controller
         
         return view('report.count_trx_employee')->with(compact('location_id', 'business_locations'));
     }
+    
+    public function reportSales(Request $request)
+    {
+        $business_id = request()->session()->get('user.business_id');
+
+        $user_id = request()->session()->get('user.id');
+        $user = User::where('id', $user_id)->first();   
+        $location_id=$user->location_id;
+        $business_locations = BusinessLocation::forDropdown($business_id);
+        foreach ($business_locations as $key => $value) {
+            if ($user->location_id != null) {
+                if ($user->location_id != $key) {
+                    unset($business_locations[$key]);
+                }
+            }
+        }
+        $query = "";
+        if($request->dari){
+            $query = DB::select("SELECT (SELECT sum(jumlah) FROM tbl_trx_akuntansi_detail WHERE id_akun = 65 and id_trx_akun = a.id_trx_akun) hpp, (SELECT sum(jumlah) FROM tbl_trx_akuntansi_detail WHERE id_akun = 20 and id_trx_akun = a.id_trx_akun) jual, a.* FROM tbl_trx_akuntansi a JOIN tbl_trx_akuntansi_detail d ON a.id_trx_akun = d.id_trx_akun WHERE deskripsi LIKE '%Pendapatan Transaksi%' AND tanggal BETWEEN '".$request->dari."' AND '".$request->sampai."' AND location_id = '".$request->location_id."'  GROUP BY a.id_trx_akun ORDER BY a.dtm_crt DESC");
+        }
+
+        $data = array(
+            'location_id' => $location_id,
+            'business_locations' => $business_locations,
+            'report' => $query,
+        );
+        return view('report.report_sales',$data);
+    }
 }
 // for ($i=1; $i <= $jumlah_hari ; $i++) { 
 //             $hari=(strlen($i) < 2 ? '0'.$i : $i);

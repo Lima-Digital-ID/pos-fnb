@@ -222,8 +222,8 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $user_id = request()->session()->get('user.id');
         $user = User::where('id', $user_id)->first();
-        $wherePengeluaran = $request->get('location_id') ?  ['users.location_id',$request->get('location_id')] : ['tbl_pengeluaran.user_id',$user_id];
-        $whereProfit = $request->get('location_id') ?  ['users.location_id',$request->get('location_id')] : ['cash_registers.user_id',$user_id];
+        $wherePengeluaran = $request->get('location_id') ?  ['tbl_pengeluaran.location_id',$request->get('location_id')] : ['tbl_pengeluaran.user_id',$user_id];
+        $whereProfit = $request->get('location_id') ?  ['cash_registers.business_id',1] : ['cash_registers.user_id',$user_id]; // harusnya pake location_id
         
         $petty_cash=$this->cekPengeluaran('petty', null, $wherePengeluaran);
         $pengeluaran_pc=$this->cekPengeluaran('pengeluaran', 'petty',  $wherePengeluaran);
@@ -718,11 +718,12 @@ class SellPosController extends Controller
                 foreach ($input['products'] as $key => $value) {
                     $komisi=Product::where('id', $value['product_id'])->first();
                     if ($komisi->is_paket != 1) {//jika produk bukan paket, komisi kasir tidak bertambah
+                        
                         if ($value['is_item_paket'] == 0) {//jika produk bukan item dalam paket, komisi kasir tidak bertambah
                             // $sum_komisi+=(($kasir != null ? $kasir->kom_trx : 0) * $value['quantity']);
                             if ($komisi->enable_stock == 1) {
                                 $price=Variation::where('product_id', $value['product_id'])->first();
-                                $hpp+=($price->default_purchase_price * $value['quantity']);
+                                // $hpp+=($price->default_purchase_price * $value['quantity']);
                                 // $sum_komisi+=(($komisi != null ? ($komisi->commission != null ? $komisi->commission : 0) : 0) * $value['quantity']);
                             }
                             // else{
@@ -742,7 +743,7 @@ class SellPosController extends Controller
                         }else{
                             if ($komisi->enable_stock == 1) {
                                 $price=Variation::where('product_id', $value['product_id'])->first();
-                                $hpp+=($price->default_purchase_price * $value['quantity']);
+                                // $hpp+=($price->default_purchase_price * $value['quantity']);
                                 // $sum_komisi+=(($komisi != null ? ($komisi->commission != null ? $komisi->commission : 0) : 0) * $value['quantity']);
                             }
                         }
@@ -752,8 +753,12 @@ class SellPosController extends Controller
                         // $sum_komisi+=(($kasir != null ? $kasir->kom_trx : 0) * ($value['quantity'] * $total_item_paket));
                         // $sum_komisi+=(($komisi != null ? ($komisi->commission != null ? $komisi->commission : 0) : 0) * $value['quantity']);
                     }
-                    $bahanProduk = DB::table('tb_bahan_product')->where('product_id',$value['product_id'])->get();
+
+                    $bahanProduk = DB::table('tb_bahan_product as bp')->select('bp.*','b.harga_bahan')->join('tb_bahan as b','bp.id_bahan','b.id_bahan')->where('bp.product_id',$value['product_id'])->get();
                     foreach ($bahanProduk as $index => $v) {
+
+                        $hpp += ($v->kebutuhan * $v->harga_bahan);
+
                         $kartuStok = [
                             'id_bahan' => $v->id_bahan,
                             'jml_stok' => $v->kebutuhan,
@@ -2253,6 +2258,7 @@ class SellPosController extends Controller
 
         $data=array(
             'cash_register_id'       => $register->id,
+            'location_id'       => $request->input('location_id'),
             'user_id'       => $request->input('user_id'),
             'total'       => $request->input('jml_setoran'),
             'deskripsi_pengeluaran'       => $request->input('desc_setoran'),

@@ -588,6 +588,7 @@
 			{!! Form::open(['url' => action('SellPosController@inputSetoran'), 'method' => 'post', 'enctype' => 'multipart/form-data']) !!}
 			<div class="modal-body">
 				{!! Form::hidden('user_id', $user_id, ['class' => 'form-control', 'id' => 'user_id']); !!}
+				{!! Form::hidden('location_id', $location_id, ['class' => 'form-control', 'id' => 'location_id']); !!}
 		        <div class="row">
 		        	<div class="col-sm-6">
 		        		<div class="form-group">

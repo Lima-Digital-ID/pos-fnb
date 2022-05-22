@@ -212,6 +212,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/reports/trending-products2', 'ReportController@getTrendingProducts2');
     Route::get('/reports/count_trx', 'ReportController@getCountTrxEmployee');
     Route::get('/reports/product-sell-avg-report', 'ReportController@getproductSellAvgReport');
+    Route::get('/reports/report-sales', 'ReportController@reportSales');
 
     //Business Location Settings...
     Route::prefix('business-location/{location_id}')->name('location.')->group(function () {

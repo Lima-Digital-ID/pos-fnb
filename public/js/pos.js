@@ -1752,10 +1752,10 @@ function get_saldo_all(locationId='') {
             sisaTunai=arrData['saldo_cash'];
             sisaNonTunai=arrData['saldo_not_cash'];
             sisaPetty=arrData['saldo_petty'];
-            $('#show_tunai').html('Uang Tunai : Rp. '+formatRupiah(sisaTunai));
-            $('#show_non_tunai').html('Non Tunai : Rp. '+formatRupiah(sisaNonTunai));
-            $('#show_petty').html('Petty : Rp. '+formatRupiah(arrData['saldo_petty']));
-            $('#show_expense').html('Pengeluaran : Rp. '+formatRupiah(arrData['saldo_pengeluaran']));
+            $('#show_tunai').html('Uang Tunai : '+formatRupiah(sisaTunai));
+            $('#show_non_tunai').html('Non Tunai : '+formatRupiah(sisaNonTunai));
+            $('#show_petty').html('Petty : '+formatRupiah(arrData['saldo_petty']));
+            $('#show_expense').html('Pengeluaran : '+formatRupiah(arrData['saldo_pengeluaran']));
         },
     });
 }
@@ -1780,8 +1780,6 @@ function get_promo_list(id) {
 
 function formatRupiah(angka, prefix)
 {
-    var reverse = angka.toString().split('').reverse().join(''),
-    ribuan = reverse.match(/\d{1,3}/g);
-    ribuan = ribuan.join('.').split('').reverse().join('');
-    return ribuan;
+    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(parseInt(angka));
+    
 }
