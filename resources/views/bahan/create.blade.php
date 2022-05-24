@@ -22,10 +22,10 @@
                 </div>
                 <div class="form-group col-sm-12">
                     <label>Satuan Bahan</label>
-                    <select name="id_satuan" id="" class="form-control">
+                    <select name="id_satuan" id="" class="form-control satuanBahan">
                         <option value="">---Pilih Satuan---</option>
                         @foreach ($satuan as $item)
-                            <option value="{{ $item->id_satuan }}" {{ old('id_satuan') == $item->id_satuan ? 'selected' : '' }}>
+                            <option value="{{ $item->id_satuan }}" data-value="{{ $item->satuan }}" {{ old('id_satuan') == $item->id_satuan ? 'selected' : '' }}>
                                 {{ $item->satuan }}</option>
                         @endforeach
                     </select>
@@ -51,18 +51,27 @@
                 </div>
                 <div class="form-group col-sm-12">
                     <label>Satuan Besar</label>
-                    <select name="id_satuan_besar" id="" class="form-control">
+                    <select name="id_satuan_besar" id="" class="form-control satuanBesar">
                         <option value="">---Pilih Satuan Besar---</option>
                         @foreach ($satuanBesar as $item)
-                            <option value="{{ $item->id_satuan_besar }}" {{ old('id_satuan_besar') == $item->id_satuan_besar ? 'selected' : '' }}>
+                            <option value="{{ $item->id_satuan_besar }}" data-value="{{ $item->satuan_besar }}" {{ old('id_satuan_besar') == $item->id_satuan_besar ? 'selected' : '' }}>
                                 {{ $item->satuan_besar }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group col-sm-12">
-                    <label>Stok Satuan Besar</label>
-                    <input type="number" placeholder="Stok Satuan Besar" class="form-control" name="stok_besar"
-                        value="{{ old('stok_besar') }}">
+                    <label>Inisialisasi Stok Bahan</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            1 <span id="input-satuan-besar"></span>
+                        </span>
+                        <input type="number" placeholder="Masukkan Jumlah Bahan" class="form-control" name="stok_besar"
+                            value="{{ old('stok_besar') }}">
+                        <span class="input-group-addon">
+                            <span id="input-satuan"></span>
+                        </span>
+                    </div>
+
                 </div>
                 <div class="form-group col-sm-12">
                     <label>Limit Stok Bahan</label>
@@ -90,4 +99,17 @@
     </section>
     <!-- /.content -->
 
+@endsection
+
+@section('javascript')
+    <script>
+        $(".satuanBesar").change(function() {
+            var satuan = $(this).find(":selected").attr('data-value')
+            $("#input-satuan-besar").html(satuan+' =');
+        }) 
+        $(".satuanBahan").change(function() {
+            var satuanBahan = $(this).find(":selected").attr('data-value')
+            $("#input-satuan").html(satuanBahan);
+        }) 
+    </script>
 @endsection

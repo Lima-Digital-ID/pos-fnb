@@ -7,7 +7,7 @@ $(document).ready(function() {
             return false;
         }
     });
-    get_saldo_all();
+    get_saldo_all(1);
     //For edit pos form
     
     if ($('form#edit_pos_sell_form').length > 0) {

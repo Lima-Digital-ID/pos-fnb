@@ -15,4 +15,8 @@ class Ingredient extends Model
     {
         return $this->belongsTo(\App\SatuanBahan::class, 'id_satuan');
     }
+    public function satuan_besar()
+    {
+        return $this->belongsTo(\App\SatuanBesar::class, 'id_satuan_besar');
+    }
 }

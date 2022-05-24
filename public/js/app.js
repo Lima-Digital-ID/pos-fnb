@@ -2195,8 +2195,10 @@ var ingredients_table = $('#ingredient_table').DataTable({
         { data: 'satuan', name: 'tb_satuan_bahan.satuan' },
         { data: 'stok', name: 'tb_stok_bahan.stok' },
         { data: 'harga_bahan', name: 'harga_bahan',render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' )  },
-        { data: 'satuan_besar', name: 'tb_satuan_besar.satuan_besar' },
-        { data: 'stok_besar', name: 'stok_besar' },
+        // { data: 'satuan_besar', name: 'tb_satuan_besar.satuan_besar' },
+        { data: 'stok_besar', name: 'stok_besar',render: function ( data, type, row ) {
+            return row.stok_besar + ' ' + row.satuan_besar;
+        } },
         { data: 'limit_stok', name: 'limit_stok' },
         { data: 'limit_pemakaian', name: 'limit_pemakaian' },
         { data: 'action', name: 'action' },

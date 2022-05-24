@@ -32,7 +32,6 @@
                                 <th>Satuan</th>
                                 <th>Stok</th>
                                 <th>Harga Bahan</th>
-                                <th>Satuan Besar</th>
                                 <th>Stok Satuan Besar</th>
                                 <th>Limit Stok</th>
                                 <th>Limit Bahan</th>

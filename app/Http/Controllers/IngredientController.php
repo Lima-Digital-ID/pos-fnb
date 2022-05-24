@@ -44,7 +44,6 @@ class IngredientController extends Controller
                 'tb_bahan.id_bahan',
                 'nama_bahan',
                 'harga_bahan',
-                'stok_besar',
                 'business_locations.name',
                 'tb_satuan_bahan.satuan',
                 'tb_satuan_besar.satuan_besar',
@@ -52,6 +51,7 @@ class IngredientController extends Controller
                 'limit_stok',
                 'limit_pemakaian'
             ])
+                ->selectRaw('tb_stok_bahan.stok/stok_besar as stok_besar')
                 ->leftJoin('tb_stok_bahan', 'tb_bahan.id_bahan', 'tb_stok_bahan.id_bahan')
                 ->leftJoin('business_locations', 'tb_stok_bahan.location_id', 'business_locations.id')
                 ->join('tb_satuan_bahan', 'tb_satuan_bahan.id_satuan', 'tb_bahan.id_satuan')
@@ -189,7 +189,7 @@ class IngredientController extends Controller
         $this->params['satuan'] = SatuanBahan::get();
         $this->params['satuanBesar'] = SatuanBesar::get();
         $this->params['data'] = Ingredient::findOrFail($id);
-        // print_r($this->params['data']);
+        // return $this->params['data'];
         return view('bahan.edit', $this->params);
     }
 
