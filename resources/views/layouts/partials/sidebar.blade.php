@@ -339,8 +339,17 @@ $user = DB::table('users')
             </li>
         @endif
         {{-- @if (auth()->user()->can('product.create')) --}}
+        <?php                         
+            $getLimitStok = \DB::table('tb_stok_bahan as sb')->selectRaw('count(sb.id_stok) as ttl')->join("tb_bahan as b","sb.id_bahan","b.id_bahan")
+            ->whereRaw('stok < b.limit_stok')
+            ->first();
+            $getLimitPemakaian = \DB::table('tb_stok_bahan as sb')->selectRaw('count(sb.id_stok) as ttl')->join("tb_bahan as b","sb.id_bahan","b.id_bahan")
+            ->whereRaw('stok < b.limit_pemakaian')
+            ->first();
+        ?>
+
             <li class="treeview {{ in_array($request->segment(1), ['bahan']) ? 'active active-sub' : '' }}">
-                <a href="#">
+                <a href="#"  {{($getLimitPemakaian->ttl > 0 || $getLimitStok->ttl > 0 ) ? 'style=color:red' : ''}}>
                     <i class="fa fa-users"></i>
                     <span class="title">Bahan</span>
                     <span class="pull-right-container">
@@ -408,6 +417,10 @@ $user = DB::table('users')
                             <i class="fa fa-user"></i>
                             <span class="title">
                                 Limit Stok Bahan
+                                @if ($getLimitStok->ttl > 0)
+                                    <span class="badge badge-danger" style="background:red">{{$getLimitStok->ttl}}</span>
+                                @endif
+
                             </span>
                         </a>
                     </li>
@@ -416,7 +429,10 @@ $user = DB::table('users')
                         <a href="{{ action('IngredientController@getLimitPemakaian') }}">
                             <i class="fa fa-user"></i>
                             <span class="title">
-                                Limit Stok Pemakaian
+                                Limit Stok Pemakaian  
+                                @if ($getLimitPemakaian->ttl > 0)
+                                    <span class="badge badge-danger" style="background:red">{{$getLimitPemakaian->ttl}}</span>
+                                @endif
                             </span>
                         </a>
                     </li>

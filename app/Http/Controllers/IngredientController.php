@@ -47,7 +47,7 @@ class IngredientController extends Controller
                 'business_locations.name',
                 'tb_satuan_bahan.satuan',
                 'tb_satuan_besar.satuan_besar',
-                'tb_stok_bahan.stok',
+                'stok',
                 'limit_stok',
                 'limit_pemakaian'
             ])

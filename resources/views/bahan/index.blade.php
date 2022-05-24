@@ -29,12 +29,11 @@
                                 {{-- <th width="30px">#</th> --}}
                                 {{-- <th>Lokasi Bisnis</th> --}}
                                 <th>Nama Bahan</th>
-                                <th>Satuan</th>
                                 <th>Stok</th>
-                                <th>Harga Bahan</th>
                                 <th>Stok Satuan Besar</th>
                                 <th>Limit Stok</th>
-                                <th>Limit Bahan</th>
+                                <th>Limit Pemakaian</th>
+                                <th>Harga Bahan</th>
                                 <th>Tindakan</th>
                             </tr>
                         </thead>
