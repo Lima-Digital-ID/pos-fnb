@@ -3334,6 +3334,34 @@ class ReportController extends Controller
         );
         return view('report.report_sales',$data);
     }
+    
+    public function reportFnb(Request $request)
+    {
+        $business_id = request()->session()->get('user.business_id');
+    
+        $user_id = request()->session()->get('user.id');
+        $user = User::where('id', $user_id)->first();   
+        $location_id=$user->location_id;
+        $business_locations = BusinessLocation::forDropdown($business_id);
+        foreach ($business_locations as $key => $value) {
+            if ($user->location_id != null) {
+                if ($user->location_id != $key) {
+                    unset($business_locations[$key]);
+                }
+            }
+        }
+        $query = "";
+        if($request->dari){
+            $query = DB::select("SELECT transactions.id,transaction_date,invoice_no,COALESCE((SELECT sum(quantity) FROM transaction_sell_lines ts JOIN products p ON ts.product_id = p.id WHERE p.category_id = 1 and transactions.id = transaction_id),0) makanan,COALESCE((SELECT sum(quantity) FROM transaction_sell_lines ts JOIN products p ON ts.product_id = p.id WHERE p.category_id = 2 and transactions.id = transaction_id),0) minuman FROM `transactions` where transaction_date BETWEEN '".$request->dari."' AND '".$request->sampai."' AND location_id = '".$request->location_id."' ");
+        }
+    
+        $data = array(
+            'location_id' => $location_id,
+            'business_locations' => $business_locations,
+            'report' => $query,
+        );
+        return view('report.report_fnb',$data);
+    }
 }
 // for ($i=1; $i <= $jumlah_hari ; $i++) { 
 //             $hari=(strlen($i) < 2 ? '0'.$i : $i);

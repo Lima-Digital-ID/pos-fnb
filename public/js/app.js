@@ -1979,17 +1979,23 @@ $(document).on('click', 'table.ajax_view tbody tr', function(e) {
         $(this).data('href') &&
         !$(e.target).is('i')
     ) {
-        $.ajax({
-            url: $(this).data('href'),
-            dataType: 'html',
-            success: function(result) {
-                $('.view_modal')
-                    .html(result)
-                    .modal('show');
-            },
-        });
+        getDetailSells($(this))
     }
 });
+$(".salesTable tbody tr").click(function(){
+    getDetailSells($(this))
+})
+function getDetailSells(params) {
+    $.ajax({
+        url: params.data('href'),
+        dataType: 'html',
+        success: function(result) {
+            $('.view_modal')
+                .html(result)
+                .modal('show');
+        },
+    });
+}
 $(document).on('click', 'td.clickable_td', function(e) {
     e.preventDefault();
     e.stopPropagation();

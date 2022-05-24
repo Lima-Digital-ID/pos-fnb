@@ -211,6 +211,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/reports/report-month', 'ReportController@getReportMonth');
     Route::get('/reports/trending-products2', 'ReportController@getTrendingProducts2');
     Route::get('/reports/count_trx', 'ReportController@getCountTrxEmployee');
+    Route::get('/reports/report-fnb', 'ReportController@reportFnb');
     Route::get('/reports/product-sell-avg-report', 'ReportController@getproductSellAvgReport');
     Route::get('/reports/report-sales', 'ReportController@reportSales');
 

@@ -3,10 +3,14 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ asset('plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css?v='.$asset_v) }}">
-
+<style>
+    tbody tr{
+        cursor: pointer;
+    }
+</style>
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>Laporan Penjualan
+    <h1>Rekap Penjualan Makanan dan Minuman
     </h1>
 </section>
 <section class="content">
@@ -44,37 +48,41 @@
     @if(isset($_GET['dari']) != null)
         @component('components.widget', ['class' => 'box-primary', 'title' =>"Laporan Penjualan" ])
         <div class="table-responsive">
-            <table class="table table-bordered table-striped" id="">
+            <table class="table table-bordered table-striped salesTable" id="">
                 <thead>
                     <tr>
                         <th style="min-width: 100px;">Tanggal</th>
                         <th style="min-width: 100px;">No Invoice</th>
-                        <th style="min-width: 100px;">HPP</th>
-                        <th style="min-width: 100px;">Harga Jual</th>
-                        <th style="min-width: 100px;">Keuntungan</th>
+                        <th style="min-width: 100px;">Makanan</th>
+                        <th style="min-width: 100px;">Minuman</th>
+                        <th style="min-width: 100px;">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php
-                        $keuntungan = 0
+                        $makanan = 0;
+                        $minuman = 0;
                     @endphp
                     @foreach ($report as $item)
                         @php
-                            $keuntungan+=($item->jual - $item->hpp)
+                            $makanan+=$item->makanan;
+                            $minuman+=$item->minuman;
                         @endphp
-                        <tr>
-                            <td>{{$item->tanggal}}</td>
+                        <tr data-href="{{url('sells/'.$item->id."?noprint=true")}}">
+                            <td>{{$item->transaction_date}}</td>
                             <td>{{$item->invoice_no}}</td>
-                            <td>{{number_format($item->hpp,0,',','.')}}</td>
-                            <td>{{number_format($item->jual,0,',','.')}}</td>
-                            <td>{{number_format($item->jual - $item->hpp,0,',','.')}}</td>
+                            <td>{{(int)$item->makanan}}</td>
+                            <td>{{(int)$item->minuman}}</td>
+                            <td>{{$item->makanan + $item->minuman}}</td>
                         </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="4" class="text-center">Total Keuntungan</th>
-                            <th>{{number_format($keuntungan,0,',','.')}}</th>
+                            <th colspan="2" class="text-center">Total</th>
+                            <th>{{$makanan}}</th>
+                            <th>{{$minuman}}</th>
+                            <th>{{$makanan + $minuman}}</th>
                         </tr>
                     </tfoot>
             </table>
@@ -82,6 +90,4 @@
         @endcomponent
     @endif
 </section>
-
-
 @endsection

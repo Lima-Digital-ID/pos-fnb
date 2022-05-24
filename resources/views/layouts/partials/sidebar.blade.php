@@ -899,11 +899,9 @@ $user = DB::table('users')
                         class="{{ $request->segment(2) == 'promo-report' ? 'active' : '' }}"><a
                             href="{{ action('ReportController@getRekapPromo') }}"><i
                                 class="fa fa-money"></i>Rekap Promo</a></li>
-                    @can('report.trx_employee')
-                        <li class="{{ $request->segment(2) == 'count_trx' ? 'active' : '' }}"><a
-                                href="{{ action('ReportController@getCountTrxEmployee') }}"><i
-                                    class="fa fa-money"></i>Rekap Transaksi Jasa Pegawai</a></li>
-                    @endcan
+                    <li class="{{ $request->segment(2) == 'report-fnb' ? 'active' : '' }}"><a
+                                href="{{ action('ReportController@reportFnb') }}"><i
+                                    class="fa fa-money"></i>Rekap Penjualan</a></li>
                     @can('report.finance')
                         <li @if ($user->location_id == 4) hidden @endif
                             class="{{ $request->segment(2) == 'report-month' ? 'active' : '' }}"><a
