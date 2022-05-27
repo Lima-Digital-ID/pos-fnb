@@ -53,7 +53,7 @@
                     <label>Inisialisasi Stok Bahan</label>
                     <div class="input-group">
                         <span class="input-group-addon">
-                            1 <span id="input-satuan-besar">{{ $data->satuan_besar->satuan_besar }} = </span>
+                            1 <span id="input-satuan-besar">{{ $data->id_satuan_besar=='' ? '' : $data->satuan_besar->satuan_besar }} = </span>
                         </span>
                         <input type="number" placeholder="Masukkan Jumlah Bahan" class="form-control" name="stok_besar"
                             value="{{ old('stok_besar', $data->stok_besar) }}">

@@ -2200,10 +2200,10 @@ var ingredients_table = $('#ingredient_table').DataTable({
         { data: 'nama_bahan', name: 'nama_bahan' },
         { data: 'stok', name: 'stok',render: function ( data, type, row ) {
             return row.stok + ' ' + row.satuan;
-        } },
+        },'searchable' : false},
         { data: 'stok_besar', name: 'stok_besar',render: function ( data, type, row ) {
             return row.stok_besar + ' ' + row.satuan_besar;
-        } },
+        },'searchable' : false},
         { data: 'limit_stok', name: 'limit_stok' },
         { data: 'limit_pemakaian', name: 'limit_pemakaian' },
         { data: 'harga_bahan', name: 'harga_bahan',render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' )  },
@@ -2228,9 +2228,9 @@ var limit_stok_table = $('#limit_stok_ingredient_table').DataTable({
     ],
     columns: [
         // { data: 'id_bahan', name: 'id_bahan' },
-        { data: 'name', name: 'name' },
+        { data: 'name', name: 'name', searchable : false },
         { data: 'nama_bahan', name: 'nama_bahan' },
-        { data: 'satuan', name: 'satuan' },
+        { data: 'satuan', name: 'satuan', searchable : false },
         { data: 'stok', name: 'stok' },
         { data: 'limit_stok', name: 'limit_stok' },
         { data: 'limit_pemakaian', name: 'limit_pemakaian' },
@@ -2251,9 +2251,9 @@ var limit_pemakaian_table = $('#limit_pemakaian_ingredient_table').DataTable({
     ],
     columns: [
         // { data: 'id_bahan', name: 'id_bahan' },
-        { data: 'name', name: 'name' },
+        { data: 'name', name: 'name', searchable : false, },
         { data: 'nama_bahan', name: 'nama_bahan' },
-        { data: 'satuan', name: 'satuan' },
+        { data: 'satuan', name: 'satuan', searchable : false, },
         { data: 'stok', name: 'stok' },
         { data: 'limit_stok', name: 'limit_stok' },
         { data: 'limit_pemakaian', name: 'limit_pemakaian' },

@@ -13,7 +13,6 @@
     <!-- Main content -->
     <section class="content">
         @component('components.widget', ['class' => 'box-primary', 'title' => __('Semua Limit Pemakaian anda')])
-            @can('bahan.view')
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped" id="limit_pemakaian_ingredient_table">
                         <thead>
@@ -29,7 +28,6 @@
                         </thead>
                     </table>
                 </div>
-            @endcan
         @endcomponent
 
         <div class="modal fade ingredient_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
