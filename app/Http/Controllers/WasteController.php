@@ -99,10 +99,8 @@ class WasteController extends Controller
                     'id_product' => $value,
                     'qty' => $request->qty_product[$key],
                     'category_price' => $request->price_kategory[$key],
-                    'price_product' => '2',
-                    'subtotal' => '1',
-                    // 'price_product' => $request->price_product[$key],
-                    // 'subtotal' => $request->subtotal[$key],
+                    'price_product' => $request->price_product[$key],
+                    'subtotal' => $request->subtotal_product[$key],
                 );
                 \DB::table('tb_waste_product_detail')->insert($productWaste);
             }

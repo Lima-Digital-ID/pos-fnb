@@ -96,6 +96,7 @@
                                     </span>
                                     <input type="number" class="form-control subtotal_product" placeholder="Subtotal"
                                         name="subtotal_product[]" id="subtotal_product" readonly="readonly">
+                                    <input type="hidden" name="price_product[]" value="" class="price-product">
                                 </div>
                             </div>
                         </div>
@@ -213,6 +214,16 @@
             $(selector + " .subtotal").val(subtotal)
 
         }
+
+        function subTotalProduct(no) {
+            var selector = ".row-product[data-no='" + no + "']"
+            var idProduct = $(".row-product[data-no='" + no + "'] .produk").find(":selected").attr('data-id');
+            var qty = parseInt($(selector + " .qty_product").val())
+            var price = parseInt($(".row-product[data-no='" + no + "'] .price-product").val())
+            var subtotal = qty * price
+            $(".row-product[data-no='" + no + "'] .subtotal_product").val(subtotal)
+            console.log(idProduct, qty, price, subtotal);
+        }
         $(".getSubtotal").change(function() {
             var no = $(this).closest(".row-bahan").attr('data-no')
             subTotal(no)
@@ -278,19 +289,62 @@
                         $(this).closest('.row-product').remove()
                         x--
                     })
+                    $(".row-product .price_kategory").change(function() {
+                        var no = $(this).closest(".row-product").attr('data-no')
+                        var id = $(this).find(":selected").attr('data-id');
+                        var idProduct = $('.produk').find(":selected").attr('data-id');
+                        $.ajax({
+                            type: "GET",
+                            url: "{{ url('waste/get-price-category') }}/" + id + "/" +
+                                idProduct, //json get site
+                            dataType: 'json',
+                            success: function(response) {
+                                var price = parseInt(response[0].harga)
+                                $(".row-product[data-no='" + no + "'] .price-product")
+                                    .val(price)
+                                subTotalProduct(no)
+                            }
+                        });
+                    })
+                    $(".qty_product").keyup(function() {
+                        var no = $(this).closest(".row-product").attr('data-no')
+                        var qty = $(".row-product[data-no='" + no + "'] .qty_product").val()
+                        subTotalProduct(no)
+                    })
+                    $(".produk").change(function() {
+                        var no = $(this).closest(".row-product").attr('data-no')
+                        var id = $(this).find(":selected").attr('data-id');
+                        subTotalProduct(no)
+                    })
                 }
             });
-            $("#price_kategory").change(function() {
+            $(".qty_product").keyup(function() {
+                var no = $(this).closest(".row-product").attr('data-no')
+                var qty = $(".row-product[data-no='" + no + "'] .qty_product").val()
+                subTotalProduct(no)
+            })
+            $(".produk").change(function() {
+                var no = $(this).closest(".row-product").attr('data-no')
                 var id = $(this).find(":selected").attr('data-id');
-                var idProduct = $(this).find(":selected").attr('data-id');
-                console.log("{{ url('waste/get-price-category') }}/" + id + "/" + 44, );
+                console.log(id);
+                subTotalProduct(no)
+            })
+            $(".price_kategory").change(function() {
+                var no = $(this).closest(".row-product").attr('data-no')
+                var id = $(this).find(":selected").attr('data-id');
+                var idProduct = $('.produk').find(":selected").attr('data-id');
                 $.ajax({
                     type: "GET",
                     url: "{{ url('waste/get-price-category') }}/" + id + "/" +
-                        2, //json get site
+                        idProduct, //json get site
                     dataType: 'json',
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
+                        // console.log("{{ url('waste/get-price-category') }}/" + id + "/" +
+                        //     idProduct);
+                        var price = parseInt(response[0].harga)
+                        $(".row-product[data-no='" + no + "'] .price-product").val(price)
+                        subTotalProduct(no)
                     }
                 });
             })
