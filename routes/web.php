@@ -395,4 +395,8 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     // Rekap
     Route::get('rekap-penjualan/detail-json/{id}', 'RekapPenjualanOnlineController@detailJson');
     Route::resource('rekap-penjualan', 'RekapPenjualanOnlineController');
+    
+    // Waste
+    Route::get('waste/get-price-category/{id_kategori}/{id_produk}', 'WasteController@getPriceCategory');
+    Route::resource('waste', 'WasteController');
 });

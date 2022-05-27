@@ -2396,3 +2396,27 @@ var satuan_table = $('#satuan_besar_table').DataTable({
         },
     ],
 });
+
+//Start: CRUD for Waste
+//Waste table
+var satuan_table = $('#waste').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: urlStart + 'waste',
+    columnDefs: [{
+        // targets: 3,
+        orderable: false,
+        searchable: false,
+    }, ],
+    columns: [
+        { data: 'date', name: 'date' },
+        { data: 'no_reference', name: 'no_reference' },
+        { data: 'ingredient_total', name: 'ingredient_total' },
+        { data: 'product_total', name: 'product_total' },
+        { data: 'grand_total', name: 'grand_total' },
+        // {
+        //     data: 'action',
+        //     name: 'action'
+        // },
+    ],
+});

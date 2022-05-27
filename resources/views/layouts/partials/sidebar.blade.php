@@ -57,9 +57,9 @@ $user = DB::table('users')
                 </a>
             </li>
             @if (auth()->user()->can('akuntansi.akun') ||
-    auth()->user()->can('akuntansi.jurnal') ||
-    auth()->user()->can('akuntansi.profit-loss') ||
-    auth()->user()->can('akuntansi.neraca'))
+                auth()->user()->can('akuntansi.jurnal') ||
+                auth()->user()->can('akuntansi.profit-loss') ||
+                auth()->user()->can('akuntansi.neraca'))
                 <li class="treeview {{ in_array($request->segment(1), ['akuntansi']) ? 'active active-sub' : '' }}">
                     <a href="#">
                         <i class="fa fa-users"></i>
@@ -161,8 +161,8 @@ $user = DB::table('users')
             @endif
 
             @if (auth()->user()->can('user.view') ||
-    auth()->user()->can('user.create') ||
-    auth()->user()->can('roles.view'))
+                auth()->user()->can('user.create') ||
+                auth()->user()->can('roles.view'))
                 <li
                     class="treeview {{ in_array($request->segment(1), ['roles', 'users', 'sales-commission-agents']) ? 'active active-sub' : '' }}">
                     <a href="#">
@@ -208,7 +208,7 @@ $user = DB::table('users')
                 </li>
             @endif
             @if (auth()->user()->can('supplier.view') ||
-    auth()->user()->can('customer.view'))
+                auth()->user()->can('customer.view'))
                 <li class="treeview {{ in_array($request->segment(1), ['contacts', 'customer-group']) ? 'active active-sub' : '' }}"
                     id="tour_step4">
                     <a href="#" id="tour_step4_menu"><i class="fa fa-address-book"></i>
@@ -235,7 +235,7 @@ $user = DB::table('users')
                         @endcan
 
                         @if (auth()->user()->can('supplier.create') ||
-    auth()->user()->can('customer.create'))
+                            auth()->user()->can('customer.create'))
                             <li hidden
                                 class="{{ $request->segment(1) == 'contacts' && $request->segment(2) == 'import' ? 'active' : '' }}">
                                 <a href="{{ action('ContactController@getImportContacts') }}"><i
@@ -248,15 +248,15 @@ $user = DB::table('users')
         @endif
 
         @if (auth()->user()->can('product.view') ||
-    auth()->user()->can('product.create') ||
-    auth()->user()->can('brand.view') ||
-    auth()->user()->can('unit.view') ||
-    auth()->user()->can('category.view') ||
-    auth()->user()->can('brand.create') ||
-    auth()->user()->can('unit.create') ||
-    auth()->user()->can('category.create') ||
-    auth()->user()->can('stock-adjustments.create'))
-            <li class="treeview {{ in_array($request->segment(1), ['variation-templates','products','labels','import-products','import-opening-stock','selling-price-group','brands','units','categories','stock-adjustments'])? 'active active-sub': '' }}"
+            auth()->user()->can('product.create') ||
+            auth()->user()->can('brand.view') ||
+            auth()->user()->can('unit.view') ||
+            auth()->user()->can('category.view') ||
+            auth()->user()->can('brand.create') ||
+            auth()->user()->can('unit.create') ||
+            auth()->user()->can('category.create') ||
+            auth()->user()->can('stock-adjustments.create'))
+            <li class="treeview {{ in_array($request->segment(1), ['variation-templates', 'products', 'labels', 'import-products', 'import-opening-stock', 'selling-price-group', 'brands', 'units', 'categories', 'stock-adjustments']) ? 'active active-sub' : '' }}"
                 id="tour_step5">
                 <a href="#" id="tour_step5_menu"><i class="fa fa-cubes"></i> <span>@lang('sale.products')</span>
                     <span class="pull-right-container">
@@ -309,7 +309,7 @@ $user = DB::table('users')
                     @endcan
 
                     @if (auth()->user()->can('unit.view') ||
-    auth()->user()->can('unit.create'))
+                        auth()->user()->can('unit.create'))
                         <li class="{{ $request->segment(1) == 'units' ? 'active' : '' }}">
                             <a href="{{ action('UnitController@index') }}"><i class="fa fa-balance-scale"></i>
                                 <span>@lang('unit.units')</span></a>
@@ -317,7 +317,7 @@ $user = DB::table('users')
                     @endif
 
                     @if (auth()->user()->can('category.view') ||
-    auth()->user()->can('category.create'))
+                        auth()->user()->can('category.create'))
                         <li class="{{ $request->segment(1) == 'categories' ? 'active' : '' }}">
                             <a href="{{ action('CategoryController@index') }}"><i class="fa fa-tags"></i>
                                 <span>@lang('category.categories') </span></a>
@@ -325,7 +325,7 @@ $user = DB::table('users')
                     @endif
 
                     @if (auth()->user()->can('brand.view') ||
-    auth()->user()->can('brand.create'))
+                        auth()->user()->can('brand.create'))
                         <li class="{{ $request->segment(1) == 'brands' ? 'active' : '' }}">
                             <a href="{{ action('BrandController@index') }}"><i class="fa fa-diamond"></i>
                                 <span>@lang('brand.brands')</span></a>
@@ -339,105 +339,111 @@ $user = DB::table('users')
             </li>
         @endif
         {{-- @if (auth()->user()->can('product.create')) --}}
-        <?php                         
-            $getLimitStok = \DB::table('tb_stok_bahan as sb')->selectRaw('count(sb.id_stok) as ttl')->join("tb_bahan as b","sb.id_bahan","b.id_bahan")
+        <?php
+        $getLimitStok = \DB::table('tb_stok_bahan as sb')
+            ->selectRaw('count(sb.id_stok) as ttl')
+            ->join('tb_bahan as b', 'sb.id_bahan', 'b.id_bahan')
             ->whereRaw('stok < b.limit_stok')
             ->first();
-            $getLimitPemakaian = \DB::table('tb_stok_bahan as sb')->selectRaw('count(sb.id_stok) as ttl')->join("tb_bahan as b","sb.id_bahan","b.id_bahan")
+        $getLimitPemakaian = \DB::table('tb_stok_bahan as sb')
+            ->selectRaw('count(sb.id_stok) as ttl')
+            ->join('tb_bahan as b', 'sb.id_bahan', 'b.id_bahan')
             ->whereRaw('stok < b.limit_pemakaian')
             ->first();
         ?>
 
-            <li class="treeview {{ in_array($request->segment(1), ['bahan']) ? 'active active-sub' : '' }}">
-                <a href="#"  {{($getLimitPemakaian->ttl > 0 || $getLimitStok->ttl > 0 ) ? 'style=color:red' : ''}}>
-                    <i class="fa fa-users"></i>
-                    <span class="title">Bahan</span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li
-                        class="{{ $request->segment(1) == 'bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('IngredientController@index') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Daftar Bahan
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == 'bahan' && $request->segment(2) == 'create' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('IngredientController@create') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Tambah Bahan
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == 'stock-bahan-adjustment' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('StockBahanAdjustmenController@index') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Penyesuaian Stok
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == ' po-bahan ' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('PoBahanController@index') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                PO Bahan
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == 'satuan_besar' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('SatuanBesarController@index') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Satuan Besar
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == 'satuan_bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('SatuanBahanController@index') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Satuan Bahan
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == 'bahan/limit-stok' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('IngredientController@get_limit_stok') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Limit Stok Bahan
-                                @if ($getLimitStok->ttl > 0)
-                                    <span class="badge badge-danger" style="background:red">{{$getLimitStok->ttl}}</span>
-                                @endif
+        <li class="treeview {{ in_array($request->segment(1), ['bahan']) ? 'active active-sub' : '' }}">
+            <a href="#" {{ $getLimitPemakaian->ttl > 0 || $getLimitStok->ttl > 0 ? 'style=color:red' : '' }}>
+                <i class="fa fa-users"></i>
+                <span class="title">Bahan</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li
+                    class="{{ $request->segment(1) == 'bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('IngredientController@index') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Daftar Bahan
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == 'bahan' && $request->segment(2) == 'create' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('IngredientController@create') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Tambah Bahan
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == 'stock-bahan-adjustment' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('StockBahanAdjustmenController@index') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Penyesuaian Stok
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == ' po-bahan ' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('PoBahanController@index') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            PO Bahan
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == 'satuan_besar' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('SatuanBesarController@index') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Satuan Besar
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == 'satuan_bahan' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('SatuanBahanController@index') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Satuan Bahan
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == 'bahan/limit-stok' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('IngredientController@get_limit_stok') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Limit Stok Bahan
+                            @if ($getLimitStok->ttl > 0)
+                                <span class="badge badge-danger"
+                                    style="background:red">{{ $getLimitStok->ttl }}</span>
+                            @endif
 
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="{{ $request->segment(1) == 'bahan/limit-pemakaian' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
-                        <a href="{{ action('IngredientController@getLimitPemakaian') }}">
-                            <i class="fa fa-user"></i>
-                            <span class="title">
-                                Limit Stok Pemakaian  
-                                @if ($getLimitPemakaian->ttl > 0)
-                                    <span class="badge badge-danger" style="background:red">{{$getLimitPemakaian->ttl}}</span>
-                                @endif
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+                        </span>
+                    </a>
+                </li>
+                <li
+                    class="{{ $request->segment(1) == 'bahan/limit-pemakaian' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                    <a href="{{ action('IngredientController@getLimitPemakaian') }}">
+                        <i class="fa fa-user"></i>
+                        <span class="title">
+                            Limit Stok Pemakaian
+                            @if ($getLimitPemakaian->ttl > 0)
+                                <span class="badge badge-danger"
+                                    style="background:red">{{ $getLimitPemakaian->ttl }}</span>
+                            @endif
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         {{-- @endif --}}
         @if (auth()->user()->can('rekap-penjualan.create'))
             <li
@@ -462,10 +468,32 @@ $user = DB::table('users')
                 </ul>
             </li>
         @endif
+        @if (auth()->user()->can('waste.create'))
+            <li class="treeview {{ in_array($request->segment(1), ['waste']) ? 'active active-sub' : '' }}">
+                <a href="#">
+                    <i class="fa fa-archive"></i>
+                    <span class="title">Waste</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li
+                        class="{{ $request->segment(1) == 'waste' && $request->segment(2) == '' ? 'active active-sub' : '' }}">
+                        <a href="{{ action('WasteController@index') }}">
+                            <i class="fa fa-archive"></i>
+                            <span class="title">
+                                Waste
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
 
         @if (auth()->user()->can('purchase.view') ||
-    auth()->user()->can('purchase.create') ||
-    auth()->user()->can('purchase.update'))
+            auth()->user()->can('purchase.create') ||
+            auth()->user()->can('purchase.update'))
             <li class="treeview {{ in_array($request->segment(1), ['purchases', 'purchase-return']) ? 'active active-sub' : '' }}"
                 id="tour_step6">
                 <a href="#" id="tour_step6_menu"><i class="fa fa-arrow-circle-down"></i>
@@ -499,9 +527,9 @@ $user = DB::table('users')
         @endif
 
         @if (auth()->user()->can('sell.view') ||
-    auth()->user()->can('sell.create') ||
-    auth()->user()->can('direct_sell.access'))
-            <li class="treeview {{ in_array($request->segment(1), ['sells','pos','sell-return','ecommerce','kasbon','pengeluaran','setoran','booking','promo','discount'])? 'active active-sub': '' }}"
+            auth()->user()->can('sell.create') ||
+            auth()->user()->can('direct_sell.access'))
+            <li class="treeview {{ in_array($request->segment(1), ['sells', 'pos', 'sell-return', 'ecommerce', 'kasbon', 'pengeluaran', 'setoran', 'booking', 'promo', 'discount']) ? 'active active-sub' : '' }}"
                 id="tour_step7">
                 <a href="#" id="tour_step7_menu"><i class="fa fa-arrow-circle-up"></i>
                     <span>@lang('sale.sale')</span>
@@ -620,7 +648,7 @@ $user = DB::table('users')
         @endif
 
         @if (auth()->user()->can('purchase.view') ||
-    auth()->user()->can('purchase.create'))
+            auth()->user()->can('purchase.create'))
             <li class="treeview {{ $request->segment(1) == 'stock-transfers' ? 'active active-sub' : '' }}"
                 hidden>
                 <a href="#"><i class="fa fa-truck" aria-hidden="true"></i>
@@ -649,7 +677,7 @@ $user = DB::table('users')
         @endif
 
         @if (auth()->user()->can('purchase.view') ||
-    auth()->user()->can('purchase.create'))
+            auth()->user()->can('purchase.create'))
             <li class="treeview {{ $request->segment(1) == 'stock-adjustments' ? 'active active-sub' : '' }}"
                 hidden>
                 <a href="#"><i class="fa fa-database" aria-hidden="true"></i>
@@ -748,14 +776,14 @@ $user = DB::table('users')
         @endcan
 
         @if (auth()->user()->can('purchase_n_sell_report.view') ||
-    auth()->user()->can('contacts_report.view') ||
-    auth()->user()->can('stock_report.view') ||
-    auth()->user()->can('tax_report.view') ||
-    auth()->user()->can('trending_product_report.view') ||
-    auth()->user()->can('sales_representative.view') ||
-    auth()->user()->can('register_report.view') ||
-    auth()->user()->can('expense_report.view') ||
-    auth()->user()->can('report.trx_employee'))
+            auth()->user()->can('contacts_report.view') ||
+            auth()->user()->can('stock_report.view') ||
+            auth()->user()->can('tax_report.view') ||
+            auth()->user()->can('trending_product_report.view') ||
+            auth()->user()->can('sales_representative.view') ||
+            auth()->user()->can('register_report.view') ||
+            auth()->user()->can('expense_report.view') ||
+            auth()->user()->can('report.trx_employee'))
 
             <li class="treeview {{ in_array($request->segment(1), ['reports']) ? 'active active-sub' : '' }}"
                 id="tour_step8">
@@ -797,8 +825,7 @@ $user = DB::table('users')
                     @can('stock_report.view')
                         <li class="{{ $request->segment(2) == 'stock-report' ? 'active' : '' }}"><a
                                 href="{{ action('ReportController@getStockReport') }}"><i
-                                    class="fa fa-hourglass-half"
-                                    aria-hidden="true"></i>@lang('report.stock_report')</a></li>
+                                    class="fa fa-hourglass-half" aria-hidden="true"></i>@lang('report.stock_report')</a></li>
                     @endcan
 
                     @can('stock_report.view')
@@ -820,8 +847,7 @@ $user = DB::table('users')
                         <li @if ($user->location_id == 4) hidden @endif
                             class="{{ $request->segment(2) == 'trending-products' ? 'active' : '' }}"><a
                                 href="{{ action('ReportController@getTrendingProducts') }}"><i
-                                    class="fa fa-line-chart"
-                                    aria-hidden="true"></i>@lang('report.trending_products')</a></li>
+                                    class="fa fa-line-chart" aria-hidden="true"></i>@lang('report.trending_products')</a></li>
                     @endcan
 
                     @can('stock_report.view')
@@ -854,8 +880,7 @@ $user = DB::table('users')
                     @can('expense_report.view')
                         <li hidden class="{{ $request->segment(2) == 'expense-report' ? 'active' : '' }}"><a
                                 href="{{ action('ReportController@getExpenseReport') }}"><i
-                                    class="fa fa-search-minus"
-                                    aria-hidden="true"></i></i>@lang('report.expense_report')</a></li>
+                                    class="fa fa-search-minus" aria-hidden="true"></i></i>@lang('report.expense_report')</a></li>
                     @endcan
 
                     @can('register_report.view')
@@ -872,8 +897,7 @@ $user = DB::table('users')
                         <li hidden
                             class="{{ $request->segment(2) == 'sales-representative-report' ? 'active' : '' }}"><a
                                 href="{{ action('ReportController@getSalesRepresentativeReport') }}"><i
-                                    class="fa fa-user"
-                                    aria-hidden="true"></i>@lang('report.sales_representative')</a></li>
+                                    class="fa fa-user" aria-hidden="true"></i>@lang('report.sales_representative')</a></li>
                     @endcan
 
                     @if (in_array('tables', $enabled_modules))
@@ -900,8 +924,8 @@ $user = DB::table('users')
                             href="{{ action('ReportController@getRekapPromo') }}"><i
                                 class="fa fa-money"></i>Rekap Promo</a></li>
                     <li class="{{ $request->segment(2) == 'report-fnb' ? 'active' : '' }}"><a
-                                href="{{ action('ReportController@reportFnb') }}"><i
-                                    class="fa fa-money"></i>Rekap Penjualan</a></li>
+                            href="{{ action('ReportController@reportFnb') }}"><i
+                                class="fa fa-money"></i>Rekap Penjualan</a></li>
                     @can('report.finance')
                         <li @if ($user->location_id == 4) hidden @endif
                             class="{{ $request->segment(2) == 'report-month' ? 'active' : '' }}"><a
@@ -929,7 +953,7 @@ $user = DB::table('users')
         <!-- Call restaurant module if defined -->
         @if (in_array('tables', $enabled_modules) && in_array('service_staff', $enabled_modules))
             @if (auth()->user()->can('crud_all_bookings') ||
-    auth()->user()->can('crud_own_bookings'))
+                auth()->user()->can('crud_own_bookings'))
                 <li hidden
                     class="treeview {{ $request->segment(1) == 'bookings' ? 'active active-sub' : '' }}">
                     <a href="{{ action('Restaurant\BookingController@index') }}"><i
@@ -963,10 +987,10 @@ $user = DB::table('users')
         @endrole
 
         @if (auth()->user()->can('business_settings.access') ||
-    auth()->user()->can('barcode_settings.access') ||
-    auth()->user()->can('invoice_settings.access') ||
-    auth()->user()->can('tax_rate.view') ||
-    auth()->user()->can('tax_rate.create'))
+            auth()->user()->can('barcode_settings.access') ||
+            auth()->user()->can('invoice_settings.access') ||
+            auth()->user()->can('tax_rate.view') ||
+            auth()->user()->can('tax_rate.create'))
 
 
             <li class="treeview @if (in_array($request->segment(1), ['business', 'tax-rates', 'barcodes', 'invoice-schemes', 'business-location', 'invoice-layouts', 'printers', 'subscription']) || in_array($request->segment(2), ['tables', 'modifiers'])) {{ 'active active-sub' }} @endif">
@@ -1008,7 +1032,7 @@ $user = DB::table('users')
                     </li>
 
                     @if (auth()->user()->can('tax_rate.view') ||
-    auth()->user()->can('tax_rate.create'))
+                        auth()->user()->can('tax_rate.create'))
                         <li hidden class="{{ $request->segment(1) == 'tax-rates' ? 'active' : '' }}">
                             <a href="{{ action('TaxRateController@index') }}"><i class="fa fa-bolt"></i>
                                 <span>@lang('tax_rate.tax_rates')</span></a>
@@ -1027,7 +1051,7 @@ $user = DB::table('users')
 
                     @if (in_array('modifiers', $enabled_modules))
                         @if (auth()->user()->can('product.view') ||
-    auth()->user()->can('product.create'))
+                            auth()->user()->can('product.create'))
                             <li hidden
                                 class="{{ $request->segment(1) == 'modules' && $request->segment(2) == 'modifiers' ? 'active' : '' }}">
                                 <a href="{{ action('Restaurant\ModifierSetsController@index') }}"><i
