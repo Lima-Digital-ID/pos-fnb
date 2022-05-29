@@ -2411,9 +2411,9 @@ var satuan_table = $('#waste').DataTable({
     columns: [
         { data: 'date', name: 'date' },
         { data: 'no_reference', name: 'no_reference' },
-        { data: 'ingredient_total', name: 'ingredient_total' },
-        { data: 'product_total', name: 'product_total' },
-        { data: 'grand_total', name: 'grand_total' },
+        { data: 'ingredient_total', name: 'ingredient_total', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
+        { data: 'product_total', name: 'product_total', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
+        { data: 'grand_total', name: 'grand_total', render: $.fn.dataTable.render.number( '.', ',', 2, 'Rp. ' ) },
         {
             data: 'action',
             name: 'action'

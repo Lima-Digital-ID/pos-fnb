@@ -81,7 +81,7 @@
                                     <select name="price_kategory[]" id="price_kategory" class="form-control price_kategory">
                                         <option value="" class="">---Pilih Kategori---</option>
                                         @foreach ($price_category as $item)
-                                            <option value="{{ $item->id }}" data-id="{{ $item->id }}">
+                                            <option value="{{ $item->kategori /* $item->id */ }}" data-id="{{ $item->id }}">
                                                 {{ $item->kategori }}</option>
                                         @endforeach
                                     </select>

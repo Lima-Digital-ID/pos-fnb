@@ -79,7 +79,7 @@ class WasteController extends Controller
             // dd($request->all());
             $waste = array(
                 'no_reference' => $request->no_referensi,
-                'date' => $validated['date'],
+                'date' => $request->date,
                 'grand_total' => $request->grand_total,
                 'ingredient_total' => $request->subtotal_bahan,
                 'product_total' => $request->subtotal_produk,

@@ -132,8 +132,8 @@
                             '<td><div class="text-center">' + arrData[i].name + '</div></td>' +
                             '<td><div class="text-center">' + arrData[i].qty + '</div></td>' +
                             '<td><div class="text-center">' + arrData[i].category_price + '</div></td>' +
-                            '<td><div class="text-center">' + arrData[i].price_product + '</div></td>' +
-                            '<td><div class="text-center">' + arrData[i].price_product * arrData[i].qty +
+                            '<td><div class="text-center">' + new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format(arrData[i].price_product) + '</div></td>' +
+                            '<td><div class="text-center">' + new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format(arrData[i].price_product * arrData[i].qty) +
                             '</div></td>'
                         $('#detailRekapProduk tbody').append(table);
                     }
@@ -151,8 +151,8 @@
                         var table = '<tr><td><div class="text-center">' + no++ + '</div></td>' +
                             '<td><div class="text-center">' + arrData[i].nama_bahan + '</div></td>' +
                             '<td><div class="text-center">' + arrData[i].qty + '</div></td>' +
-                            '<td><div class="text-center">' + arrData[i].price_ingredient + '</div></td>' +
-                            '<td><div class="text-center">' + arrData[i].price_ingredient * arrData[i].qty +
+                            '<td><div class="text-center">' + new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format(arrData[i].price_ingredient) + '</div></td>' +
+                            '<td><div class="text-center">' + new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format(arrData[i].price_ingredient * arrData[i].qty) +
                             '</div></td>';
                         $('#detailRekapBahan tbody').append(table);
                     }
