@@ -398,5 +398,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     
     // Waste
     Route::get('waste/get-price-category/{id_kategori}/{id_produk}', 'WasteController@getPriceCategory');
+    Route::get('waste/get-detail-produk/{id}', 'WasteController@getDetailProduct');
+    Route::get('waste/get-detail-bahan/{id}', 'WasteController@getDetailIngredient');
     Route::resource('waste', 'WasteController');
 });

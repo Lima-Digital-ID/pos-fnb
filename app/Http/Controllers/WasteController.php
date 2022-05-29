@@ -17,25 +17,16 @@ class WasteController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $waste = \DB::table('tb_rekap_penjualan_online')
-                ->select([
-                    'tb_rekap_penjualan_online.id',
-                    'transactions.invoice_no',
-                    'tb_rekap_penjualan_online.tanggal_rekap',
-                    'tb_rekap_penjualan_online.total',
-                ])
-                ->leftJoin('tb_rekap_penjualan_online_detail', 'tb_rekap_penjualan_online_detail.id_rekap_penjualan', 'tb_rekap_penjualan_online.id')
-                ->leftJoin('transactions', 'transactions.id', 'tb_rekap_penjualan_online_detail.inv_id')
-                ->groupBy('tb_rekap_penjualan_online.id');
+            $waste = \DB::table('tb_waste');
 
             return Datatables::of($waste)
-                // ->addColumn(
-                //     'action',
-                //     function ($rekap) {
-                //         return '<a href="{{[$id]}}" class="btn btn-xs btn-info showDetail" data-toggle="modal" data-target="#exampleModal" data-id="" onClick="javasciprt: cekDetail(' . $rekap->id . ')"><i class="glyphicon glyphicon-eye-open"></i> Detail</a>';
-                //     }
-                // )
-                // ->rawColumns(['action'])
+                ->addColumn(
+                    'action',
+                    function ($rekap) {
+                        return '<a href="{{[$id]}}" class="btn btn-xs btn-info showDetail" data-toggle="modal" data-target="#exampleModal" data-id="" onClick="javasciprt: cekDetail(' . $rekap->id . ')"><i class="glyphicon glyphicon-eye-open"></i> Detail</a>';
+                    }
+                )
+                ->rawColumns(['action'])
                 ->make(true);
         }
         return view('waste.index');
@@ -70,24 +61,26 @@ class WasteController extends Controller
             //         // 'product' => 'required',
             //         // 'qty_product' => 'required',
             //         // 'price_kategory' => 'required',
-            //         'bahan' => 'required',
-            //         'qty' => 'required',
-            //         'transaction_date' => 'required',
+            //         // 'bahan' => 'required',
+            //         // 'qty' => 'required',
+            //         'date' => 'required',
             //     ],
             //     [
             //         // 'product.required' => 'Produk harus diisi.',
             //         // 'qty_product.required' => 'Kuantitas harus diisi.',
             //         // 'price_kategory.required' => 'Kategori harga harus diisi.',
-            //         'bahan.required' => 'Bahan harus diisi.',
-            //         'qty.required' => 'Kuantitas harus diisi.',
-            //         'transaction_date.required' => 'Tanggal harus diisi.',
+            //         // 'bahan.required' => 'Bahan harus diisi.',
+            //         // 'qty.required' => 'Kuantitas harus diisi.',
+            //         'date.required' => ':attribute harus diisi.',
             //     ]
             // );
 
+            // dd(count($request->bahan));
+            // dd($request->all());
             $waste = array(
                 'no_reference' => $request->no_referensi,
-                'date' => $request->date,
-                'grand_total' => '3',
+                'date' => $validated['date'],
+                'grand_total' => $request->grand_total,
                 'ingredient_total' => '2',
                 'product_total' => '1'
             );
@@ -177,5 +170,27 @@ class WasteController extends Controller
                             ->where('id_kategori', $id_produk)
                             ->get();
         return json_encode($price_category);
+    }
+
+    public function getDetailProduct($id)
+    {
+        $getDetail = \DB::table('tb_waste')
+            ->select('products.name','tb_waste_product_detail.qty','tb_waste_product_detail.price_product','tb_waste_product_detail.category_price')
+            ->join('tb_waste_product_detail', 'tb_waste_product_detail.id_waste', 'tb_waste.id')
+            ->join('products', 'products.id', 'tb_waste_product_detail.id_product')
+            ->where('tb_waste.id', $id)
+            ->get();
+        echo json_encode($getDetail);
+    }
+
+    public function getDetailIngredient($id)
+    {
+        $getDetail = \DB::table('tb_waste')
+            ->select('tb_waste_ingredient_detail.qty','tb_bahan.nama_bahan','tb_waste_ingredient_detail.price_ingredient','tb_waste.no_reference')
+            ->join('tb_waste_ingredient_detail', 'tb_waste_ingredient_detail.id_waste', 'tb_waste.id')
+            ->join('tb_bahan', 'tb_bahan.id_bahan', 'tb_waste_ingredient_detail.id_ingredient')
+            ->where('tb_waste.id', $id)
+            ->get();
+        echo json_encode($getDetail);
     }
 }

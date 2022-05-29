@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', __('Tambah PO Stok Bahan'))
+@section('title', __('Tambah Waste'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <br>
-        <h1>@lang('Tambah PO Stok Bahan')</h1>
+        <h1>@lang('Tambah Waste')</h1>
         <!-- <ol class="breadcrumb">                                                                                                               </ol> -->
     </section>
 
@@ -29,7 +29,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </span>
-                                <input type="date" name="date" id="" class="form-control">
+                                <input type="date" name="date" id="" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,8 @@
                                     <input type="number" class="form-control subtotal" placeholder="Subtotal"
                                         name="subtotal[]" id="subtotal" readonly="readonly">
 
-                                    <input type="hidden" name="price_ingredient[]" value="" id="price_ingredient">
+                                    <input type="hidden" name="price_ingredient[]" value="" id="price_ingredient"
+                                        class="price_ingredient">
                                 </div>
                             </div>
                         </div>
@@ -189,9 +190,24 @@
         <!--box end-->
         <div class="box box-solid">
             <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <input type="text" placeholder="Subtotal Produk" class="form-control subTotalProduk" readonly
+                            name="subtotal_produk">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" placeholder="Subtotal Bahan" class="form-control subTotalIngredients" readonly
+                            name="subtotal_bahan">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" placeholder="Grand Total" class="form-control grandTotal" readonly
+                            name="grand_total">
+                    </div>
+                </div>
+                <br>
                 <div class="row" style="float: right;">
                     <div class="col-sm-12">
-                        <a href="{{ route('po-bahan.index') }}" class="btn btn-info">
+                        <a href="{{ route('waste.index') }}" class="btn btn-info">
                             Kembali</a>
                         <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
                     </div>
@@ -205,44 +221,86 @@
 @stop
 @section('javascript')
     <script>
-        function subTotal(no) {
+        function hitungSubTotalProduk() {
+            var sum = 0
+            $(".subtotal_product").each(function() {
+                sum += parseInt(this.value);
+                $(".subTotalProduk").val(sum);
+            })
+            hitungGrandTotal()
+        }
+
+        function hitungSubTotalBahan() {
+            var sum = 0
+            $(".subtotal").each(function() {
+                sum += parseInt(this.value);
+                $(".subTotalIngredients").val(sum);
+            })
+            hitungGrandTotal()
+        }
+
+        function hitungGrandTotal() {
+            bahan = $(".subTotalIngredients").val()
+            produk = $(".subTotalProduk").val()
+            grand = parseInt(bahan) + parseInt(produk)
+            console.log(grand);
+            if (isNaN(grand) && produk != null) {
+                $(".grandTotal").val(produk);
+            } else if (isNaN(grand) && bahan != null) {
+                $(".grandTotal").val(bahan);
+            } else {
+                $(".grandTotal").val(grand);
+            }
+            // if (grand != NaN) {
+            //     $(".grandTotal").val(grand);
+            // } else {
+            //     $(".grandTotal").val(0);
+            // }
+        }
+
+        function subTotalBahan(no) {
             var selector = ".row-bahan[data-no='" + no + "']"
             var qty = $(selector + " .qty").val()
             var price = $(".row-bahan[data-no='" + no + "'] .bahan").find(":selected").attr('data-price')
             var subtotal = qty * price
-            $(".row-bahan[data-no='" + no + "'] #price_ingredient").val(price)
+            $(".row-bahan[data-no='" + no + "'] .price_ingredient").val(price)
             $(selector + " .subtotal").val(subtotal)
-
-        }
+            hitungSubTotalBahan()
+        };
 
         function subTotalProduct(no) {
+            var noData = $(this).closest(".row-product").attr('data-no')
             var selector = ".row-product[data-no='" + no + "']"
             var idProduct = $(".row-product[data-no='" + no + "'] .produk").find(":selected").attr('data-id');
+            var idCategory = $(".row-product[data-no='" + no + "'] .price_kategory").find(":selected").attr('data-id');
             var qty = parseInt($(selector + " .qty_product").val())
-            var price = parseInt($(".row-product[data-no='" + no + "'] .price-product").val())
-            var subtotal = qty * price
-            $(".row-product[data-no='" + no + "'] .subtotal_product").val(subtotal)
-            console.log(idProduct, qty, price, subtotal);
-        }
-        $(".getSubtotal").change(function() {
+            $.ajax({
+                type: "GET",
+                url: "{{ url('waste/get-price-category') }}/" + idCategory + "/" +
+                    idProduct,
+                dataType: 'json',
+                success: function(response) {
+                    var price = parseInt(response[0].harga)
+                    $(".row-product[data-no='" + no + "'] .price-product").val(price)
+                    var subtotal = qty * price
+                    $(".row-product[data-no='" + no + "'] .subtotal_product").val(subtotal)
+                    hitungSubTotalProduk()
+                }
+            });
+        };
+
+        $(".getSubtotal").keyup(function() {
             var no = $(this).closest(".row-bahan").attr('data-no')
-            subTotal(no)
+            subTotalBahan(no)
         })
+
         $(".bahan").change(function() {
             var no = $(this).closest(".row-bahan").attr('data-no')
             var satuan = $(".row-bahan[data-no='" + no + "'] .bahan").find(":selected").attr('data-satuan')
-            $(".row-bahan[data-no='" + no + "'] .satuan-bahan").html(satuan);
+            $(".row-bahan[data-no='" + no + "'] .satuan-bahan").html(satuan)
+            subTotalBahan(no)
         })
 
-        function grandTotal() {
-            var qty = $('#qty').val();
-            var tax = $('#price-tax').val();
-            var price = $('#harga').val();
-            var subtotal = parseFloat(qty) * parseFloat(price);
-            var priceTax = subtotal * parseFloat(tax) / 100 + subtotal;
-            $('#subtotal').val(subtotal);
-            $('#price-after-tax').val(priceTax);
-        }
         $(document).ready(function() {
             var maxField = 100;
             var addButton = $('#tambah_bahan');
@@ -256,7 +314,7 @@
                     $(wrapper).append(fieldHTML);
                     $(".row-bahan:last").attr('data-no', x)
                     $(".row-bahan:last .getSubtotal").change(function() {
-                        subTotal(x)
+                        subTotalBahan(x)
                     })
                     $(".row-bahan:last input,.row-bahan:last select").val('')
                     $(".row-bahan:last .dynamic_button").empty().html(
@@ -266,12 +324,17 @@
                         $(this).closest('.row-bahan').remove()
                         x--
                     })
+                    $(".getSubtotal").keyup(function() {
+                        var no = $(this).closest(".row-bahan").attr('data-no')
+                        subTotalBahan(no)
+                    })
+
                     $(".bahan").change(function() {
                         var no = $(this).closest(".row-bahan").attr('data-no')
-                        var satuan = $(".row-bahan[data-no='" + no + "'] .bahan").find(
-                                ":selected")
+                        var satuan = $(".row-bahan[data-no='" + no + "'] .bahan").find(":selected")
                             .attr('data-satuan')
-                        $(".row-bahan[data-no='" + no + "'] .satuan-bahan").html(satuan);
+                        $(".row-bahan[data-no='" + no + "'] .satuan-bahan").html(satuan)
+                        subTotalBahan(no)
                     })
                 }
             });
@@ -289,66 +352,32 @@
                         $(this).closest('.row-product').remove()
                         x--
                     })
-                    $(".row-product .price_kategory").change(function() {
-                        var no = $(this).closest(".row-product").attr('data-no')
-                        var id = $(this).find(":selected").attr('data-id');
-                        var idProduct = $('.produk').find(":selected").attr('data-id');
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url('waste/get-price-category') }}/" + id + "/" +
-                                idProduct, //json get site
-                            dataType: 'json',
-                            success: function(response) {
-                                var price = parseInt(response[0].harga)
-                                $(".row-product[data-no='" + no + "'] .price-product")
-                                    .val(price)
-                                subTotalProduct(no)
-                            }
-                        });
-                    })
                     $(".qty_product").keyup(function() {
                         var no = $(this).closest(".row-product").attr('data-no')
-                        var qty = $(".row-product[data-no='" + no + "'] .qty_product").val()
                         subTotalProduct(no)
                     })
                     $(".produk").change(function() {
                         var no = $(this).closest(".row-product").attr('data-no')
-                        var id = $(this).find(":selected").attr('data-id');
+                        subTotalProduct(no)
+                    })
+                    $(".price_kategory").change(function() {
+                        var no = $(this).closest(".row-product").attr('data-no')
                         subTotalProduct(no)
                     })
                 }
             });
             $(".qty_product").keyup(function() {
                 var no = $(this).closest(".row-product").attr('data-no')
-                var qty = $(".row-product[data-no='" + no + "'] .qty_product").val()
                 subTotalProduct(no)
             })
             $(".produk").change(function() {
                 var no = $(this).closest(".row-product").attr('data-no')
-                var id = $(this).find(":selected").attr('data-id');
-                console.log(id);
                 subTotalProduct(no)
             })
             $(".price_kategory").change(function() {
                 var no = $(this).closest(".row-product").attr('data-no')
-                var id = $(this).find(":selected").attr('data-id');
-                var idProduct = $('.produk').find(":selected").attr('data-id');
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url('waste/get-price-category') }}/" + id + "/" +
-                        idProduct, //json get site
-                    dataType: 'json',
-                    success: function(response) {
-                        // console.log(response);
-                        // console.log("{{ url('waste/get-price-category') }}/" + id + "/" +
-                        //     idProduct);
-                        var price = parseInt(response[0].harga)
-                        $(".row-product[data-no='" + no + "'] .price-product").val(price)
-                        subTotalProduct(no)
-                    }
-                });
+                subTotalProduct(no)
             })
-
         });
     </script>
 @endsection

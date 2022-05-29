@@ -2414,9 +2414,9 @@ var satuan_table = $('#waste').DataTable({
         { data: 'ingredient_total', name: 'ingredient_total' },
         { data: 'product_total', name: 'product_total' },
         { data: 'grand_total', name: 'grand_total' },
-        // {
-        //     data: 'action',
-        //     name: 'action'
-        // },
+        {
+            data: 'action',
+            name: 'action'
+        },
     ],
 });

@@ -13,7 +13,7 @@
     <!-- Main content -->
     <section class="content">
         @component('components.widget', ['class' => 'box-primary', 'title' => __('Semua Waste anda')])
-            @can('bahan.create')
+            @can('waste.create')
                 @slot('tool')
                     <div class="box-tools">
                         <a href="{{ action('WasteController@create') }}" class="btn btn-block btn-primary"><i
@@ -21,7 +21,7 @@
                     </div>
                 @endslot
             @endcan
-            @can('bahan.view')
+            @can('waste.view')
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped" id="waste">
                         <thead>
@@ -32,7 +32,7 @@
                                 <th>Total Bahan</th>
                                 <th>Total Produk</th>
                                 <th>Total</th>
-                                {{-- <th>Aksi</th> --}}
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                     </table>
@@ -51,16 +51,51 @@
                     </div>
                     <div class="modal-body">
                         <h3>Detail Waste</h3>
-                        <table class="table table-bordered table-striped" id="detailRekap">
+                        <table class="table table-bordered table-striped" id="detailRekapProduk">
                             <thead>
                                 <tr>
                                     <th width="30px">No</th>
                                     <th>
-                                        <div class="text-center">No Invoice</div>
+                                        <div class="text-center">Nama Produk</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Kuantitas</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Kategori Harga</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Harga Produk</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Subtotal Produk</div>
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered table-striped" id="detailRekapBahan">
+                            <thead>
+
+                                <tr>
+                                    <th width="30px">No</th>
+                                    <th>
+                                        <div class="text-center">Nama Bahan</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Kuantitas</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Harga Bahan</div>
+                                    </th>
+                                    <th>
+                                        <div class="text-center">Subtotal Bahan</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                     <div class="modal-footer">
@@ -83,20 +118,43 @@
 
         function cekDetail(id) {
             $('#myModal').show();
-            $('#detailRekap td').remove();
+            $('#detailRekapProduk td').remove();
+            $('#detailRekapBahan td').remove();
             $.ajax({
                 type: "GET",
-                url: "{{ url('rekap-penjualan/detail-json') }}/" + id, //json get site
+                url: "{{ url('waste/get-detail-produk/') }}/" + id, //json get site
                 dataType: 'json',
                 success: function(response) {
-                    console.log(response);
-                    var no = 1
                     arrData = response;
-                    $('#title').html('Waste')
+                    var no = 1
                     for (i = 0; i < arrData.length; i++) {
                         var table = '<tr><td><div class="text-center">' + no++ + '</div></td>' +
-                            '<td><div class="text-center">' + arrData[i].invoice_no + '</div></td>';
-                        $('#detailRekap tbody').append(table);
+                            '<td><div class="text-center">' + arrData[i].name + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].qty + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].category_price + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].price_product + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].price_product * arrData[i].qty +
+                            '</div></td>'
+                        $('#detailRekapProduk tbody').append(table);
+                    }
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: "{{ url('waste/get-detail-bahan/') }}/" + id, //json get site
+                dataType: 'json',
+                success: function(response) {
+                    arrData = response;
+                    $('#title').html('Waste ' + arrData[0].no_reference)
+                    var no = 1
+                    for (i = 0; i < arrData.length; i++) {
+                        var table = '<tr><td><div class="text-center">' + no++ + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].nama_bahan + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].qty + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].price_ingredient + '</div></td>' +
+                            '<td><div class="text-center">' + arrData[i].price_ingredient * arrData[i].qty +
+                            '</div></td>';
+                        $('#detailRekapBahan tbody').append(table);
                     }
                 }
             });
