@@ -22,8 +22,8 @@ class WasteController extends Controller
             return Datatables::of($waste)
                 ->addColumn(
                     'action',
-                    function ($rekap) {
-                        return '<a href="{{[$id]}}" class="btn btn-xs btn-info showDetail" data-toggle="modal" data-target="#exampleModal" data-id="" onClick="javasciprt: cekDetail(' . $rekap->id . ')"><i class="glyphicon glyphicon-eye-open"></i> Detail</a>';
+                    function ($waste) {
+                        return '<a href="{{[$id]}}" class="btn btn-xs btn-info showDetail" data-toggle="modal" data-target="#exampleModal" data-id="" onClick="javasciprt: cekDetail(' . $waste->id . ')"><i class="glyphicon glyphicon-eye-open"></i> Detail</a>';
                     }
                 )
                 ->rawColumns(['action'])
@@ -81,8 +81,8 @@ class WasteController extends Controller
                 'no_reference' => $request->no_referensi,
                 'date' => $validated['date'],
                 'grand_total' => $request->grand_total,
-                'ingredient_total' => '2',
-                'product_total' => '1'
+                'ingredient_total' => $request->subtotal_bahan,
+                'product_total' => $request->subtotal_produk,
             );
             $idWaste = \DB::table('tb_waste')->insertGetId($waste);
 
