@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Product;
 use App\Ingredient;
 use Datatables;
+use Illuminate\Support\Facades\DB;
 
 class WasteController extends Controller
 {
@@ -40,8 +41,35 @@ class WasteController extends Controller
     public function create()
     {
         $this->params['ingredient'] = Ingredient::get();
-        $this->params['product'] = Product::get();
-        $this->params['price_category'] = \DB::table('tb_kategori_harga')
+        $this->params['product'] = Product::leftJoin('brands', 'products.brand_id', '=', 'brands.id')
+        ->join('units', 'products.unit_id', '=', 'units.id')
+        ->leftJoin('categories as c1', 'products.category_id', '=', 'c1.id')
+        ->leftJoin('categories as c2', 'products.sub_category_id', '=', 'c2.id')
+        ->leftJoin('tax_rates', 'products.tax', '=', 'tax_rates.id')
+        ->leftJoin('variation_location_details as vld', 'vld.product_id', '=', 'products.id')
+        ->leftJoin('business_locations', 'business_locations.id', '=', 'products.location_id')
+        ->join('variations as v', 'v.product_id', '=', 'products.id')
+        ->where('products.type', '!=', 'modifier')
+        ->select(
+            'products.id',
+            'products.name as product',
+            'products.type',
+            'c1.name as category',
+            'c2.name as sub_category',
+            'units.actual_name as unit',
+            'brands.name as brand',
+            'tax_rates.name as tax',
+            'products.sku',
+            'products.image',
+            'products.enable_stock',
+            'products.is_inactive',
+            'business_locations.name as lokasi',
+            DB::raw('SUM(vld.qty_available) as current_stock'),
+            DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
+            DB::raw('MIN(v.sell_price_inc_tax) as min_price'),
+            DB::raw('(select sum(bp.kebutuhan * tb.harga_bahan) from tb_bahan_product as bp join tb_bahan as tb on tb.id_bahan = bp.id_bahan where bp.product_id = products.id) as hpp')
+        )->groupBy('products.id')->get();
+        $this->params['price_category'] = DB::table('tb_kategori_harga')
                                             ->get();
         return view('waste.create',$this->params);
     }
@@ -84,29 +112,32 @@ class WasteController extends Controller
                 'ingredient_total' => $request->subtotal_bahan,
                 'product_total' => $request->subtotal_produk,
             );
-            $idWaste = \DB::table('tb_waste')->insertGetId($waste);
-
+            DB::table('tb_waste')->insert($waste);
+            $idWaste = DB::table('tb_waste')->latest('id')->first();
             foreach ($request->product as $key => $value) {
-                $productWaste = array(
-                    'id_waste' => $idWaste,
-                    'id_product' => $value,
-                    'qty' => $request->qty_product[$key],
-                    'category_price' => $request->price_kategory[$key],
-                    'price_product' => $request->price_product[$key],
-                    'subtotal' => $request->subtotal_product[$key],
-                );
-                \DB::table('tb_waste_product_detail')->insert($productWaste);
+                if ($value != null) {
+                    $productWaste = array(
+                        'id_waste' => $idWaste->id,
+                        'id_product' => $value,
+                        'qty' => $request->qty_product[$key],
+                        'price_product' => $request->price_product[$key],
+                        'subtotal' => $request->subtotal_product[$key],
+                    );
+                    DB::table('tb_waste_product_detail')->insert($productWaste);
+                }
             }
 
             foreach ($request->bahan as $key => $value) {
-                $ingredientWaste = array(
-                    'id_waste' => $idWaste,
-                    'id_ingredient' => $value,
-                    'qty' => $request->qty[$key],
-                    'price_ingredient' => $request->price_ingredient[$key],
-                    'subtotal' => $request->subtotal[$key],
-                );
-                \DB::table('tb_waste_ingredient_detail')->insert($ingredientWaste);
+                if ($value != null) {
+                    $ingredientWaste = array(
+                        'id_waste' => $idWaste->id,
+                        'id_ingredient' => $value,
+                        'qty' => $request->qty[$key],
+                        'price_ingredient' => $request->price_ingredient[$key],
+                        'subtotal' => $request->subtotal[$key],
+                    );
+                    DB::table('tb_waste_ingredient_detail')->insert($ingredientWaste);
+                }
             }
         } catch (\Exception $e) {
             return $e;

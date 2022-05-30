@@ -62,9 +62,6 @@
                                         <div class="text-center">Kuantitas</div>
                                     </th>
                                     <th>
-                                        <div class="text-center">Kategori Harga</div>
-                                    </th>
-                                    <th>
                                         <div class="text-center">Harga Produk</div>
                                     </th>
                                     <th>
@@ -131,7 +128,6 @@
                         var table = '<tr><td><div class="text-center">' + no++ + '</div></td>' +
                             '<td><div class="text-center">' + arrData[i].name + '</div></td>' +
                             '<td><div class="text-center">' + arrData[i].qty + '</div></td>' +
-                            '<td><div class="text-center">' + arrData[i].category_price + '</div></td>' +
                             '<td><div class="text-center">' + new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format(arrData[i].price_product) + '</div></td>' +
                             '<td><div class="text-center">' + new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format(arrData[i].price_product * arrData[i].qty) +
                             '</div></td>'

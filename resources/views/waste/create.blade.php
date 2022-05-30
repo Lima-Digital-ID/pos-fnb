@@ -45,7 +45,7 @@
                 <div id="add_product">
 
                     <div class="row row-product" data-no='1'>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon product_dynamic_button">
@@ -54,14 +54,14 @@
                                     <select name="product[]" id="product" class="form-control produk">
                                         <option value="" class="opt-produk">---Pilih Produk---</option>
                                         @foreach ($product as $item)
-                                            <option value="{{ $item->id }}" data-id="{{ $item->id }}">
-                                                {{ $item->name }}</option>
+                                            <option value="{{ $item->id }}" data-id="{{ $item->id }}" data-price="{{ $item->hpp }}">
+                                                {{ $item->product }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">
@@ -72,23 +72,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon dynamic_button">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                    <select name="price_kategory[]" id="price_kategory" class="form-control price_kategory">
-                                        <option value="" class="">---Pilih Kategori---</option>
-                                        @foreach ($price_category as $item)
-                                            <option value="{{ $item->kategori /* $item->id */ }}" data-id="{{ $item->id }}">
-                                                {{ $item->kategori }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">
@@ -193,15 +177,15 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <input type="text" placeholder="Subtotal Produk" class="form-control subTotalProduk" readonly
-                            name="subtotal_produk">
+                            name="subtotal_produk" value="0">
                     </div>
                     <div class="col-sm-4">
                         <input type="text" placeholder="Subtotal Bahan" class="form-control subTotalIngredients" readonly
-                            name="subtotal_bahan">
+                            name="subtotal_bahan" value="0">
                     </div>
                     <div class="col-sm-4">
                         <input type="text" placeholder="Grand Total" class="form-control grandTotal" readonly
-                            name="grand_total">
+                            name="grand_total" value="0">
                     </div>
                 </div>
                 <br>
@@ -243,19 +227,7 @@
             bahan = $(".subTotalIngredients").val()
             produk = $(".subTotalProduk").val()
             grand = parseInt(bahan) + parseInt(produk)
-            console.log(grand);
-            if (isNaN(grand) && produk != null) {
-                $(".grandTotal").val(produk);
-            } else if (isNaN(grand) && bahan != null) {
-                $(".grandTotal").val(bahan);
-            } else {
-                $(".grandTotal").val(grand);
-            }
-            // if (grand != NaN) {
-            //     $(".grandTotal").val(grand);
-            // } else {
-            //     $(".grandTotal").val(0);
-            // }
+            $(".grandTotal").val(grand);
         }
 
         function subTotalBahan(no) {
@@ -269,24 +241,15 @@
         };
 
         function subTotalProduct(no) {
-            var noData = $(this).closest(".row-product").attr('data-no')
             var selector = ".row-product[data-no='" + no + "']"
             var idProduct = $(".row-product[data-no='" + no + "'] .produk").find(":selected").attr('data-id');
             var idCategory = $(".row-product[data-no='" + no + "'] .price_kategory").find(":selected").attr('data-id');
-            var qty = parseInt($(selector + " .qty_product").val())
-            $.ajax({
-                type: "GET",
-                url: "{{ url('waste/get-price-category') }}/" + idCategory + "/" +
-                    idProduct,
-                dataType: 'json',
-                success: function(response) {
-                    var price = parseInt(response[0].harga)
-                    $(".row-product[data-no='" + no + "'] .price-product").val(price)
-                    var subtotal = qty * price
-                    $(".row-product[data-no='" + no + "'] .subtotal_product").val(subtotal)
-                    hitungSubTotalProduk()
-                }
-            });
+            var qty = $( ".row-product[data-no='" + no + "'] .qty_product").val()
+            var priceProduct = $(".row-product[data-no='" + no + "'] .produk").find(":selected").attr('data-price');
+            var subtotalProduct = qty * priceProduct
+            $(".row-product[data-no='" + no + "'] .price-product").val(priceProduct)
+            $(".row-product[data-no='" + no + "'] .subtotal_product").val(subtotalProduct)
+            hitungSubTotalProduk()
         };
 
         $(".getSubtotal").keyup(function() {
