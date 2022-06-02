@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Ingredient;
+use App\User;
+use App\BusinessLocation;
 use Datatables;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +42,22 @@ class WasteController extends Controller
      */
     public function create()
     {
+        $business_id = request()->session()->get('user.business_id');
+
+        $user_id = request()->session()->get('user.id');
+        $user = User::where('id', $user_id)->first();   
+        $location_id=$user->location_id;
+        $business_locations = BusinessLocation::forDropdown($business_id);
+        foreach ($business_locations as $key => $value) {
+            if ($user->location_id != null) {
+                if ($user->location_id != $key) {
+                    unset($business_locations[$key]);
+                }
+            }
+        }
+        $this->params['location_id'] = $location_id;        
+        $this->params['business_locations'] = $business_locations;        
+
         $this->params['ingredient'] = Ingredient::get();
         $this->params['product'] = Product::leftJoin('brands', 'products.brand_id', '=', 'brands.id')
         ->join('units', 'products.unit_id', '=', 'units.id')
@@ -68,7 +86,7 @@ class WasteController extends Controller
             DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
             DB::raw('MIN(v.sell_price_inc_tax) as min_price'),
             DB::raw('(select sum(bp.kebutuhan * tb.harga_bahan) from tb_bahan_product as bp join tb_bahan as tb on tb.id_bahan = bp.id_bahan where bp.product_id = products.id) as hpp')
-        )->groupBy('products.id')->get();
+        )->groupBy('products.id')->orderBy('product')->get();
         $this->params['price_category'] = DB::table('tb_kategori_harga')
                                             ->get();
         return view('waste.create',$this->params);
@@ -107,6 +125,7 @@ class WasteController extends Controller
             // dd($request->all());
             $waste = array(
                 'no_reference' => $request->no_referensi,
+                'location_id' => $request->location_id,
                 'date' => $request->date,
                 'grand_total' => $request->grand_total,
                 'ingredient_total' => $request->subtotal_bahan,
@@ -114,6 +133,16 @@ class WasteController extends Controller
             );
             DB::table('tb_waste')->insert($waste);
             $idWaste = DB::table('tb_waste')->latest('id')->first();
+
+            $data_trx=array(
+                'deskripsi'     => 'Pengeluaran Waste HPP Promo '.$request->no_referensi,
+                'invoice_no'    => $request->no_referensi,
+                'location_id'   => $request->location_id,
+                'tanggal'       => $request->date,
+            );
+            DB::table('tbl_trx_akuntansi')->insert($data_trx);
+            $id_last=DB::table('tbl_trx_akuntansi')->max('id_trx_akun');
+    
             foreach ($request->product as $key => $value) {
                 if ($value != null) {
                     $productWaste = array(
@@ -124,6 +153,15 @@ class WasteController extends Controller
                         'subtotal' => $request->subtotal_product[$key],
                     );
                     DB::table('tb_waste_product_detail')->insert($productWaste);
+
+                    $data1=array(
+                        'id_trx_akun'   => $id_last,
+                        'id_akun'       => 131,
+                        'jumlah'        => $productWaste['subtotal'],
+                        'tipe'          => 'DEBIT',
+                        'keterangan'    => 'akun',
+                    );
+                    \DB::table('tbl_trx_akuntansi_detail')->insert($data1);
                 }
             }
 
@@ -137,6 +175,16 @@ class WasteController extends Controller
                         'subtotal' => $request->subtotal[$key],
                     );
                     DB::table('tb_waste_ingredient_detail')->insert($ingredientWaste);
+
+                    $data1=array(
+                        'id_trx_akun'   => $id_last,
+                        'id_akun'       => 131,
+                        'jumlah'        => $ingredientWaste['subtotal'],
+                        'tipe'          => 'DEBIT',
+                        'keterangan'    => 'akun',
+                    );
+                    \DB::table('tbl_trx_akuntansi_detail')->insert($data1);
+
                 }
             }
         } catch (\Exception $e) {
@@ -144,7 +192,7 @@ class WasteController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             return $e;
         }
-        return redirect()->route('waste.create');
+        return redirect()->route('waste.index');
     }
 
     /**

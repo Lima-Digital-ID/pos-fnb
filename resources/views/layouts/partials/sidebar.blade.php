@@ -622,7 +622,7 @@ $user = DB::table('users')
                     @can('spend.other')
                         <li class="{{ $request->segment(2) == 'manajemen' ? 'active' : '' }}"><a
                                 href="{{ action('SellPosController@listPengeluaranOther') }}"><i
-                                    class="fa fa-recycle"></i>Pengeluaran Manajemen</a></li>
+                                    class="fa fa-recycle"></i>Pengeluaran Lain Lain</a></li>
                         <li class="{{ $request->segment(2) == 'sewa' ? 'active' : '' }}"><a
                                 href="{{ action('SellPosController@listSewa') }}"><i
                                     class="fa fa-recycle"></i>Pengeluaran Sewa</a></li>

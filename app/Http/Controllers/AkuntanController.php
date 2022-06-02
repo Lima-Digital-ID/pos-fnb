@@ -299,7 +299,7 @@ class AkuntanController extends Controller
 
         return view('akuntansi.balance_sheet')->with(compact('data', 'bulan', 'user', 'location_id', 'business_locations'));
     }
-    public function labaRugi(Request $request){
+/*     public function labaRugi(Request $request){
         if (!auth()->user()->can('akuntansi.profit-loss')) {
             abort(403, 'Unauthorized action.');
         }
@@ -390,6 +390,99 @@ class AkuntanController extends Controller
 
         return view('akuntansi.profit_loss_list')->with(compact('data', 'user_location', 'pengeluaran', 'business_locations', 'user', 'location_id', 'royalty_fee', 'dividen_bisnis', 'dividen_mitra', 'pengeluaran_other', 'date', 'transfer_mitra', 'gaji_report'));
     }
+    */
+    public function labaRugi(Request $request){
+        if (!auth()->user()->can('akuntansi.profit-loss')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $user_id = request()->session()->get('user.id');
+        $user = User::where('id', $user_id)->first();   
+        $user_location=$user->location_id;
+        $location_id=0;
+        $date=0;
+        $business_location = BusinessLocation::all();
+        $business_locations=array();
+        foreach ($business_location as $key => $value) {
+            $business_locations[$value->id]=$value->name;
+        }
+        if ($user->location_id != null) {
+            $location_id=$user->location_id;
+        }
+
+        $query=BusinessLocation::select('*');
+        
+        if ($request->input('bulan')) {
+            $date=$request->input('tahun').'-'.$request->input('bulan');
+            $location_id=$request->input('location_id');
+            $query->where('id', $location_id);
+        }else if(request()->session()->get('location_id')){
+            $date=request()->session()->get('bulan');
+            $location_id=request()->session()->get('location_id');
+            $query->where('id', $location_id);
+        }else{
+            $date=date('Y-m');
+            $location_id=$user->location_id;
+            $query->where('id', $location_id);
+        }
+        
+        $bl=$query->get();
+
+        $data['bulan']=json_encode(explode('-', $date));
+        $pengeluaran = DB::table('tbl_pengeluaran')
+        ->selectRaw('COALESCE(sum(total),0) as jml')
+        ->where("tipe","!=","setoran")
+        ->where("tanggal","like","%$date%")->first();
+        $akuntansi = array(
+            'penjualan' => $this->getDetailAkuntansi(20,$date,'Pendapatan Transaksi'),
+            'hpp' => $this->getDetailAkuntansi(65,$date),
+            'potongan_aplikasi' => $this->getDetailAkuntansi(130,$date),
+            'waste' => $this->getDetailAkuntansi(131,$date),
+            'pengeluaran' => $pengeluaran->jml,
+            'pengeluaran_manajemen' => $this->getPengeluaranOther('Pengeluaran Manajemen',$date),
+            'pengeluaran_sewa' => $this->getPengeluaranOther('Pengeluaran Sewa',$date),
+            'tabungan_thr' => $this->getPengeluaranOther('Tabungan THR',$date),
+            'tabungan_amortisasi' => $this->getPengeluaranOther('Tabungan Amortisasi',$date),
+        );
+        return view('akuntansi.laba_rugi')->with(compact('data','user_location', 'business_locations', 'user', 'location_id', 'date','akuntansi'));
+    }
+    
+    public function getPengeluaranOther($notes,$date)
+    {
+        $pengeluaranOther = DB::table('tbl_pengeluaran_other')
+        ->selectRaw('COALESCE(sum(total),0) as total')
+        ->where("notes",$notes)
+        ->where("tanggal","like","%$date%")->first();
+
+        return $pengeluaranOther->total;
+    }
+
+
+    public function getDetailAkuntansi($idAkun,$date,$desc="")
+    {
+        $data = DB::table('tbl_trx_akuntansi_detail as d')
+        ->selectRaw('COALESCE(sum(jumlah),0) as jml')
+        ->join('tbl_trx_akuntansi as a','d.id_trx_akun','a.id_trx_akun');
+        if($desc!=""){
+            $data = $data->where('deskripsi','like',"%$desc%");
+        }
+        $data = $data->where('tanggal','like',"%$date%");
+        if(is_array($idAkun)){
+            $whereRaw = "";
+            $count = count($idAkun);
+            foreach ($idAkun as $key => $value) {
+                $or = ($key+1)!=$idAkun ? ' or' : '';
+                $whereRaw.="(id_akun = '".$value."' )".$or;
+            }
+            $data = $data->whereRaw($whereRaw);
+        }else{
+            $data = $data->where('id_akun',$idAkun);
+        }
+        $data = $data->first();
+
+        return $data->jml;
+    }
+
     private function cekAllJurnal($date, $location_id){
         $results = DB::select( DB::raw('SELECT COALESCE((SELECT SUM(trd.jumlah) as jumlah FROM tbl_trx_akuntansi_detail 
             trd JOIN tbl_trx_akuntansi tra ON trd.id_trx_akun=tra.id_trx_akun JOIN tbl_akun_detail tad ON 

@@ -284,7 +284,7 @@
 						@endif
 						<div class="col-sm-6">
 							<div class="form-group">
-								<select name="" id="kategori_customer" class="form-control select2">
+								<select name="id_kategori_harga" id="kategori_customer" class="form-control select2">
 									@foreach ($kategoriCustomer as $item)
 										<option value="{{$item->id}}">Harga {{$item->kategori}}</option>
 									@endforeach

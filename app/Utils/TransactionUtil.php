@@ -58,6 +58,7 @@ class TransactionUtil extends Util
             'discount_amount' => $uf_data ? $this->num_uf($input['discount_amount']) : $input['discount_amount'],
             'tax_amount' => $invoice_total['tax'],
             'final_total' => $uf_data ? $this->num_uf($input['final_total']) : $input['final_total'],
+            'id_kategori_harga' =>$input['id_kategori_harga'],
             'additional_notes' => !empty($input['sale_note']) ? $input['sale_note'] : null,
             'staff_note' => !empty($input['staff_note']) ? $input['staff_note'] : null,
             'created_by' => $user_id,

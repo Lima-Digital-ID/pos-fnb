@@ -16,13 +16,20 @@
         <div class="box box-solid">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                          {!! Form::label('Lokasi : ') !!}
+                            {!! Form::select('location_id', 
+                                $business_locations, $location_id, ['id' => 'location_id', 'class' => 'form-control select2', 'required' => 'required', 'placeholder'=>'Pilih Lokasi']); !!}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
                         <div class="form-group">
                             {!! Form::label('ref_no', __('purchase.ref_no') . ':') !!}
                             {!! Form::text('no_referensi', 'WST' . time(), ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             {!! Form::label('transaction_date', __('messages.date') . ':*') !!}
                             <div class="input-group">
@@ -176,14 +183,17 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-sm-4">
+                        <label for="">Total Produk</label>
                         <input type="text" placeholder="Subtotal Produk" class="form-control subTotalProduk" readonly
-                            name="subtotal_produk" value="0">
+                        name="subtotal_produk" value="0">
                     </div>
                     <div class="col-sm-4">
+                        <label for="">Total Bahan</label>
                         <input type="text" placeholder="Subtotal Bahan" class="form-control subTotalIngredients" readonly
-                            name="subtotal_bahan" value="0">
+                        name="subtotal_bahan" value="0">
                     </div>
                     <div class="col-sm-4">
+                        <label for="">Grand Total</label>
                         <input type="text" placeholder="Grand Total" class="form-control grandTotal" readonly
                             name="grand_total" value="0">
                     </div>
@@ -208,7 +218,7 @@
         function hitungSubTotalProduk() {
             var sum = 0
             $(".subtotal_product").each(function() {
-                sum += parseInt(this.value);
+                sum += parseFloat(this.value);
                 $(".subTotalProduk").val(sum);
             })
             hitungGrandTotal()
@@ -217,7 +227,7 @@
         function hitungSubTotalBahan() {
             var sum = 0
             $(".subtotal").each(function() {
-                sum += parseInt(this.value);
+                sum += parseFloat(this.value);
                 $(".subTotalIngredients").val(sum);
             })
             hitungGrandTotal()
@@ -226,7 +236,7 @@
         function hitungGrandTotal() {
             bahan = $(".subTotalIngredients").val()
             produk = $(".subTotalProduk").val()
-            grand = parseInt(bahan) + parseInt(produk)
+            grand = parseFloat(bahan) + parseFloat(produk)
             $(".grandTotal").val(grand);
         }
 
@@ -286,6 +296,8 @@
                     $(".row-bahan .remove_button").click(function() {
                         $(this).closest('.row-bahan').remove()
                         x--
+
+                        hitungSubTotalBahan()
                     })
                     $(".getSubtotal").keyup(function() {
                         var no = $(this).closest(".row-bahan").attr('data-no')
@@ -314,6 +326,7 @@
                     $(".row-product .remove_button").click(function() {
                         $(this).closest('.row-product').remove()
                         x--
+                        hitungSubTotalProduk()
                     })
                     $(".qty_product").keyup(function() {
                         var no = $(this).closest(".row-product").attr('data-no')
