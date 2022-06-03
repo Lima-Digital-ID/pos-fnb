@@ -129,7 +129,7 @@
                     <?php 
                         $totalPengeluaranOther = $akuntansi['pengeluaran_manajemen'] + $akuntansi['pengeluaran_sewa'] + $akuntansi['tabungan_amortisasi'] + $akuntansi['tabungan_thr'];
                         $pendapatanBersih = $netto - $totalPengeluaranOther;
-                        $prosentase = $pendapatanBersih/$netto*100;
+                        $prosentase = $netto==0 ? 0 : $pendapatanBersih/$netto*100;
                     ?>
                     <tbody>
                         <tr>
@@ -189,14 +189,14 @@
                             <td>Deviden Principal (Managemen Fee)</td>
                             <td width="20%">{{number_format(40/100*$netto,0,',','.')}}</td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <td>Pengeluaran Lain Lain</td>
                             <td width="20%">{{number_format($akuntansi['pengeluaran_manajemen'],0,',','.')}}</td>
                         </tr>
                         <tr bgColor="#cad6e3">
                             <td>Total Transfer Principal</td>
                             <td width="20%">{{number_format($totalTransferPrincipal,0,',','.')}}</td>
-                        </tr>
+                        </tr> --}}
                     </tbody>
                 </table>
                 <table class="table table-bordered">

@@ -432,37 +432,40 @@ class AkuntanController extends Controller
         $pengeluaran = DB::table('tbl_pengeluaran')
         ->selectRaw('COALESCE(sum(total),0) as jml')
         ->where("tipe","!=","setoran")
+        ->where("location_id",$location_id)
         ->where("tanggal","like","%$date%")->first();
         $akuntansi = array(
-            'penjualan' => $this->getDetailAkuntansi(20,$date,'Pendapatan Transaksi'),
-            'hpp' => $this->getDetailAkuntansi(65,$date),
-            'potongan_aplikasi' => $this->getDetailAkuntansi(130,$date),
-            'waste' => $this->getDetailAkuntansi(131,$date),
+            'penjualan' => $this->getDetailAkuntansi(20,$date,'Pendapatan Transaksi',$location_id),
+            'hpp' => $this->getDetailAkuntansi(65,$date,'',$location_id),
+            'potongan_aplikasi' => $this->getDetailAkuntansi(130,$date,'',$location_id),
+            'waste' => $this->getDetailAkuntansi(131,$date,'',$location_id),
             'pengeluaran' => $pengeluaran->jml,
-            'pengeluaran_manajemen' => $this->getPengeluaranOther('Pengeluaran Manajemen',$date),
-            'pengeluaran_sewa' => $this->getPengeluaranOther('Pengeluaran Sewa',$date),
-            'tabungan_thr' => $this->getPengeluaranOther('Tabungan THR',$date),
-            'tabungan_amortisasi' => $this->getPengeluaranOther('Tabungan Amortisasi',$date),
+            'pengeluaran_manajemen' => $this->getPengeluaranOther('Pengeluaran Manajemen',$date,$location_id),
+            'pengeluaran_sewa' => $this->getPengeluaranOther('Pengeluaran Sewa',$date,$location_id),
+            'tabungan_thr' => $this->getPengeluaranOther('Tabungan THR',$date,$location_id),
+            'tabungan_amortisasi' => $this->getPengeluaranOther('Tabungan Amortisasi',$date,$location_id),
         );
         return view('akuntansi.laba_rugi')->with(compact('data','user_location', 'business_locations', 'user', 'location_id', 'date','akuntansi'));
     }
     
-    public function getPengeluaranOther($notes,$date)
+    public function getPengeluaranOther($notes,$date,$location_id)
     {
         $pengeluaranOther = DB::table('tbl_pengeluaran_other')
         ->selectRaw('COALESCE(sum(total),0) as total')
         ->where("notes",$notes)
+        ->where("location_id",$location_id)
         ->where("tanggal","like","%$date%")->first();
 
         return $pengeluaranOther->total;
     }
 
 
-    public function getDetailAkuntansi($idAkun,$date,$desc="")
+    public function getDetailAkuntansi($idAkun,$date,$desc="",$location_id)
     {
         $data = DB::table('tbl_trx_akuntansi_detail as d')
         ->selectRaw('COALESCE(sum(jumlah),0) as jml')
-        ->join('tbl_trx_akuntansi as a','d.id_trx_akun','a.id_trx_akun');
+        ->join('tbl_trx_akuntansi as a','d.id_trx_akun','a.id_trx_akun')
+        ->where("location_id",$location_id);
         if($desc!=""){
             $data = $data->where('deskripsi','like',"%$desc%");
         }
