@@ -185,7 +185,7 @@
                         $totalTransferPrincipal = (40/100*$netto) - $akuntansi['pengeluaran_manajemen'];
                     ?>
                     <tbody>
-                        <tr>
+                        <tr bgColor="#cad6e3">
                             <td>Deviden Principal (Managemen Fee)</td>
                             <td width="20%">{{number_format(40/100*$netto,0,',','.')}}</td>
                         </tr>
