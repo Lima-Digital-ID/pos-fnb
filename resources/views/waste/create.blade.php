@@ -49,6 +49,16 @@
                 <h3 class="box-title">{{ __('Cari Produk') }}</h3>
             </div>
             <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="">Tipe Pengeluaran</label>
+                        <select name="product_recap_type" id="" class="form-control">
+                            <option value="promo">Promo</option>
+                            <option value="waste">Waste</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
                 <div id="add_product">
 
                     <div class="row row-product" data-no='1'>

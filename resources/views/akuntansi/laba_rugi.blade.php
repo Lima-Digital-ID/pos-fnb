@@ -109,14 +109,22 @@
                     </thead>
                     <tbody>
                         <?php 
-                            $pengeluaran = $akuntansi['waste'] + $akuntansi['pengeluaran'];
+                            $pengeluaran = $akuntansi['waste_bahan'] + $akuntansi['promo_produk'] + $akuntansi['waste_produk'] + $akuntansi['pengeluaran'];
                         ?>
                         <tr>
-                            <td>Pengeluaran HPP B.Baku (Promo, Waste)</td>
-                            <td>{{number_format($akuntansi['waste'],0,',','.')}}</td>
+                            <td>Pengeluaran HPP Bahan Baku</td>
+                            <td>{{number_format($akuntansi['waste_bahan'],0,',','.')}}</td>
                         </tr>
                         <tr>
-                            <td>Pengeluaran Outline</td>
+                            <td>Pengeluaran Promo</td>
+                            <td>{{number_format($akuntansi['promo_produk'],0,',','.')}}</td>
+                        </tr>
+                        <tr>
+                            <td>Pengeluaran Waste</td>
+                            <td>{{number_format($akuntansi['waste_produk'],0,',','.')}}</td>
+                        </tr>
+                        <tr>
+                            <td>Pengeluaran Outlet</td>
                             <td>{{number_format($akuntansi['pengeluaran'],0,',','.')}}</td>
                         </tr>
                         <tr bgColor="#cad6e3">
@@ -165,7 +173,7 @@
                 <table class="table table-bordered">
                     <thead class="mt-3" style="background-color:#3c8dbc; color:white">
                         <tr>
-                            <th>Pengeluaran Management Fee</th>
+                            <th>Deviden</th>
                             <th width="20%"></th>
                         </tr>
                     </thead>
@@ -203,14 +211,6 @@
                     <tbody>
                         <tr bgColor="#cad6e3">
                             <td>Deviden Investor</td>
-                            <td width="20%">{{number_format(60/100*$netto,0,',','.')}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr bgColor="#cad6e3">
-                            <td>Total Transfer Investor</td>
                             <td width="20%">{{number_format(60/100*$netto,0,',','.')}}</td>
                         </tr>
                     </tbody>

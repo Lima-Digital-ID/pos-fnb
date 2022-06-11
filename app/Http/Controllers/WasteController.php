@@ -130,6 +130,7 @@ class WasteController extends Controller
                 'grand_total' => $request->grand_total,
                 'ingredient_total' => $request->subtotal_bahan,
                 'product_total' => $request->subtotal_produk,
+                'product_recap_type' => count($request->product)==1 && $request->product[0]==null ? '' : $request->product_recap_type,
             );
             DB::table('tb_waste')->insert($waste);
             $idWaste = DB::table('tb_waste')->latest('id')->first();
@@ -153,10 +154,10 @@ class WasteController extends Controller
                         'subtotal' => $request->subtotal_product[$key],
                     );
                     DB::table('tb_waste_product_detail')->insert($productWaste);
-
+                    $id_akun = $request->product_recap_type=='waste' ? 132 : 133; 
                     $data1=array(
                         'id_trx_akun'   => $id_last,
-                        'id_akun'       => 131,
+                        'id_akun'       => $id_akun,
                         'jumlah'        => $productWaste['subtotal'],
                         'tipe'          => 'DEBIT',
                         'keterangan'    => 'akun',
