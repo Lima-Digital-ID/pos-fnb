@@ -112,7 +112,7 @@
                             $pengeluaran = $akuntansi['waste_bahan'] + $akuntansi['promo_produk'] + $akuntansi['waste_produk'] + $akuntansi['pengeluaran'];
                         ?>
                         <tr>
-                            <td>Pengeluaran HPP Bahan Baku</td>
+                            <td>Pengeluaran Bahan Baku Rusak</td>
                             <td>{{number_format($akuntansi['waste_bahan'],0,',','.')}}</td>
                         </tr>
                         <tr>
@@ -136,7 +136,7 @@
                 <table class="table table-bordered">
                     <?php 
                         $totalPengeluaranOther = $akuntansi['pengeluaran_manajemen'] + $akuntansi['pengeluaran_sewa'] + $akuntansi['tabungan_amortisasi'] + $akuntansi['tabungan_thr'];
-                        $pendapatanBersih = $netto - $totalPengeluaranOther;
+                        $pendapatanBersih = $netto - $pengeluaran - $totalPengeluaranOther;
                         $prosentase = $netto==0 ? 0 : $pendapatanBersih/$netto*100;
                     ?>
                     <tbody>
@@ -180,11 +180,11 @@
                     <tbody>
                         <tr>
                             <td>Principal 40%</td>
-                            <td width="20%">{{number_format(40/100*$netto,0,',','.')}}</td>
+                            <td width="20%">{{number_format(40/100*$pendapatanBersih,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td>Investor 60%</td>
-                            <td width="20%">{{number_format(60/100*$netto,0,',','.')}}</td>
+                            <td width="20%">{{number_format(60/100*$pendapatanBersih,0,',','.')}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -195,7 +195,7 @@
                     <tbody>
                         <tr bgColor="#cad6e3">
                             <td>Deviden Principal (Managemen Fee)</td>
-                            <td width="20%">{{number_format(40/100*$netto,0,',','.')}}</td>
+                            <td width="20%">{{number_format(40/100*$pendapatanBersih,0,',','.')}}</td>
                         </tr>
                         {{-- <tr>
                             <td>Pengeluaran Lain Lain</td>
@@ -211,7 +211,7 @@
                     <tbody>
                         <tr bgColor="#cad6e3">
                             <td>Deviden Investor</td>
-                            <td width="20%">{{number_format(60/100*$netto,0,',','.')}}</td>
+                            <td width="20%">{{number_format(60/100*$pendapatanBersih,0,',','.')}}</td>
                         </tr>
                     </tbody>
                 </table>

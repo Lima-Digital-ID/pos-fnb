@@ -166,41 +166,66 @@ class SellPosController extends Controller
     //     return $results;
     // }
 
-    private function cekProfit($type, $where){
-        $query = DB::table('cash_registers')
-                        ->join('cash_register_transactions', 'cash_registers.id', '=', 'cash_register_transactions.cash_register_id')
-                        ->join('users', 'cash_registers.user_id', '=', 'users.id');
-        if ($type == 'cash') {
-            $query->select(DB::raw('SUM(cash_register_transactions.amount) AS jumlah'));
-            $query->where('cash_register_transactions.pay_method', 'cash');
+    // private function cekProfit($type, $where){
+    //     $query = DB::table('cash_registers')
+    //                     ->join('cash_register_transactions', 'cash_registers.id', '=', 'cash_register_transactions.cash_register_id')
+    //                     ->join('users', 'cash_registers.user_id', '=', 'users.id');
+    //     if ($type == 'cash') {
+    //         $query->select(DB::raw('SUM(cash_register_transactions.amount) AS jumlah'));
+    //         $query->where('cash_register_transactions.pay_method', 'cash');
+    //     }else{
+    //         $query->select(DB::raw('SUM(cash_register_transactions.amount) AS jumlah'));
+    //         $query->where('cash_register_transactions.pay_method' ,'!=', 'cash');
+    //     }
+
+    //     $query->where($where[0],$where[1]);
+    //     // $query->where('cash_register_transactions.pay_method' , 'sell');
+    //     $results=$query->first();
+    //     return $results;
+    // }
+
+    public function cekProfit($type,$where){
+        $query = DB::table('transactions as t')
+        ->selectRaw('sum(final_total) as grandtotal, (SELECT method from transaction_payments WHERE transaction_id = t.id limit 1) as method')
+        ->where($where[0],$where[1])
+        ->groupBy('method');
+        if($type=='cash'){
+            $query = $query->having('method','cash');
+            
         }else{
-            $query->select(DB::raw('SUM(cash_register_transactions.amount) AS jumlah'));
-            $query->where('cash_register_transactions.pay_method' ,'!=', 'cash');
+            $query = $query->having('method','!=','cash');
         }
 
-        $query->where($where[0],$where[1]);
-        // $query->where('cash_register_transactions.pay_method' , 'sell');
-        $results=$query->first();
-        return $results;
+        $query = $query->get();
+        $total = 0;
+        foreach ($query as $key => $value) {
+            $total+=$value->grandtotal;
+        }
+        return $total;
     }
+
     private function cekPengeluaran($type, $type2, $where){
         $query = DB::table('tbl_pengeluaran')
                         ->join('tbl_detail_pengeluaran', 'tbl_pengeluaran.id', '=', 'tbl_detail_pengeluaran.id_pengeluaran')
                         ->join('users', 'tbl_pengeluaran.user_id', '=', 'users.id');
         if ($type == 'cash') {
             $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
+            $query->where('tbl_pengeluaran.tipe','pengeluaran');
             $query->where('sumber', 'cash');
             // $query->where('tipe', '');
         }else if ($type == 'non tunai') {
             $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
+            $query->where('tbl_pengeluaran.tipe','pengeluaran');
             $query->where('sumber', 'non tunai');
             // $query->where('tipe', '');
         }else if ($type == 'petty_pc') {
             $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
+            $query->where('tbl_pengeluaran.tipe','setoran');
             $query->where('sumber', 'petty');
             // $query->where('tipe', '');
         }else if ($type == 'petty') {
             $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
+            $query->where('tbl_pengeluaran.tipe','petty');
             $query->where('tbl_detail_pengeluaran.tipe', 'petty');
         }else{
             $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
@@ -222,8 +247,8 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $user_id = request()->session()->get('user.id');
         $user = User::where('id', $user_id)->first();
-        $wherePengeluaran = $request->get('location_id') ?  ['tbl_pengeluaran.location_id',$request->get('location_id')] : ['tbl_pengeluaran.user_id',$user_id];
-        $whereProfit = $request->get('location_id') ?  ['cash_registers.business_id',1] : ['cash_registers.user_id',$user_id]; // harusnya pake location_id
+        $wherePengeluaran = $request->get('location_id') ?  ['tbl_pengeluaran.location_id',$request->get('location_id')] : ['tbl_pengeluaran.location_id',1];
+        $whereProfit = $request->get('location_id') ?  ['location_id',$request->get('location_id')] : ['location_id',1];
         
         $petty_cash=$this->cekPengeluaran('petty', null, $wherePengeluaran);
         $pengeluaran_pc=$this->cekPengeluaran('pengeluaran', 'petty',  $wherePengeluaran);
@@ -231,7 +256,7 @@ class SellPosController extends Controller
         $setoran_pc=$this->cekPengeluaran('petty_pc', null, $wherePengeluaran);
         $saldo_cash=$this->cekProfit('cash', $whereProfit);
         $pengeluaran_cash=$this->cekPengeluaran('cash', null, $wherePengeluaran);
-        $saldo_not_cash=$this->cekProfit('ovo', $whereProfit);
+        $saldo_not_cash=$this->cekProfit('not cash', $whereProfit);
         $pengeluaran_non_cash=$this->cekPengeluaran('non tunai', null, $wherePengeluaran);
         
         $total_petty=$petty_cash->jumlah - ($pengeluaran_pc->jumlah + $setoran_pc->jumlah);
@@ -249,10 +274,10 @@ class SellPosController extends Controller
         $list_saldo=array(
             'saldo_pengeluaran'   => round($total_pengeluaran, 0),
             'saldo_petty'   => round($total_petty, 0),
-            'saldo_cash'    => round(($saldo_cash->jumlah - $pengeluaran_cash->jumlah), 0),
-            'saldo_cash_only'    => round(($saldo_cash->jumlah), 0),
+            'saldo_cash'    => round(($saldo_cash - $pengeluaran_cash->jumlah), 0),
+            'saldo_cash_only'    => round(($saldo_cash), 0),
             'saldo_pengeluaran_cash'    => round(($pengeluaran_cash->jumlah), 0),
-            'saldo_not_cash'=> round($saldo_not_cash->jumlah - $pengeluaran_non_cash->jumlah, 0),
+            'saldo_not_cash'=> round($saldo_not_cash - $pengeluaran_non_cash->jumlah, 0),
         );
         // echo "<pre>";
         // print_r($list_saldo);
@@ -2163,6 +2188,7 @@ class SellPosController extends Controller
         $data=array(
             'cash_register_id'       => $register->id,
             'user_id'       => $request->input('user_id'),
+            'location_id'     => $request->input('id_lokasi'),
             'total'       => $request->input('jml_pengeluaran'),
             'deskripsi_pengeluaran'       => $request->input('desc_pengeluaran'),
             'tipe'       => 'pengeluaran',
