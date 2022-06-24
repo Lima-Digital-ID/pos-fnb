@@ -49,20 +49,10 @@
                 <h3 class="box-title">{{ __('Cari Produk') }}</h3>
             </div>
             <div class="box-body">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <label for="">Tipe Pengeluaran</label>
-                        <select name="product_recap_type" id="" class="form-control">
-                            <option value="promo">Promo</option>
-                            <option value="waste">Waste</option>
-                        </select>
-                    </div>
-                </div>
-                <br>
                 <div id="add_product">
 
                     <div class="row row-product" data-no='1'>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon product_dynamic_button">
@@ -78,7 +68,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">
@@ -89,7 +79,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon">
@@ -100,6 +90,12 @@
                                     <input type="hidden" name="price_product[]" value="" class="price-product">
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <select name="product_recap_type" id="product_recap_type" class="form-control">
+                                <option value="promo">Promo</option>
+                                <option value="waste">Waste</option>
+                            </select>
                         </div>
                     </div>
 
@@ -329,7 +325,7 @@
                     x++;
                     $('#add_product').append(fieldHTML);
                     $(".row-product:last").attr('data-no', x)
-                    $(".row-product:last input,.row-product:last select").val('')
+                    $(".row-product:last input,.row-product:last select:not(#product_recap_type)").val('')
                     $(".row-product:last .product_dynamic_button").empty().html(
                         `<a href="javascript:void(0);" class="remove_button" title="Remove field">X</i></a>`
                     )

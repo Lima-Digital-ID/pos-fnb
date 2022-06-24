@@ -39,6 +39,7 @@
                             <!--<th>@lang('purchase.payment_due')</th>-->
                             <th>@lang('contact.contact')</th>
                             <th>Keterangan</th>
+                            <th>Kategori</th>
                             <th>Pegawai</th>
                             <th>@lang('messages.action')</th>
                         </tr>
@@ -54,6 +55,8 @@
                             <td class="text-left" id="total_type_payment"></td>
                             <td></td>
                             <td></td>
+                            <td></td>
+                            
                         </tr>
                     </tfoot>
                 </table>
@@ -137,6 +140,7 @@ $(document).ready( function(){
             // { data: 'total_remaining', name: 'total_remaining'},
             { data: 'mobile', },
             { data: 'payment_first'},
+            { data: 'kategori',name:'kh.kategori'},
             { data: 'nama_pegawai'},
             { data: 'action', name: 'action'}
         ],

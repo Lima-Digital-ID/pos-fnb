@@ -213,7 +213,14 @@ class SellPosController extends Controller
             $query->where('tbl_pengeluaran.tipe','pengeluaran');
             $query->where('sumber', 'cash');
             // $query->where('tipe', '');
-        }else if ($type == 'non tunai') {
+        }
+        else if ($type == 'setoran') {
+            $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
+            $query->where('tbl_pengeluaran.tipe','setoran');
+            $query->where('sumber', $type2);
+            // $query->where('tipe', '');
+        }
+        else if ($type == 'non tunai') {
             $query->select(DB::raw('SUM(tbl_detail_pengeluaran.total) AS jumlah'));
             $query->where('tbl_pengeluaran.tipe','pengeluaran');
             $query->where('sumber', 'non tunai');
@@ -254,6 +261,7 @@ class SellPosController extends Controller
         $pengeluaran_pc=$this->cekPengeluaran('pengeluaran', 'petty',  $wherePengeluaran);
         $pengeluaran_cash_pc=$this->cekPengeluaran('pengeluaran', 'cash',  $wherePengeluaran);
         $setoran_pc=$this->cekPengeluaran('petty_pc', null, $wherePengeluaran);
+        $setoran_cash=$this->cekPengeluaran('setoran', 'cash', $wherePengeluaran);
         $saldo_cash=$this->cekProfit('cash', $whereProfit);
         $pengeluaran_cash=$this->cekPengeluaran('cash', null, $wherePengeluaran);
         $saldo_not_cash=$this->cekProfit('not cash', $whereProfit);
@@ -274,10 +282,11 @@ class SellPosController extends Controller
         $list_saldo=array(
             'saldo_pengeluaran'   => round($total_pengeluaran, 0),
             'saldo_petty'   => round($total_petty, 0),
-            'saldo_cash'    => round(($saldo_cash - $pengeluaran_cash->jumlah), 0),
+            'saldo_cash'    => round(($saldo_cash - $pengeluaran_cash->jumlah - $setoran_cash->jumlah), 0),
             'saldo_cash_only'    => round(($saldo_cash), 0),
             'saldo_pengeluaran_cash'    => round(($pengeluaran_cash->jumlah), 0),
-            'saldo_not_cash'=> round($saldo_not_cash - $pengeluaran_non_cash->jumlah, 0),
+            // 'saldo_not_cash'=> round($saldo_not_cash - $pengeluaran_non_cash->jumlah, 0),
+            'saldo_not_cash'=> round($saldo_not_cash, 0),
         );
         // echo "<pre>";
         // print_r($list_saldo);

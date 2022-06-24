@@ -78,6 +78,7 @@ class SellController extends Controller
                     '=',
                     'bl.id'
                 )
+                ->leftJoin('tb_kategori_harga as kh','transactions.id_kategori_harga','kh.id')
                 ->leftJoin(
                     'transactions AS SR',
                     'transactions.id',
@@ -101,6 +102,7 @@ class SellController extends Controller
                     'transactions.discount_amount',
                     'transactions.discount_type',
                     'transactions.total_before_tax',
+                    'kh.kategori',
                     DB::raw('SUM(IF(tp.is_return = 1,-1*tp.amount,tp.amount)) as total_paid'),
                     'bl.name as business_location',
                     DB::raw('COUNT(SR.id) as return_exists'),
