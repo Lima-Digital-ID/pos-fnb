@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <div class="col-sm-3">
-                            <select name="product_recap_type" id="product_recap_type" class="form-control">
+                            <select name="product_recap_type[]" id="product_recap_type" class="form-control">
                                 <option value="promo">Promo</option>
                                 <option value="waste">Waste</option>
                             </select>

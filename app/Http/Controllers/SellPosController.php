@@ -1585,7 +1585,32 @@ class SellPosController extends Controller
             return $output;
         }
     }
+    
+    public function destroySell($id)
+    {
+        DB::beginTransaction();
+        
+        DB::table('cash_register_transactions')->where('transaction_id',$id)->delete();
+        DB::table('transaction_payments')->where('transaction_id',$id)->delete();
+        DB::table('transaction_sell_lines')->where('transaction_id',$id)->delete();
+        
+        $getIdTrx = DB::table('tbl_trx_akuntansi')->select('id_trx_akun')->where('transaction_id',$id)->first();
+        
+        DB::table('tbl_trx_akuntansi_detail')->where('id_trx_akun',$getIdTrx->id_trx_akun)->delete();
 
+        DB::table('tbl_trx_akuntansi')->where('transaction_id',$id)->delete();
+        DB::table('transactions')->where('id',$id)->delete();
+
+        DB::commit();
+        $output = [
+            'success' => true,
+            'msg' => __('lang_v1.sale_delete_success')
+        ];
+        
+        return $output;
+        
+    }
+    
     /**
      * Returns the HTML row for a product in POS
      *

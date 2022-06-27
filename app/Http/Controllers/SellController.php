@@ -255,7 +255,9 @@ class SellController extends Controller
 
                         // if (auth()->user()->can("direct_sell.delete")) {
                         if (auth()->user()->can("sell.delete")) {
-                            $html .= '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
+                            $act = action('SellPosController@destroy', [$row->id]);
+                            $act = action('SellPosController@destroySell', [$row->id]);
+                            $html .= '<li><a href="' . $act . '" class="delete-sale"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
                         }
 
                         if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {

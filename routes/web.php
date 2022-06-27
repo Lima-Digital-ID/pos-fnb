@@ -109,6 +109,7 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::resource('purchases', 'PurchaseController');
 
     Route::get('/pos/cek-avability-stok', 'SellPosController@cekAvabilityStok');
+    Route::delete('/sells/destroySell/{id}', 'SellPosController@destroySell')->name('destroySell');
     Route::get('/pos/test', 'SellPosController@test');
     Route::get('/toggle-subscription/{id}', 'SellPosController@toggleRecurringInvoices');
     Route::get('/sells/subscriptions', 'SellPosController@listSubscriptions');
