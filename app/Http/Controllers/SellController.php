@@ -143,6 +143,12 @@ class SellController extends Controller
                     $sells->where('transactions.location_id', $location_id);
                 }
             }
+            if (request()->has('id_kategori_harga')) {
+                $id_kategori_harga = request()->get('id_kategori_harga');
+                if (!empty($id_kategori_harga)) {
+                    $sells->where('transactions.id_kategori_harga', $id_kategori_harga);
+                }
+            }
 
             if (!empty(request()->customer_id)) {
                 $customer_id = request()->customer_id;

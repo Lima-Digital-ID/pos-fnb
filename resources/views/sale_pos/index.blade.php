@@ -119,6 +119,7 @@ $(document).ready( function(){
                 }
                 d.is_direct_sale = 0;
 
+                d.id_kategori_harga = $('#sell_list_filter_id_kategori_harga').val();
                 d.location_id = $('#sell_list_filter_location_id').val();
                 d.customer_id = $('#sell_list_filter_customer_id').val();
                 d.payment_status = $('#sell_list_filter_payment_status').val();
@@ -162,7 +163,7 @@ $(document).ready( function(){
         }
     });
 
-    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status',  function() {
+    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_id_kategori_harga,  #sell_list_filter_customer_id, #sell_list_filter_payment_status',  function() {
         sell_table.ajax.reload();
     });
 });

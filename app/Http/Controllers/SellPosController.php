@@ -116,6 +116,7 @@ class SellPosController extends Controller
 
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $customers = Contact::customersDropdown($business_id, false);
+        $kategori_harga = DB::table('tb_kategori_harga')->get();
         $user_id = request()->session()->get('user.id');
         $user = User::where('id', $user_id)->first();
         $location_id = $user->location_id;
@@ -126,7 +127,7 @@ class SellPosController extends Controller
                 }
             }
         }
-        return view('sale_pos.index')->with(compact('business_locations', 'customers'));
+        return view('sale_pos.index')->with(compact('business_locations', 'customers','kategori_harga'));
     }
 
     /**
@@ -262,6 +263,7 @@ class SellPosController extends Controller
         $pengeluaran_cash_pc=$this->cekPengeluaran('pengeluaran', 'cash',  $wherePengeluaran);
         $setoran_pc=$this->cekPengeluaran('petty_pc', null, $wherePengeluaran);
         $setoran_cash=$this->cekPengeluaran('setoran', 'cash', $wherePengeluaran);
+        $setoran_non_cash=$this->cekPengeluaran('setoran', 'non tunai', $wherePengeluaran);
         $saldo_cash=$this->cekProfit('cash', $whereProfit);
         $pengeluaran_cash=$this->cekPengeluaran('cash', null, $wherePengeluaran);
         $saldo_not_cash=$this->cekProfit('not cash', $whereProfit);
@@ -285,8 +287,8 @@ class SellPosController extends Controller
             'saldo_cash'    => round(($saldo_cash - $pengeluaran_cash->jumlah - $setoran_cash->jumlah), 0),
             'saldo_cash_only'    => round(($saldo_cash), 0),
             'saldo_pengeluaran_cash'    => round(($pengeluaran_cash->jumlah), 0),
-            // 'saldo_not_cash'=> round($saldo_not_cash - $pengeluaran_non_cash->jumlah, 0),
-            'saldo_not_cash'=> round($saldo_not_cash, 0),
+            'saldo_not_cash'=> round($saldo_not_cash - $pengeluaran_non_cash->jumlah - $setoran_non_cash->jumlah, 0),
+            // 'saldo_not_cash'=> round($saldo_not_cash, 0),
         );
         // echo "<pre>";
         // print_r($list_saldo);
@@ -2574,7 +2576,7 @@ class SellPosController extends Controller
             $pengeluaran->where('tbl_pengeluaran.tanggal', '>=', $start_date);
             $pengeluaran->where('tbl_pengeluaran.tanggal', '<=', $end_date);
         }
-
+        $pengeluaran->orderBy('id','desc');
         $pengeluaran->get();
         $datatable = Datatables::of($pengeluaran)
             ->addColumn(
