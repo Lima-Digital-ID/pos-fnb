@@ -3249,9 +3249,39 @@ class ReportController extends Controller
         if ($location_id != null) {
             $business_location=DB::table('business_locations')->where('id', $location_id)->first();
         }
+
+        $hpp = $this->getDetailAkuntansi(65,$date,'',$location_id);
+        $potongan_aplikasi = $this->getDetailAkuntansi(130,$date,'',$location_id);
+
         // dd($pengeluaran_other);
-        return view('report.report_month')->with(compact('month', 'pendapatan', 'location_id', 'temp_pengeluaran', 'business_locations', 'pengeluaran_other', 'kasbon', 'gaji_report', 'stock_adjustment', 'business_location', 'other_gaji', 'pengeluaran_other_before'));
+        return view('report.report_month')->with(compact('month', 'pendapatan', 'location_id', 'temp_pengeluaran', 'business_locations', 'pengeluaran_other', 'kasbon', 'gaji_report', 'stock_adjustment', 'business_location', 'other_gaji', 'pengeluaran_other_before','hpp','potongan_aplikasi'));
     }
+    public function getDetailAkuntansi($idAkun,$date,$desc="",$location_id)
+    {
+        $data = DB::table('tbl_trx_akuntansi_detail as d')
+        ->selectRaw('COALESCE(sum(jumlah),0) as jml')
+        ->join('tbl_trx_akuntansi as a','d.id_trx_akun','a.id_trx_akun')
+        ->where("location_id",$location_id);
+        if($desc!=""){
+            $data = $data->where('deskripsi','like',"%$desc%");
+        }
+        $data = $data->where('tanggal','like',"%$date%");
+        if(is_array($idAkun)){
+            $whereRaw = "";
+            $count = count($idAkun);
+            foreach ($idAkun as $key => $value) {
+                $or = ($key+1)!=$idAkun ? ' or' : '';
+                $whereRaw.="(id_akun = '".$value."' )".$or;
+            }
+            $data = $data->whereRaw($whereRaw);
+        }else{
+            $data = $data->where('id_akun',$idAkun);
+        }
+        $data = $data->first();
+
+        return $data->jml;
+    }
+
     public function getCountTrxEmployee(Request $request){        
         $business_id = request()->session()->get('user.business_id');
         $user_id = request()->session()->get('user.id');

@@ -104,6 +104,9 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    <?php
+                        $total_omset=($jasa + $non_jasa) - $hpp - $potongan_aplikasi;
+                    ?>
                     <tfoot>
                         <tr>
                             <th></th>
@@ -114,11 +117,20 @@
                             <th>Total Nilai Pendapatan</th>
                             <th colspan="2">{{formatRupiah($jasa + $non_jasa)}}</th>
                         </tr>
+                        <tr>
+                            <th>HPP Makanan dan Minuman</th>
+                            <th colspan="2">{{formatRupiah($hpp)}}</th>
+                        </tr>
+                        <tr>
+                            <th>Potongan Aplikasi</th>
+                            <th colspan="2">{{formatRupiah($potongan_aplikasi)}}</th>
+                        </tr>
+                        <tr>
+                            <th>Pendapatan dari Penjualan</th>
+                            <th colspan="2">{{formatRupiah($total_omset)}}</th>
+                        </tr>
                     </tfoot>
                 </table>
-                <?php
-                $total_omset=$jasa + $non_jasa;
-                ?>
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="">
@@ -292,7 +304,7 @@
                     $total_pendapatan=$total_omset - ($gaji + $total_manajemen + $total_non_manajemen + $deposite + ($total_omset * ($business_location->royalty_fee/100)));
 
                 ?>
-            <div class="table-responsive">
+            {{-- <div class="table-responsive">
                 <table class="table table-bordered table-striped" id="">
                     <thead>
                         <tr>
@@ -363,7 +375,7 @@
                         </tr>
                     </thead>
                 </table>
-            </div>
+            </div> --}}
             
             
     @endcomponent

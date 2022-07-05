@@ -55,8 +55,9 @@
 @endsection
 @section('javascript')
 <script>
-    $("#location_id").change(function(){
-        var location_id = $(this).val()
+    getLocation()
+    function getLocation(){
+        var location_id = $("#location_id").val()
         $("#inv").empty()
         $.ajax({
             type : 'get',
@@ -69,6 +70,9 @@
                 })
             }
         })
+    }
+    $("#location_id").change(function(){
+        getLocation()
     })
 </script>
 @endsection
