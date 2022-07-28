@@ -2202,7 +2202,7 @@ var ingredients_table = $('#ingredient_table').DataTable({
             return row.stok + ' ' + row.satuan;
         },'searchable' : false},
         { data: 'stok_besar', name: 'stok_besar',render: function ( data, type, row ) {
-            return row.stok_besar + ' ' + row.satuan_besar;
+            return parseFloat(row.stok_besar).toFixed(2) + ' ' + row.satuan_besar;
         },'searchable' : false},
         { data: 'limit_stok', name: 'limit_stok' },
         { data: 'limit_pemakaian', name: 'limit_pemakaian' },

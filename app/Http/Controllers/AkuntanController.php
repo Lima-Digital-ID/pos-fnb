@@ -431,7 +431,7 @@ class AkuntanController extends Controller
         $data['bulan']=json_encode(explode('-', $date));
         $pengeluaran = DB::table('tbl_pengeluaran')
         ->selectRaw('COALESCE(sum(total),0) as jml')
-        ->where("tipe","!=","setoran")
+        ->where("tipe","=","pengeluaran")
         ->where("location_id",$location_id)
         ->where("tanggal","like","%$date%")->first();
         $akuntansi = array(

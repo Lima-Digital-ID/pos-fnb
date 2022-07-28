@@ -3157,24 +3157,29 @@ class ReportController extends Controller
             $hari=(strlen($i) < 2 ? '0'.$i : $i);
             $day=$date.'-'.$hari;
             $temp=array('jasa' => 0, 'non_jasa' => 0);
-            $transaction=DB::select('SELECT * FROM transactions WHERE type="sell" and status="final" and transaction_date like "'.$day.'%" '.($location_id != 0 ? 'AND transactions.location_id="'.$location_id.'"' : '').'');
-            foreach ($transaction as $key => $value) {
-                $detail_trx=DB::select('SELECT tsl.*, p.enable_stock FROM transaction_sell_lines tsl join products p on p.id = tsl.product_id WHERE transaction_id = '.$value->id.' AND tsl.is_item_paket = 0 ');
-                $count=count($detail_trx);
-                $diskon=$value->discount_type == 'fixed' ? ($value->discount_amount / ($count != 0 ? $count : 1)) : 0;
-                foreach ($detail_trx as $k => $v) {
-                    $total_item=$value->discount_type == 'fixed' ? ($v->quantity * $v->unit_price_inc_tax) - $diskon : $v->quantity * ($v->unit_price_inc_tax - ($v->unit_price_inc_tax * ($value->discount_amount / 100)));
-                    $temp['jasa']=$temp['jasa'] + ($v->enable_stock == 0 ? $total_item : 0);
-                    $temp['non_jasa']=$temp['non_jasa'] + ($v->enable_stock == 1 ? $total_item : 0);
-                }
+            // $transaction=DB::select('SELECT * FROM transactions WHERE type="sell" and status="final" and transaction_date like "'.$day.'%" '.($location_id != 0 ? 'AND transactions.location_id="'.$location_id.'"' : '').'');
+            // foreach ($transaction as $key => $value) {
+            //     $detail_trx=DB::select('SELECT tsl.*, p.enable_stock FROM transaction_sell_lines tsl join products p on p.id = tsl.product_id WHERE transaction_id = '.$value->id.' AND tsl.is_item_paket = 0 ');
+            //     $count=count($detail_trx);
+            //     $diskon=$value->discount_type == 'fixed' ? ($value->discount_amount / ($count != 0 ? $count : 1)) : 0;
+            //     foreach ($detail_trx as $k => $v) {
+            //         $total_item=$value->discount_type == 'fixed' ? ($v->quantity * $v->unit_price_inc_tax) - $diskon : $v->quantity * ($v->unit_price_inc_tax - ($v->unit_price_inc_tax * ($value->discount_amount / 100)));
+            //         $temp['jasa']=$temp['jasa'] + ($v->enable_stock == 0 ? $total_item : 0);
+            //         $temp['non_jasa']=$temp['non_jasa'] + ($v->enable_stock == 1 ? $total_item : 0);
+            //     }
+            // }
+            $getPendapatan = DB::table('transactions')->where('transaction_date','like','%'.$day."%");
+            if ($location_id != 0) {
+                $getPendapatan = $getPendapatan->where('location_id', $location_id);
             }
+            $getPendapatan = $getPendapatan->sum('final_total');
             $query_pengeluaran=DB::table('tbl_pengeluaran')
                         ->select('tbl_pengeluaran.total', 'tbl_pengeluaran.tanggal', 'tbl_pengeluaran.deskripsi_pengeluaran', 'tbl_pengeluaran.notes')
                         ->join('users', 'users.id', '=', 'tbl_pengeluaran.user_id')
                         ->where('tanggal', 'like', '%'.$day.'%')
                         ->where('tipe', 'pengeluaran');
             if ($location_id != 0) {
-                $query_pengeluaran->where('users.location_id', $location_id);
+                $query_pengeluaran->where('tbl_pengeluaran.location_id', $location_id);
             }
             $pengeluaran=$query_pengeluaran->get();
             $query_pengeluaran_other=DB::table('tbl_pengeluaran_other')
@@ -3186,7 +3191,7 @@ class ReportController extends Controller
                 $query_pengeluaran_other->where('tbl_pengeluaran_other.location_id', $location_id);
             }
             $pengeluaran_other=$query_pengeluaran_other->get();
-            $pendapatan[$i]['pendapatan']=$temp;
+            $pendapatan[$i]['pendapatan']=$getPendapatan;
             $pendapatan[$i]['tanggal']=$day;
             $temp_pengeluaran[$i]['pengeluaran']=$pengeluaran;
             $temp_pengeluaran[$i]['pengeluaran_other']=$pengeluaran_other;

@@ -84,8 +84,7 @@
                     <thead>
                         <tr>
                             <th style="min-width: 100px;">Tanggal</th>
-                            <th style="min-width: 100px;">Nilai Jasa</th>
-                            <th style="min-width: 100px;">Nilai Barang</th>
+                            <th style="min-width: 100px;">Pendapatan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,28 +93,25 @@
                         ?>
                         @foreach($pendapatan as $value)
                         <?php
-                        $jasa+=$value['pendapatan']['jasa'];
-                        $non_jasa+=$value['pendapatan']['non_jasa'];
+                        $non_jasa+=$value['pendapatan'];
                         ?>
                         <tr>
                             <td>{{$value['tanggal']}}</td>
-                            <td>{{formatRupiah($value['pendapatan']['jasa'])}}</td>
-                            <td>{{formatRupiah($value['pendapatan']['non_jasa'])}}</td>
+                            <td>{{formatRupiah($value['pendapatan'])}}</td>
                         </tr>
                         @endforeach
                     </tbody>
                     <?php
-                        $total_omset=($jasa + $non_jasa) - $hpp - $potongan_aplikasi;
+                        $total_omset=$non_jasa - $hpp - $potongan_aplikasi;
                     ?>
                     <tfoot>
                         <tr>
                             <th></th>
-                            <th>{{formatRupiah($jasa)}}</th>
                             <th>{{formatRupiah($non_jasa)}}</th>
                         </tr>
                         <tr>
                             <th>Total Nilai Pendapatan</th>
-                            <th colspan="2">{{formatRupiah($jasa + $non_jasa)}}</th>
+                            <th colspan="2">{{formatRupiah($non_jasa)}}</th>
                         </tr>
                         <tr>
                             <th>HPP Makanan dan Minuman</th>
