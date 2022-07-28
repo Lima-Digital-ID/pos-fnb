@@ -96,7 +96,8 @@ class ProductController extends Controller
                     DB::raw('SUM(vld.qty_available) as current_stock'),
                     DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
                     DB::raw('MIN(v.sell_price_inc_tax) as min_price'),
-                    DB::raw('(select sum(bp.kebutuhan * tb.harga_bahan) from tb_bahan_product as bp join tb_bahan as tb on tb.id_bahan = bp.id_bahan where bp.product_id = products.id) as hpp')
+                    DB::raw('(select sum(bp.kebutuhan * tb.harga_bahan) from tb_bahan_product as bp join tb_bahan as tb on tb.id_bahan = bp.id_bahan where bp.product_id = products.id) as hpp'),
+                    DB::raw('(select coalesce(sum(bp.kebutuhan * tb.harga_bahan),0) from tb_bahan_product as bp join tb_bahan as tb on tb.id_bahan = bp.id_bahan join product_pakets as pp on bp.product_id = pp.product_id where pp.product_item = products.id) as hpp_paket')
                 )->groupBy('products.id');
 
             $type = request()->get('type', null);
@@ -181,6 +182,9 @@ class ProductController extends Controller
                         return $html;
                     }
                 )
+                ->editColumn('hpp', function ($row) {
+                    return $row->hpp + $row->hpp_paket;
+                })
                 ->editColumn('product', function ($row) {
                     $product = $row->is_inactive == 1 ? $row->product . ' <span class="label bg-gray">Inactive
                         </span>' : $row->product;

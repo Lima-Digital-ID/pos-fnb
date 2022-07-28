@@ -786,13 +786,20 @@ class SellPosController extends Controller
                     }else{
                         //jika produk paket tambah komisi untuk kasir yang menghitung jumlah dari tiap item dalam paket itu
                         $total_item_paket=DB::table('products')->join('product_pakets', 'products.id', '=', 'product_pakets.product_item')->where('products.id', $komisi->id)->count();
+                        // $getHpp = DB::table('tb_bahan_product as bp')
+                        // ->select(DB::raw('coalesce(sum(bp.kebutuhan * tb.harga_bahan),0) as hpp_paket'))
+                        // ->join('tb_bahan as tb','tb.id_bahan','bp.id_bahan')
+                        // ->join('product_pakets as pp','bp.product_id','pp.product_id')
+                        // ->where('pp.product_item',$value['product_id'])->first();
+                        // $hpp+=$getHpp->hpp_paket;
                         // $sum_komisi+=(($kasir != null ? $kasir->kom_trx : 0) * ($value['quantity'] * $total_item_paket));
                         // $sum_komisi+=(($komisi != null ? ($komisi->commission != null ? $komisi->commission : 0) : 0) * $value['quantity']);
                     }
-
-                    $bahanProduk = DB::table('tb_bahan_product as bp')->select('bp.*','b.harga_bahan')->join('tb_bahan as b','bp.id_bahan','b.id_bahan')->where('bp.product_id',$value['product_id'])->get();
+                    $bahanProduk = DB::table('tb_bahan_product as bp')
+                    ->select('bp.*','b.harga_bahan')
+                    ->join('tb_bahan as b','bp.id_bahan','b.id_bahan')
+                    ->where('bp.product_id',$value['product_id'])->get();
                     foreach ($bahanProduk as $index => $v) {
-
                         $hpp += ($v->kebutuhan * $v->harga_bahan);
 
                         $kartuStok = [
@@ -804,7 +811,7 @@ class SellPosController extends Controller
                         ];
                         \DB::table('tb_kartu_stok')->insert($kartuStok);
                     }
-        
+                    
                 }
                 
                 $data_jurnal=array(
