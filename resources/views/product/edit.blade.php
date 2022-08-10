@@ -137,7 +137,45 @@
                             $location_option, $product->location_id, ['class' => 'form-control', 'placeholder' => 'Pilih Lokasi', 'required' => 'required']); !!}
               </div>
             </div>
-            <div class="col-md-12">
+    
+            <div class="col-sm-12">
+            <div class="form-group">
+                  <label>
+                  {!! Form::checkbox('is_paket', 1, $product->is_paket != null ? true : false, ['class' => 'input-icheck', 'id' => 'is_paket', 'onclick' => 'alert(1)']); !!} <strong>Item Paket</strong>
+                  </label>
+              </div>
+            </div>
+            
+            <div id="col-item-paket" {{ $product->is_paket != null ? '' : 'hidden'}}>
+              <div class="col-sm-12">
+                <div class="form-group">
+                    <button id="add-item">Tambah</button>
+                </div>
+              </div>
+              @foreach($product_paket as $key => $value)
+              <div class="form-group row">
+              <div class="col-sm-12">
+              <div class="col-sm-6">
+                <input type="hidden" value="{{$value->id}}" name="product_paket_id[]">
+                <div class="input-group"><span class="input-group-addon"><a href="#" class="remove_field_item">X</a></span>
+                        {!! Form::select('item_id[]', 
+                                    $product_option, $value->product_id, ['class' => 'form-control', 'placeholder' => 'Pilih Item']); !!}
+                  </div>
+                </div>
+              <div class="col-sm-4">
+                <!-- <div class="form-group"> -->
+                      {!! Form::number('item_price[]', $value->amount , ['class' => 'form-control hide',
+                          'placeholder' => 'Price Item', 'min' => '0']); !!}
+                <!-- </div> -->
+              </div>
+              </div>
+              </div>
+              @endforeach
+              <div class="col-sm-12">
+                <div id="item-paket"></div>
+              </div>
+            </div>
+            <div class="col-md-12" id="col-bahan">
               <div class="row">
                 <div class="col-md-12" id="append-bahan">
                   @foreach ($bahan_produk as $key => $data)
@@ -177,44 +215,6 @@
                 </div>
               </div>
     
-            </div>
-    
-            <div class="col-sm-12">
-            <div class="form-group">
-                  <label>
-                  {!! Form::checkbox('is_paket', 1, $product->is_paket != null ? true : false, ['class' => 'input-icheck', 'id' => 'is_paket', 'onclick' => 'alert(1)']); !!} <strong>Item Paket</strong>
-                  </label>
-              </div>
-            </div>
-            
-            <div id="col-item-paket" {{ $product->is_paket != null ? '' : 'hidden'}}>
-              <div class="col-sm-12">
-                <div class="form-group">
-                    <button id="add-item">Tambah</button>
-                </div>
-              </div>
-              @foreach($product_paket as $key => $value)
-              <div class="form-group row">
-              <div class="col-sm-12">
-              <div class="col-sm-6">
-                <input type="hidden" value="{{$value->id}}" name="product_paket_id[]">
-                <div class="input-group"><span class="input-group-addon"><a href="#" class="remove_field_item">X</a></span>
-                        {!! Form::select('item_id[]', 
-                                    $product_option, $value->product_id, ['class' => 'form-control', 'placeholder' => 'Pilih Item']); !!}
-                  </div>
-                </div>
-              <div class="col-sm-4">
-                <!-- <div class="form-group"> -->
-                      {!! Form::number('item_price[]', $value->amount , ['class' => 'form-control hide',
-                          'placeholder' => 'Price Item', 'min' => '0']); !!}
-                <!-- </div> -->
-              </div>
-              </div>
-              </div>
-              @endforeach
-              <div class="col-sm-12">
-                <div id="item-paket"></div>
-              </div>
             </div>
             </div>
     @endcomponent
@@ -403,11 +403,20 @@
   <script>
   $(document).ready(function() {
     $(".selectBahan").trigger('change')
+    @if($product->is_paket != null)
+          $('#col-bahan').hide();
+    @endif    
     $(document).on('ifChecked', 'input#is_paket', function() {
         $('div#col-item-paket').show();
+        $('#col-bahan').hide();
+        $('#col-bahan input,#col-bahan select').prop('disabled','true');
+
     });
     $(document).on('ifUnchecked', 'input#is_paket', function() {
         $('div#col-item-paket').hide();
+        $('#col-bahan').show();
+        $('#col-bahan input,#col-bahan select').removeAttr('disabled');
+
     });
     var max_fields      = 10; //maximum input boxes allowed
     var n = @php echo count($product_paket)@endphp; //initlal text box count

@@ -439,17 +439,19 @@ class ProductController extends Controller
                 $this->productUtil->addRackDetails($business_id, $product->id, $product_racks);
             }
 
-            foreach ($request->input('id_bahan') as $key => $value) {
-                if ($value != '' && $request->input('kebutuhan')[$key]) {
-                    $bahan = array(
-                        'product_id' => $product->id,
-                        'id_bahan' => $value,
-                        'kebutuhan' => $request->input('kebutuhan')[$key],
-                    );
-                    \DB::table('tb_bahan_product')->insert($bahan);
+            if($request->input('id_bahan')){
+                foreach ($request->input('id_bahan') as $key => $value) {
+                    if ($value != '' && $request->input('kebutuhan')[$key]) {
+                        $bahan = array(
+                            'product_id' => $product->id,
+                            'id_bahan' => $value,
+                            'kebutuhan' => $request->input('kebutuhan')[$key],
+                        );
+                        \DB::table('tb_bahan_product')->insert($bahan);
+                    }
                 }
             }
-
+                
             DB::commit();
             $output = [
                 'success' => 1,
@@ -755,15 +757,17 @@ class ProductController extends Controller
                 $this->productUtil->updateRackDetails($business_id, $product->id, $product_racks_update);
             }
 
-            DB::table('tb_bahan_product')->where('product_id', $id)->delete();
-            foreach ($request->input('id_bahan') as $key => $value) {
-                if ($value != '' && $request->input('kebutuhan')[$key]) {
-                    $bahan = array(
-                        'product_id' => $product->id,
-                        'id_bahan' => $value,
-                        'kebutuhan' => $request->input('kebutuhan')[$key],
-                    );
-                    \DB::table('tb_bahan_product')->insert($bahan);
+            if($request->input('id_bahan')){
+                DB::table('tb_bahan_product')->where('product_id', $id)->delete();
+                foreach ($request->input('id_bahan') as $key => $value) {
+                    if ($value != '' && $request->input('kebutuhan')[$key]) {
+                        $bahan = array(
+                            'product_id' => $product->id,
+                            'id_bahan' => $value,
+                            'kebutuhan' => $request->input('kebutuhan')[$key],
+                        );
+                        \DB::table('tb_bahan_product')->insert($bahan);
+                    }
                 }
             }
 

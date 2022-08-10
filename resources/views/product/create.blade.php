@@ -133,7 +133,38 @@
                             $location_option, null, ['class' => 'form-control', 'placeholder' => 'Pilih Lokasi', 'required' => 'required']); !!}
               </div>
         </div>
-        <div class="col-md-12">
+        <br>
+        <div class="col-sm-12">
+          <div class="form-group">
+              <label>
+              {!! Form::checkbox('is_paket', 1, false, ['class' => 'input-icheck', 'id' => 'is_paket', 'onclick' => 'alert(1)']); !!} <strong>Item Paket</strong>
+              </label>
+          </div>
+        </div>
+        
+        <div id="col-item-paket" hidden>
+          <div class="col-sm-12">
+            <div class="form-group">
+                <button id="add-item">Tambah</button>
+            </div>
+          </div>
+          <div class="col-sm-6" id="remove-item-paket">
+            <div class="form-group">
+                  {!! Form::select('item_id[]', 
+                              $product_option, null, ['class' => 'form-control', 'placeholder' => 'Pilih Item']); !!}
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+                  {!! Form::number('item_price[]', null , ['class' => 'form-control hide',
+                      'placeholder' => 'Price Item', 'min' => '0']); !!}
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div id="item-paket"></div>
+          </div>
+        </div>
+        <div class="col-md-12" id="col-bahan">
           <div class="row">
             <div class="col-md-12" id="append-bahan">
               <div class="row row-bahan" data-index='0'>
@@ -174,37 +205,7 @@
           </div>
 
         </div>
-        <br>
-        <div class="col-sm-12">
-          <div class="form-group">
-              <label>
-              {!! Form::checkbox('is_paket', 1, false, ['class' => 'input-icheck', 'id' => 'is_paket', 'onclick' => 'alert(1)']); !!} <strong>Item Paket</strong>
-              </label>
-          </div>
-        </div>
-        
-        <div id="col-item-paket" hidden>
-          <div class="col-sm-12">
-            <div class="form-group">
-                <button id="add-item">Tambah</button>
-            </div>
-          </div>
-          <div class="col-sm-6" id="remove-item-paket">
-            <div class="form-group">
-                  {!! Form::select('item_id[]', 
-                              $product_option, null, ['class' => 'form-control', 'placeholder' => 'Pilih Item']); !!}
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-                  {!! Form::number('item_price[]', null , ['class' => 'form-control hide',
-                      'placeholder' => 'Price Item', 'min' => '0']); !!}
-            </div>
-          </div>
-          <div class="col-sm-12">
-            <div id="item-paket"></div>
-          </div>
-        </div>
+
         </div>
     @endcomponent
 
@@ -385,9 +386,13 @@
   $(document).ready(function() {
     $(document).on('ifChecked', 'input#is_paket', function() {
         $('div#col-item-paket').show();
+        $('#col-bahan').hide();
+        $('#col-bahan input,#col-bahan select').prop('disabled','true');
     });
     $(document).on('ifUnchecked', 'input#is_paket', function() {
+        $('#col-bahan').show();
         $('div#col-item-paket').hide();
+        $('#col-bahan input,#col-bahan select').removeAttr('disabled');
     });
     var max_fields      = 10; //maximum input boxes allowed
     var n = 1; //initlal text box count
